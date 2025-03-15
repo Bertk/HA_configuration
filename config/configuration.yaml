@@ -1,0 +1,127 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+  extra_module_url:
+    - hacsfiles/lovelace-card-mod/card-mod.js
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+input_select: !include input_select.yaml
+
+# sensor data for 14 days
+recorder:
+  purge_keep_days: 14
+
+# custom rest sensor for poweropti device
+# rest:
+#   - resource: https://backend.powerfox.energy/api/2/my/main/current?unit=kwh
+#     method: GET
+#     authentication: basic
+#     username: !secret poweropti_username
+#     password: !secret poweropti_password
+#     timeout: 10
+#     scan_interval: 30
+#     sensor:
+#       - name: "poweropti_cloud"
+#         unique_id: "poweropti-cloud"
+#         json_attributes:
+#           - "watt"
+#           - "timestamp"
+#           - "a_Plus"
+#           - "a_Plus_HT"
+#           - "a_Plus_NT"
+#           - "a_Minus"
+#           - "outdated"
+#       - name: "PowerOpti wattage current"
+#         unique_id: "poweropti_wattage_current"
+#         device_class: "power"
+#         state_class: "measurement"
+#         unit_of_measurement: "W"
+#         value_template: "{{ value_json.watt }}"
+#         availability: "{{ is_number(state_attr('sensor.poweropti_cloud', 'watt'))  and state_attr('sensor.poweropti_cloud', 'outdated') == false}}"
+#       - name: "PowerOpti usage total"
+#         unique_id: "poweropti_usage_total"
+#         device_class: "energy"
+#         state_class: "total_increasing"
+#         unit_of_measurement: "kWh"
+#         value_template: "{{ value_json.a_Plus }}"
+#         availability: "{{is_number(state_attr('sensor.poweropti_cloud', 'a_Plus')) and (state_attr('sensor.poweropti_cloud', 'outdated') == false) and (state_attr('sensor.poweropti_cloud', 'a_Plus')|round(0) > float(0))}}"
+#       - name: "PowerOpti production total"
+#         unique_id: "poweropti_production_total"
+#         device_class: "energy"
+#         state_class: "total_increasing"
+#         unit_of_measurement: "kWh"
+#         value_template: "{{ value_json.a_Minus }}"
+#         availability: "{{is_number(state_attr('sensor.poweropti_cloud', 'a_Minus')) and (state_attr('sensor.poweropti_cloud', 'outdated') == false) and (state_attr('sensor.poweropti_cloud', 'a_Minus')|round(0) > float(0))}}"
+
+rest:
+  - resource: https://api.tibber.com/v1-beta/gql
+    method: POST
+    payload: '{ "query": "{ viewer { homes { currentSubscription { status priceInfo { current { total } today { total } tomorrow { total } } } } } }" }'
+    headers:
+      Authorization: !secret tibber_api_key
+      Content-Type: application/json
+      User-Agent: REST
+    scan_interval: 300
+    sensor:
+      - name: "Electricity price Prognose"
+        unique_id: sensor.electricity_price_prognose_xxx
+        json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
+        json_attributes:
+          - today
+          - tomorrow
+        value_template: "{{ value_json.data.viewer.homes[0].currentSubscription.priceInfo.current.total | float }}"
+        unit_of_measurement: EUR/kWh
+
+logger:
+  default: info
+  #  logs:
+  #    pyeasee: debug
+  #    custom_components.easee: debug
+  # default: warning
+  #logs:
+  #  homeassistant.components.modbus: debug
+  #  pymodbus: debug
+  filters:
+    custom_components.solarman.solarman:
+      - "Querying .1024 - 1070. failed" # NoSocketAvailableError, Empty
+      - "Querying registers .1024 - 1070. failed"
+      - "Update of sensor.solarman_pv1_power is taking over 10 seconds"
+
+logbook:
+  exclude:
+    entities:
+      - sensor.solarman_status_lastupdate
+      - sensor.poweropti_cloud
+
+modbus: !include modbus.yaml
+template: !include templates.yaml
+
+climate:
+  - platform: generic_thermostat
+    name: Infrarotheizung Hobbyraum
+    heater: switch.hobbyraum_steckdose
+    target_sensor: sensor.hobbyraum_temperatur
+    min_cycle_duration:
+      minutes: 5
+    hot_tolerance: 1
+    ac_mode: false
+    cold_tolerance: 1
+    unique_id: hobbyraum_heizung
+
+binary_sensor:
+  - platform: tod
+    name: Night
+    after: sunset
+    before: sunrise
+
+notify:
+  - name: BERT_DEVICES
+    platform: group
+    services:
+      - service: mobile_app_berts_iphone
+      - service: mobile_app_berts_ipad

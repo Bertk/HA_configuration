@@ -1,0 +1,97 @@
+# Sax-Batterie über Modbus
+- name: SAX_a
+  type: tcp
+  host: x.x.x.x
+  port: 502
+  delay: 3
+  message_wait_milliseconds: 30
+  timeout: 5
+  switches:
+    - name: SAX_a_an_aus
+      unique_id: "sax-a-an-aus"
+      address: 45
+      slave: 64
+      write_type: holding
+      command_on: 2
+      command_off: 1
+      verify:
+        #input_type: holding
+        address: 45
+        state_on: 3
+        state_off: 1
+  sensors:
+    - name: SAX_a_Schaltzustand
+      unique_id: "sensor.sax-schaltzustand"
+      address: 45
+      slave: 64
+      scan_interval: 30
+    - name: SAX_a_SOC
+      unique_id: "sensor.sax_battery"
+      unit_of_measurement: "%"
+      device_class: battery
+      state_class: measurement
+      slave: 64
+      address: 46
+      scan_interval: 60
+    - name: Stromspeicher_Leistung
+      unique_id: "sensor.sax_leistung"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      slave: 64
+      address: 47
+      offset: -16384
+      scan_interval: 6
+    - name: Stromspeicher_Leistung_Smartmeter
+      unique_id: "sensor.sax_leistung_smartmeter"
+      unit_of_measurement: "W"
+      device_class: "power"
+      state_class: "measurement"
+      slave: 64
+      address: 48
+      offset: -16384
+      scan_interval: 15
+    - name: SAX_a_Capacity
+      unique_id: "sax-a-capacity"
+      unit_of_measurement: "Wh"
+      device_class: energy
+      state_class: total
+      slave: 40
+      address: 40115
+      scan_interval: 120
+      data_type: int16
+      scale: 10
+    - name: SAX_a_Zyklen
+      unique_id: "sax-a-zyklen"
+      state_class: measurement
+      slave: 40
+      address: 40116
+      scan_interval: 3600
+      data_type: int16
+    - name: SAX_a_Temp
+      unique_id: "sax-a-temp"
+      unit_of_measurement: "°C"
+      device_class: temperature
+      state_class: measurement
+      slave: 40
+      address: 40117
+      scan_interval: 120
+      data_type: int16
+    - name: SAX_a_energy_produced
+      unique_id: "sensor.sax-a-energy_produced"
+      unit_of_measurement: "Wh"
+      device_class: energy
+      state_class: total_increasing
+      slave: 40
+      address: 40096
+      scan_interval: 120
+      data_type: uint16
+    - name: SAX_a_energy_consumed
+      unique_id: "sensor.sax-a-energy_consumed"
+      unit_of_measurement: "Wh"
+      device_class: energy
+      state_class: total_increasing
+      slave: 40
+      address: 40097
+      scan_interval: 120
+      data_type: uint16

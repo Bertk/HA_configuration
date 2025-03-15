@@ -1,0 +1,274 @@
+#################################################################
+## Templates
+#################################################################
+
+- sensor:
+    # Energy Dashboard sensor with availability
+    - name: Solar Generation Today
+      unique_id: "sensor.solar_generation_today"
+      state_class: total_increasing
+      icon: mdi:solar-power
+      unit_of_measurement: kWh
+      device_class: energy
+      state: >
+        {{ states('sensor.solarman_pv_generation_today') | float(0) }}
+      availability: "{{ has_value('sensor.solarman_pv_generation_today') and states('sensor.solarman_pv_generation_today')|is_number}}"
+    # Berechnet anhand des Stromzählers und der Solarerzeugung in Watt den Eigenverbrauch
+    - name: Solar Eigenverbrauch (Watt) v2
+      unique_id: "sensor.solar_eigenverbrauch_watt_v2"
+      state_class: measurement
+      icon: mdi:transmission-tower
+      unit_of_measurement: W
+      device_class: power
+      state: >
+        {% if is_number(states('sensor.tibber_pulse_xxx_energie')) and states('sensor.tibber_pulse_xxx_energie') | float(0) < 0 %}
+            {{ ((float(states('sensor.solarman_total_active_power_output')))*1000) + ((states('sensor.tibber_pulse_xxx_energie') | float(0))) | round (0) }}
+        {% else %}
+            {{ ((float(states('sensor.solarman_total_active_power_output')))*1000) |float(0)| round (0) }}
+        {% endif %}
+      availability: "{{ has_value('sensor.solarman_total_active_power_output') and states('sensor.solarman_total_active_power_output')|is_number }}"
+    # Zweiter Sensor für Ersparnis in Euro pro Stunde, basiert auf dem obigen Sensor (Solar Eigenverbrauch (Watt) v2) und dem aktuellen Strompreis in EUR/kWh
+    - name: GaragenSolar Vorteil
+      unique_id: "sensor.garagensolar_vorteil_in_euro"
+      unit_of_measurement: EUR/h
+      state: >
+        {{ states('sensor.solar_eigenverbrauch_watt_v2')|float(0) * states('input_number.aktueller_strompreis')|float(0)/1000 }}
+    # Berechnet anhand des Stromzählers und der Solarerzeugung in Watt den Einspeisung
+    - name: Solar Einspeisung (Watt)
+      unique_id: "sensor.solar_einspeisung_watt"
+      state_class: measurement
+      icon: mdi:transmission-tower
+      unit_of_measurement: W
+      device_class: power
+      state: >
+        {% if is_number(states('sensor.tibber_pulse_xxx_energie')) and states('sensor.tibber_pulse_xxx_energie') | float(0) < 0 %}
+            {{ (states('sensor.tibber_pulse_xxx_energie') | float(0)) *-1 | round (0) }}
+        {% else %}
+            {{ float(0) }}
+        {% endif %}
+      availability: "{{ has_value('sensor.tibber_pulse_xxx_energie') }}"
+    # PV in Watt
+    - name: PV Leistung in Watt
+      unique_id: "sensor.pv_leistung_in_watt"
+      state_class: measurement
+      icon: mdi:solar-panel
+      unit_of_measurement: W
+      device_class: power
+      state: "{{ states('sensor.solarman_total_active_power_output')|float(0) * 1000 }}"
+      availability: "{{ has_value('sensor.solarman_total_active_power_output') }}"
+    # Tägliche PV Einspeisung kWh
+    - name: PV Einspeisung täglich
+      unique_id: "sensor.pv_einspeisung_taglich"
+      state_class: total_increasing
+      icon: mdi:solar-panel
+      unit_of_measurement: kWh
+      device_class: energy
+      state: >
+        {{(states('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile') |float - states('sensor.solar_einspeisung_energy_end_of_day') |float) | round (3) }}
+      availability: "{{ has_value('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile') and (states('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile') |round(0) > float(0)) }}"
+    # Lüftungsdauer für Monat
+    - name: Lüftungsdauer in Minuten für Monat
+      unique_id: "sensor.lueftungsdauer"
+      state_class: measurement
+      icon: mdi:clock-digital
+      unit_of_measurement: min
+      device_class: duration
+      state: >
+        {% if now().month in [1, 2, 12] %} 
+        5
+        {% elif now().month in [3, 11] %}
+        10
+        {% elif now().month in [4, 10] %}
+        15
+        {% elif now().month in [5, 9] %}
+        20
+        {% elif now().month in [6, 7, 8] %}
+        25
+        {% endif %}
+    # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur im Innenraum die absolute Luftfreuchtigkeit in Gramm pro Kubikmeter
+    # Überprüfung der Ergenisse: https://electric-junkie.de/2022/01/absolute-luftfeuchtigkeit/
+    #                            https://www.condair.de/berechnungstools/feuchterechner
+    - name: "Absolute Luftfeuchtigkeit Bad"
+      unique_id: "AbsoluteHumidityBad"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.bad_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.bad_temperatur'))*17.67)/(float(states('sensor.bad_temperatur'))+243.5))/(float(states('sensor.bad_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Hobbyraum"
+      unique_id: "AbsoluteHumidityHR"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.hobbyraum_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.hobbyraum_temperatur'))*17.67)/(float(states('sensor.hobbyraum_temperatur'))+243.5))/(float(states('sensor.hobbyraum_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Schlafzimmer"
+      unique_id: "AbsoluteHumiditySZ"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.schlafzimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.schlafzimmer_temperatur'))*17.67)/(float(states('sensor.schlafzimmer_temperatur'))+243.5))/(float(states('sensor.schlafzimmer_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Wohnzimmer"
+      unique_id: "AbsoluteHumidityWZ"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.wohnzimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.wohnzimmer_temperatur'))*17.67)/(float(states('sensor.wohnzimmer_temperatur'))+243.5))/(float(states('sensor.wohnzimmer_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Flur"
+      unique_id: "AbsoluteHumidityFlur"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.flur_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.flur_temperatur'))*17.67)/(float(states('sensor.flur_temperatur'))+243.5))/(float(states('sensor.flur_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Gästezimmer"
+      unique_id: "AbsoluteHumidityGZ"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.gastezimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.gastezimmer_temperatur'))*17.67)/(float(states('sensor.gastezimmer_temperatur'))+243.5))/(float(states('sensor.gastezimmer_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Büro"
+      unique_id: "AbsoluteHumidityBuro"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.buro_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.buro_temperatur'))*17.67)/(float(states('sensor.buro_temperatur'))+243.5))/(float(states('sensor.buro_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Toilette"
+      unique_id: "AbsoluteHumidityToilette"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.toilette_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.toilette_temperatur'))*17.67)/(float(states('sensor.toilette_temperatur'))+243.5))/(float(states('sensor.toilette_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Werkstatt"
+      unique_id: "AbsoluteHumidityWerkstatt"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.werkstatt_klima_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.werkstatt_klima_temperatur'))*17.67)/(float(states('sensor.werkstatt_klima_temperatur'))+243.5))/(float(states('sensor.werkstatt_klima_temperatur'))+273.15))|round(2)}}
+    - name: "Absolute Luftfeuchtigkeit Technikraum"
+      unique_id: "AbsoluteHumidityTechnik"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(states('sensor.technikraum_klima_luftfeuchtigkeit_2'))*6.112*2.1674*e**((float(states('sensor.technikraum_klima_temperatur_2'))*17.67)/(float(states('sensor.technikraum_klima_temperatur_2'))+243.5))/(float(states('sensor.technikraum_klima_temperatur_2'))+273.15))|round(2)}}
+    # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur außen die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
+    - name: "Absolute Luftfeuchtigkeit außen"
+      unique_id: "AbsoluteHumidityOutside"
+      unit_of_measurement: "g/m^3"
+      state_class: "measurement"
+      state: >
+        {{(float(state_attr('weather.furth','humidity'))*6.112*2.1674*e**((float(state_attr('weather.furth','temperature'))*17.67)/(float(state_attr('weather.furth','temperature'))+243.5))/(float(state_attr('weather.furth','temperature'))+273.15))|round(2)}}
+    # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur außen die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
+    #- name: "Absolute Luftfeuchtigkeit außen2"
+    #  unique_id: "AbsoluteHumidityOutside2"
+    #  unit_of_measurement: "g/m^3"
+    #  state_class: "measurement"
+    #  state: >
+    #    {{ 1000*e**(19.016-(4064.95/(float(state_attr('weather.furth','temperature'))+236.25)))*100/(461.66*(float(state_attr('weather.furth','temperature'))+273.15)) * float(state_attr('weather.furth','temperature'))/100 | float }}
+    # Errechnet Taupunkt
+    # https://techbotch.org/blog/dewpoint-calculation-hassio/index.html
+    - name: "Taupunkt außen"
+      unit_of_measurement: "°C"
+      state: >
+        {{ (float(243.12) * ((float(17.62)*state_attr('weather.furth','temperature'))/(float(243.12)+state_attr('weather.furth','temperature')) + log(state_attr('weather.furth','humidity')/100)) / ((float(17.62)*float(243.12))/(float(243.12)+state_attr('weather.furth','temperature')) - log(state_attr('weather.furth','humidity')/100)))  | round(1) }}
+    - name: "Taupunkt Hobbyraum"
+      unit_of_measurement: "°C"
+      state: >
+        {{ (float(243.12) * ((float(17.62)*float(states('sensor.hobbyraum_temperatur')))/(float(243.12)+float(states('sensor.hobbyraum_temperatur'))) + log(float(states('sensor.hobbyraum_luftfeuchtigkeit'))/100)) / ((float(17.62)*float(243.12))/(float(243.12)+float(states('sensor.hobbyraum_temperatur'))) - log(float(states('sensor.hobbyraum_luftfeuchtigkeit'))/100)))  | round(1) }}
+
+    # Berechnet SAX-Speicherentladung P_SAX_export, wenn P_SAX positiv
+    - name: P_SAX_export
+      unique_id: "P_SAX_export"
+      state_class: measurement
+      icon: mdi:battery-arrow-down
+      unit_of_measurement: W
+      device_class: power
+      state: >
+        {% if states('sensor.stromspeicher_leistung') | float(0) >= 0 %}
+            {% set P_SAX_export = states('sensor.stromspeicher_leistung') | float(0) |abs %}
+        {% else %}
+            {% set P_SAX_export = float(0) %}
+        {% endif %}
+        {{ P_SAX_export }}
+    # Berechnet SAX-Speicherentladung P_SAX_import, wenn P_SAX negativ
+    - name: P_SAX_import
+      unique_id: "P_SAX_import"
+      state_class: measurement
+      icon: mdi:battery-arrow-up
+      unit_of_measurement: W
+      device_class: power
+      state: >
+        {% if states('sensor.stromspeicher_leistung') | float(0) <= 0 %}
+            {% set P_SAX_import = states('sensor.stromspeicher_leistung') | float(0) |abs %}
+        {% else %}
+            {% set P_SAX_import = float(0) %}
+        {% endif %}
+        {{ P_SAX_import }}
+    # Wärmepumpe Schaltspiele Verdichter heute
+    - name: "WPP Schaltspiele Verdichter heute"
+      unique_id: "wpp_schaltspiele_verdichter_heute"
+      state_class: measurement
+      icon: mdi:counter
+      state: >
+        {{float(states('input_number.wpp_schaltspiele_gesamt')) | round(0) - float(states('sensor.wpp_schaltspiele_verdichter_end_of_day')) | round(0)}}
+      availability: "{{ has_value('input_number.wpp_schaltspiele_gesamt') and has_value('sensor.wpp_schaltspiele_verdichter_end_of_day')}}"
+    # Wärmepumpe Schaltspiele Abtauen heute
+    - name: "WPP Schaltspiele Abtauen heute"
+      unique_id: "wpp_schaltspiele_abtauen_heute"
+      state_class: measurement
+      icon: mdi:counter
+      state: >
+        {{float(states('input_number.wpp_schaltspiele_abtauen')) | round(0) - float(states('sensor.wpp_schaltspiele_abtauen_end_of_day')) | round(0)}}
+      availability: "{{ has_value('input_number.wpp_schaltspiele_abtauen') and has_value('sensor.wpp_schaltspiele_abtauen_end_of_day')}}"
+    # Tibber Strompreis
+    - name: "Strompreis Max XXX"
+      unique_id: sensor.xxx_strompreis_max
+      state: "{{ state_attr('sensor.xxx_strompreis','max_price') }}"
+      unit_of_measurement: EUR/kWh
+      icon: mdi:currency-eur
+    - name: "Strompreis Min XXX"
+      unique_id: sensor.xxx_strompreis_min
+      state: "{{ state_attr('sensor.xxx_strompreis','min_price') }}"
+      unit_of_measurement: EUR/kWh
+      icon: mdi:currency-eur
+    - name: "Strompreis Avg XXX"
+      unique_id: sensor.xxx_strompreis_avg
+      state: "{{ state_attr('sensor.xxx_strompreis','avg_price') }}"
+      unit_of_measurement: EUR/kWh
+      icon: mdi:currency-eur
+
+- trigger:
+    - trigger: time
+      at: "00:01:00"
+  sensor:
+    - name: "Solar Einspeisung Energy - End of Day"
+      unique_id: "solar_einspeisung_energy_end_of_day"
+      state_class: total_increasing
+      unit_of_measurement: kWh
+      device_class: energy
+      icon: mdi:transmission-tower-export
+      state: "{{ states('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile')| float }}"
+      availability: "{{ has_value('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile') }}"
+    - name: "WPP Schaltspiele Verdichter - End of Day"
+      unique_id: "wpp_schaltspiele_verdichter_end_of_day"
+      state_class: total_increasing
+      icon: mdi:numeric
+      state: >
+        {{ states('input_number.wpp_schaltspiele_gesamt')| round(0) }}
+    - name: "WPP Schaltspiele Abtauen - End of Day"
+      unique_id: "wpp_schaltspiele_abtauen_end_of_day"
+      state_class: total_increasing
+      icon: mdi:numeric
+      state: >
+        {{ states('input_number.wpp_schaltspiele_abtauen')| round(0) }}
+
+- trigger:
+    - trigger: time_pattern
+      minutes: /10
+  sensor:
+    # Add state_class für Wallbox "session_energy“
+    - name: "E_wallbox_session"
+      unique_id: "sensor.ehvucdqv_sitzungsenergie_derived"
+      state_class: total_increasing
+      icon: mdi:ev-station
+      unit_of_measurement: kWh
+      device_class: energy
+      state: "{{states('sensor.ehvucdqv_sitzungsenergie')|float(0)}}"
+      availability: "{{ has_value('sensor.ehvucdqv_sitzungsenergie') and states('sensor.ehvucdqv_sitzungsenergie')|is_number}}"
