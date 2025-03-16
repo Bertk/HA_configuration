@@ -1,0 +1,3089 @@
+views:
+  - title: Home
+    icon: mdi:home-floor-g
+    badges: []
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Wetter Fürth
+            icon: mdi:weather-cloudy
+          - type: vertical-stack
+            cards:
+              - type: weather-forecast
+                entity: weather.furth
+                show_current: true
+                show_forecast: true
+                forecast_type: hourly
+                secondary_info_attribute: humidity
+              - type: custom:horizon-card
+                language: de
+                timeFormat: 24h
+        column_span: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Klima Fürth
+            icon: mdi:home-thermometer-outline
+          - type: vertical-stack
+            cards:
+              - type: entity
+                entity: weather.furth
+                attribute: pressure
+                unit: hPa
+                icon: mdi:gauge
+                state_color: true
+              - type: entity
+                entity: weather.furth
+                attribute: dew_point
+                name: Taupunkt
+                icon: mdi:water-alert
+                card_mod:
+                  style: >
+                    {% if state_attr('weather.furth', 'dew_point')|float(0) <
+                    0.0 %}
+                      :host {
+                          --paper-item-icon-color: green;
+                        }
+                       .info {
+                        color: green;
+                        }
+                       .header .name {
+                        color: green;
+                        font-size: 25px;
+                        } 
+                    {% elif state_attr('weather.furth', 'dew_point')|float(0) >
+                    10.0 %}
+                      :host {
+                          --paper-item-icon-color: red;
+                        }
+                       .info {
+                        color: red;
+                        }
+                       .header .name {
+                        color: red;
+                        font-size: 25px;
+                        }    
+                    {% endif %}
+              - type: tile
+                name: Außentemperatur (WP Sensor)
+                entity: sensor.wh_system_aussentemperatur
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_aussen
+                name: Absolute Luftfeuchtigkeit Fürth
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if states(config.entity)|float(0) < 0.0 %}
+                        --card-mod-icon-color: orange;
+                      {% elif states(config.entity)|float(0) > 10.0 %}
+                        --card-mod-icon-color: red;
+                      {% endif %}
+                    } 
+      - type: grid
+        cards:
+          - type: heading
+            heading: Strompreis Prognose
+            heading_style: title
+            icon: mdi:currency-eur
+          - type: custom:apexcharts-card
+            experimental:
+              hidden_by_default: true
+            graph_span: 48h
+            all_series_config:
+              stroke_width: 2
+            span:
+              start: hour
+              offset: '-24h'
+            now:
+              show: true
+            update_interval: 5min
+            header:
+              show: true
+              title: Strompreisprognose (€/kWh)
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.electricity_price_prognose_xxx
+                name: Prognose
+                yaxis_id: left
+                type: line
+                float_precision: 5
+                curve: stepline
+                unit: €/kWh
+                show:
+                  in_header: false
+                  extremas: true
+                  legend_value: false
+                data_generator: >
+                  const noon = new Date()
+
+                  noon.setHours(0, 0, 0, 0)
+
+                  const prices =
+                  entity.attributes.today.concat(entity.attributes.tomorrow);
+
+                  const data = [];
+
+                  for(let i = 0; i < prices.length; i++) {
+                    data.push([noon.getTime() + i * 1000 * 3600, prices[i].total])
+                  }
+
+                  return data;
+              - entity: sensor.strompreis_avg_xxx
+                name: Median
+                yaxis_id: left
+                type: line
+                float_precision: 5
+                curve: stepline
+                unit: €/kWh
+                extend_to: now
+                fill_raw: last
+                show:
+                  hidden_by_default: true
+                  legend_value: false
+              - entity: sensor.strompreis_max_xxx
+                name: Max Preis
+                yaxis_id: left
+                type: line
+                float_precision: 5
+                curve: stepline
+                unit: €/kWh
+                extend_to: now
+                fill_raw: last
+                show:
+                  hidden_by_default: false
+                  legend_value: false
+              - entity: sensor.strompreis_min_xxx
+                name: Min Preis
+                yaxis_id: left
+                type: line
+                float_precision: 5
+                curve: stepline
+                unit: €/kWh
+                extend_to: now
+                fill_raw: last
+                show:
+                  hidden_by_default: false
+                  legend_value: false
+              - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
+                curve: stepline
+                type: area
+                opacity: 0.3
+                name: Bezug
+                extend_to: now
+                show:
+                  in_header: false
+                  legend_value: false
+                yaxis_id: right
+                group_by:
+                  func: delta
+                  duration: 1h
+                  fill: zero
+            yaxis:
+              - id: left
+                decimals: 2
+                min: 0
+              - id: right
+                opposite: true
+                decimals: 2
+                min: 0
+                max: 10
+                show: false
+          - type: tile
+            entity: input_number.strompreis_heizung_aus
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: input_number.strompreis_speicher_export
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.xxx_strompreis
+            grid_options:
+              columns: 12
+              rows: 1
+            name: Strompreis aktuell
+            icon: mdi:currency-eur
+          - type: tile
+            features_position: bottom
+            vertical: false
+            entity: sensor.wh_warmepumpe_leistungsanforderung
+            grid_options:
+              columns: 12
+              rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Gästezimmer
+            icon: mdi:bed
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.gastezimmer_temperatur
+                name: Temperatur
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/gaestezimmer
+              - type: tile
+                entity: sensor.gastezimmer_luftfeuchtigkeit
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/gaestezimmer
+                icon: mdi:water-percent
+                card_mod:
+                  style: |
+                    ha-card {
+                     {% if states(config.entity)|float(0) > 65 %}
+                        --card-mod-icon-color: red;
+                     {% endif %}  
+                    }
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_gastezimmer
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.gastezimmer_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.gastezimmer_heizung
+                  name: Heizung
+              - type: entity
+                entity: light.gastezimmer_licht_licht
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.gastezimmer_fenster_state
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.gastezimmer_fenster_state
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity) == "on"%}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      }      
+      - type: grid
+        cards:
+          - type: heading
+            heading: Schlafzimmer
+            heading_style: title
+            icon: mdi:bed
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.schlafzimmer_temperatur
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/schlafzimmer
+                name: 'Temperatur '
+              - type: tile
+                entity: sensor.schlafzimmer_luftfeuchtigkeit
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/schlafzimmer
+                name: 'Luftfeuchtigkeit '
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_schlafzimmer
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.schlafzimmer_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.schlafzimmer_heizung
+                  name: Heizung
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.schlafzimmer_fenster_state
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.schlafzimmer_fenster_state
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity) == "on"%}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      } 
+              - type: entities
+                entities:
+                  - entity: light.schlafzimmer_bett_licht_licht
+                    name: Bett Licht
+              - type: entities
+                entities:
+                  - entity: fan.core300s
+                    name: Aktivieren Core300S
+      - type: grid
+        cards:
+          - type: heading
+            heading: Bad
+            heading_style: title
+            icon: mdi:shower
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: tile
+                    entity: sensor.bad_temperatur
+                    tap_action:
+                      action: navigate
+                      navigation_path: /dashboard-experiment/bad
+                    name: Temperatur
+              - type: tile
+                entity: sensor.bad_luftfeuchtigkeit
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/bad
+                icon: mdi:water-percent
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_bad
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.bad_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.bad_heizung
+                  name: Heizung
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.bad_fenster_state
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.bad_fenster_state
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity) == "on"%}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      } 
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Büro
+            icon: mdi:desk
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.buro_temperatur
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/buero
+                name: 'Temperatur '
+              - type: tile
+                entity: sensor.buro_luftfeuchtigkeit
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/buero
+                name: 'Luftfeuchtigkeit '
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_buro
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.buro_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.buro_heizung
+                  name: Heizung
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.buro_fenster
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.buro_fenster
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      }
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Flur
+            icon: mdi:stairs
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.flur_temperatur
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/flur
+                name: Temperatur
+              - type: tile
+                entity: sensor.flur_luftfeuchtigkeit
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/flur
+                name: Luftfeuchtigkeit
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_flur
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.flur_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.flur_heizung
+                  name: Heizung
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.flur_fenster
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.flur_fenster
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity) == "on"%}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      } 
+              - type: entity
+                entity: light.flur_licht_og_licht
+              - type: entity
+                entity: light.flur_licht_ug_licht
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Toilette
+            icon: mdi:toilet
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.toilette_temperatur
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/toilette
+                name: Temperatur
+              - type: tile
+                entity: sensor.toilette_luftfeuchtigkeit
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/toilette
+                name: Luftfeuchtigkeit
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_toilette
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.toilette_fenster_state
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.toilette_fenster_state
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity) == "on"%}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      } 
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.toilette_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.toilette_heizung
+                  name: Heizung
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wohnzimmer
+            heading_style: title
+            icon: mdi:sofa
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.wohnzimmer_temperatur
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/wohnzimmer
+                name: Temperatur
+              - type: tile
+                entity: sensor.wohnzimmer_luftfeuchtigkeit
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/wohnzimmer
+                name: Luftfeuchtigkeit
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_wohnzimmer
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.wohnzimmer_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.wohnzimmer_heizung
+                  name: Heizung
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.wohnzimmer_fenster
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.wohnzimmer_fenster
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity) == "on"%}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      } 
+              - type: entities
+                entities:
+                  - entity: fan.zhimi_vb2_d53d_air_purifier
+      - type: grid
+        cards:
+          - type: heading
+            heading: Hobbyraum
+            heading_style: title
+            icon: mdi:weight-lifter
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.hobbyraum_temperatur
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/hobbyraum
+                name: Temperatur
+                show_entity_picture: true
+                features_position: bottom
+                vertical: false
+              - type: tile
+                entity: sensor.hobbyraum_luftfeuchtigkeit
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/hobbyraum
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+              - type: tile
+                entity: sensor.absolute_luftfeuchtigkeit_hobbyraum
+                icon: mdi:water-circle
+              - type: tile
+                entity: sensor.taupunkt_hobbyraum
+                icon: mdi:water
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.hobbyraum_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.hobbyraum_heizung
+                  name: Heizung
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.hobbyraum_fenster_state
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.hobbyraum_fenster_state
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity) == "on"%}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      }       
+              - type: tile
+                entity: switch.hobbyraum_steckdose
+              - type: tile
+                entity: switch.hobbyraum_luftungstecker_schalter
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.fr_hj10re001190_radon
+                    above: 100
+                card:
+                  type: tile
+                  entity: sensor.fr_hj10re001190_radon
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity)|float(0) >= 100 and states(config.entity)|float < 150 %}
+                        --card-mod-icon-color: orange;
+                       {% elif states(config.entity)|float(0) >= 150 %}
+                        --card-mod-icon-color: red;
+                       {% endif %}  
+                      }
+      - type: grid
+        cards:
+          - type: heading
+            heading: Werkstatt
+            heading_style: title
+            icon: mdi:tools
+          - type: vertical-stack
+            cards:
+              - type: tile
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/werkstatt
+                name: Temperatur
+                entity: sensor.werkstatt_klima_temperatur
+              - type: tile
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/werkstatt
+                name: 'Luftfeuchtigkeit '
+                entity: sensor.werkstatt_klima_luftfeuchtigkeit
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+              - type: tile
+                entity: sensor.absolute_luftfeuchtigkeit_werkstatt
+                icon: mdi:water-circle
+      - type: grid
+        cards:
+          - type: heading
+            heading: Technikraum
+            heading_style: title
+            icon: mdi:heat-pump
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.technikraum_klima_temperatur_2
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/technikraum
+                name: Temperatur
+              - type: tile
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/technikraum
+                name: Luftfeuchtigkeit
+                card_mod:
+                  style: |
+                    ha-card {
+                       {% if states(config.entity)|float(0) > 65 %}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                    }
+                entity: sensor.technikraum_klima_luftfeuchtigkeit_2
+              - type: tile
+                entity: sensor.absolute_luftfeuchtigkeit_technikraum
+                icon: mdi:water-circle
+              - type: tile
+                entity: sensor.stromspeicher_soc
+                name: Stromspeicher
+              - type: tile
+                entity: sensor.wh_warmwasser_warmwassertemperatur
+                name: Warmwasser
+              - type: tile
+                entity: binary_sensor.technikraum_wasser_feuchtigkeit
+      - type: grid
+        cards:
+          - type: heading
+            heading: Garage
+            heading_style: title
+            icon: mdi:garage
+          - type: entity
+            grid_options:
+              columns: 12
+              rows: 2
+            name: Garagentor
+            entity: cover.smart_garage_door_2203180661365336103348e1e98c2d9c_garage
+          - type: vertical-stack
+            cards:
+              - type: entities
+                entities:
+                  - entity: sensor.solarman_status_connection
+                  - entity: sensor.solarman_total_active_power_output
+                  - entity: sensor.solarman_radiator_temperature_1
+                    name: Sofar Inverter Kühler
+                  - entity: sensor.solarman_ambient_temperature_1
+                    name: Sofar Inverter Umgebung
+                title: PV Inverter
+          - type: entities
+            entities:
+              - entity: binary_sensor.ehvucdqv_online
+              - entity: binary_sensor.ehvucdqv_kabel_verriegelt
+              - entity: sensor.ehvucdqv_status
+              - entity: sensor.ehvucdqv_leistung
+              - entity: sensor.ehvucdqv_sitzungsenergie
+              - entity: sensor.ehvucdqv_gesamtenergie
+            title: Easee Wallbox
+      - type: grid
+        cards:
+          - type: heading
+            heading: Gartenhaus
+            heading_style: title
+            icon: mdi:warehouse
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: binary_sensor.gartenhaus_camera_bewegung
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/gartenhaus
+                name: Bewegung
+              - type: tile
+                entity: binary_sensor.gartenhaus_camera_person
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/gartenhaus
+                name: Person
+              - type: tile
+                entity: binary_sensor.gartenhaus_camera_fahrzeug
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/gartenhaus
+                name: Fahrzeug
+              - type: picture-entity
+                entity: camera.gartenhaus_camera_fliessend
+  - title: Live-Energie
+    icon: mdi:lightning-bolt
+    badges: []
+    cards:
+      - type: vertical-stack
+        title: Stromfluss (live)
+        cards:
+          - type: custom:power-flow-card-plus
+            entities:
+              grid:
+                display_state: two_way
+                secondary_info: {}
+                entity:
+                  '0': s
+                  '1': e
+                  '2': 'n'
+                  '3': s
+                  '4': o
+                  '5': r
+                  '6': .
+                  '7': t
+                  '8': i
+                  '9': b
+                  '10': b
+                  '11': e
+                  '12': r
+                  '13': _
+                  '14': p
+                  '15': u
+                  '16': l
+                  '17': s
+                  '18': e
+                  '19': _
+                  '20': v
+                  '21': a
+                  '22': c
+                  '23': h
+                  '24': e
+                  '25': r
+                  '26': _
+                  '27': s
+                  '28': t
+                  '29': r
+                  '30': _
+                  '31': '1'
+                  '32': '5'
+                  '33': '7'
+                  '34': d
+                  '35': _
+                  '36': e
+                  '37': 'n'
+                  '38': e
+                  '39': r
+                  '40': g
+                  '41': i
+                  '42': e
+                  production: sensor.tibber_pulse_xxx_stromerzeugung
+                  consumption: sensor.tibber_pulse_xxx_energie
+              solar:
+                entity: sensor.solarman_total_active_power_output
+                display_zero_state: true
+              home: {}
+              battery:
+                entity: sensor.stromspeicher_leistung
+                state_of_charge: sensor.stromspeicher_soc
+              individual:
+                - secondary_info: {}
+                  name: Wallbox
+                  entity: sensor.ehvucdqv_leistung
+            clickable_entities: true
+            display_zero_lines:
+              mode: show
+              transparency: 50
+              grey_color:
+                - 189
+                - 189
+                - 189
+            use_new_flow_rate_model: true
+            w_decimals: 0
+            min_flow_rate: 0.75
+            max_flow_rate: 6
+            max_expected_power: 2000
+            min_expected_power: 0.01
+            watt_threshold: 1000
+            transparency_zero_lines: 0
+            dashboard_link: /energy
+            dashboard_link_label: Energiedashboard
+            kw_decimals: 2
+      - type: vertical-stack
+        title: Bilanz
+        cards:
+          - type: tile
+            name: Verbrauch
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-experiment/live-strom
+            entity: >-
+              sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+          - type: tile
+            name: Einspeisung
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-experiment/live-strom
+            entity: >-
+              sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
+          - type: tile
+            name: Leistung
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-experiment/live-strom
+            entity: sensor.tibber_pulse_xxx_energie
+          - type: tile
+            name: Tibber Strompreis
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-experiment/live-strom
+            entity: sensor.xxx_strompreis
+          - type: tile
+            name: Monatliche Kosten
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-experiment/live-strom
+            entity: sensor.xxx_monatliche_kosten
+  - title: Technikraum
+    icon: mdi:heat-pump-outline
+    badges: []
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Klima
+            heading_style: title
+            icon: mdi:home-thermometer
+          - type: entities
+            entities:
+              - entity: sensor.technikraum_klima_druck_2
+                name: Druck
+              - entity: sensor.technikraum_klima_luftfeuchtigkeit_2
+                name: Luftfeuchtigkeit
+              - entity: sensor.technikraum_klima_temperatur_2
+                name: Temperatur
+              - entity: binary_sensor.technikraum_wasser_feuchtigkeit
+          - type: entities
+            title: Stromspeicher
+            entities:
+              - entity: sensor.stromspeicher_leistung
+              - entity: sensor.stromspeicher_leistung_smartmeter
+              - entity: sensor.stromspeicher_soc
+              - entity: sensor.sax_a_zyklen_2
+              - entity: sensor.sax_a_capacity_2
+              - entity: sensor.sax_a_temp_2
+              - entity: sensor.sax_a_schaltzustand
+              - entity: switch.sax_a_an_aus
+              - entity: input_select.sax_a_leistungsgrenzwert_entladen
+              - entity: input_select.sax_a_leistungsgrenzwert_laden
+              - entity: sensor.sax_a_energy_produced
+              - entity: sensor.sax_a_energy_consumed
+      - type: grid
+        cards:
+          - type: heading
+            heading: Heizkreis Temperaturen
+            heading_style: title
+            icon: mdi:temperature-celsius
+          - chart_type: line
+            period: 5minute
+            type: statistics-graph
+            entities:
+              - sensor.wh_system_aussentemperatur
+              - sensor.wh_warmepumpe_vorlaufsolltemperatur
+              - sensor.wh_warmepumpe_rucklauftemperatur
+              - sensor.wh_warmwasser_warmwassertemperatur
+              - sensor.wh_heizkreis_vorlaufsolltemperatur
+            stat_types:
+              - mean
+              - max
+            days_to_show: 3
+          - type: history-graph
+            entities:
+              - entity: sensor.wh_warmepumpe_leistungsanforderung
+              - entity: sensor.wh_warmepumpe_warmeleistung
+        column_span: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Derived Data
+            icon: mdi:sigma
+          - type: entities
+            entities:
+              - entity: sensor.wh_statistik_tagesarbeitszahl_heute
+              - entity: sensor.wh_statistik_monatsarbeitszahl
+              - entity: sensor.wh_statistik_jahresarbeitszahl
+              - entity: sensor.wpp_schaltspiele_verdichter_heute
+              - entity: sensor.wpp_schaltspiele_abtauen_heute
+            state_color: true
+          - type: history-graph
+            entities:
+              - entity: sensor.wh_statistik_tagesarbeitszahl_heute
+          - type: history-graph
+            entities:
+              - entity: sensor.wh_statistik_monatsarbeitszahl
+          - type: history-graph
+            entities:
+              - entity: sensor.wpp_schaltspiele_verdichter_heute
+            hours_to_show: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: WH Heizkreis
+          - type: entities
+            entities:
+              - entity: sensor.wh_heizkreis_anforderung_typ
+              - entity: sensor.wh_heizkreis_heizen_konstanttemperatur
+              - entity: sensor.wh_heizkreis_hz_konfiguration
+              - entity: sensor.wh_heizkreis_kuhlen_konstanttemperatur
+              - entity: sensor.wh_heizkreis_raumsolltemperatur
+              - entity: sensor.wh_heizkreis_vorlaufsolltemperatur
+              - entity: select.wh_heizkreis_betriebsart
+              - entity: number.wh_heizkreis_heizkennlinie
+              - entity: select.wh_heizkreis_pause_party
+              - entity: number.wh_heizkreis_raumsolltemperatur_absenk
+              - entity: number.wh_heizkreis_raumsolltemperatur_komfort
+              - entity: number.wh_heizkreis_raumsolltemperatur_normal
+              - entity: number.wh_heizkreis_sommer_winter_umschaltung
+      - type: grid
+        cards:
+          - type: heading
+            heading: WH Wärmepumpe
+          - type: entities
+            entities:
+              - entity: sensor.wh_warmepumpe_betrieb
+              - entity: sensor.wh_warmepumpe_konfiguration
+              - entity: sensor.wh_warmepumpe_leistungsanforderung
+              - entity: sensor.wh_warmepumpe_pumpe_einschaltart
+              - entity: sensor.wh_warmepumpe_rucklauftemperatur
+              - entity: sensor.wh_warmepumpe_ruhemodus
+              - entity: sensor.wh_warmepumpe_sollwert_pumpe_leistung_abtaubetrieb
+              - entity: sensor.wh_warmepumpe_sollwert_pumpe_leistung_heizen
+              - entity: sensor.wh_warmepumpe_sollwert_pumpe_leistung_kuhlen
+              - entity: sensor.wh_warmepumpe_sollwert_pumpe_leistung_warmwasser
+              - entity: sensor.wh_warmepumpe_sollwert_volumenstrom_heizen
+              - entity: sensor.wh_warmepumpe_sollwert_volumenstrom_kuhlen
+              - entity: sensor.wh_warmepumpe_stormeldung
+              - entity: sensor.wh_warmepumpe_verdichtersauggastemp
+              - entity: sensor.wh_warmepumpe_vorlaufsolltemperatur
+              - entity: >-
+                  sensor.wh_warmepumpe_vorlauftemperatur_prazise_summenvorlauf_b7
+              - entity: sensor.wh_warmepumpe_warmeleistung
+      - type: grid
+        cards:
+          - type: heading
+            heading: WH Warmwasser
+          - type: entities
+            entities:
+              - entity: number.wh_warmwasser_warmwasser_absenk
+              - entity: number.wh_warmwasser_warmwasser_normal
+              - entity: select.wh_warmwasser_warmwasser_push
+              - entity: sensor.wh_warmwasser_warmwassersolltemperatur
+              - entity: sensor.wh_warmwasser_warmwassertemperatur
+              - entity: sensor.wh_warmwasser_ww_konfiguration
+      - type: grid
+        cards:
+          - type: heading
+            heading: WH System
+          - type: entities
+            entities:
+              - entity: select.wh_system_systembetriebsart
+              - entity: sensor.wh_system_aussentemperatur
+              - entity: sensor.wh_system_betriebsanzeige
+              - entity: sensor.wh_system_fehler
+              - entity: sensor.wh_system_fehlerfrei
+              - entity: sensor.wh_system_warnung
+              - entity: sensor.wh_system_luftansaugtemperatur
+      - type: grid
+        cards:
+          - type: heading
+            heading: WH 2. Wärmeerzeuger
+          - type: entities
+            entities:
+              - entity: number.wh_2_warmeerzeuger_grenztemperatur
+              - entity: sensor.wh_2_warmeerzeuger_betriebsstunden_e1
+              - entity: sensor.wh_2_warmeerzeuger_betriebsstunden_e2
+              - entity: sensor.wh_2_warmeerzeuger_schaltspiele_e_heizung_2
+              - entity: sensor.wh_2_warmeerzeuger_schaltspiele_e_heizung_1
+              - entity: sensor.wh_2_warmeerzeuger_status_e_heizung_1
+              - entity: sensor.wh_2_warmeerzeuger_status_2_wez
+              - entity: sensor.wh_2_warmeerzeuger_status_e_heizung_2
+      - type: grid
+        cards:
+          - type: heading
+            heading: WH Eingänge/Ausgänge
+          - type: entities
+            entities:
+              - entity: sensor.wh_eingange_ausgange_eingang_de1
+              - entity: sensor.wh_eingange_ausgange_eingang_de2
+              - entity: sensor.wh_eingange_ausgange_konf_ausgang_h1_3
+              - entity: sensor.wh_eingange_ausgange_konf_ausgang_h1_2
+              - entity: sensor.wh_eingange_ausgange_konf_eingang_de1
+              - entity: sensor.wh_eingange_ausgange_konf_eingang_de2
+              - entity: sensor.wh_eingange_ausgange_konf_eingang_sgr1
+              - entity: sensor.wh_eingange_ausgange_konf_eingang_sgr2
+      - type: grid
+        cards:
+          - type: heading
+            heading: WH Statistik
+          - type: entities
+            entities:
+              - entity: sensor.wh_statistik_abtauen_energie_gestern
+              - entity: sensor.wh_statistik_abtauen_energie_heute
+              - entity: sensor.wh_statistik_abtauen_energie_jahr
+              - entity: sensor.wh_statistik_abtauen_energie_monat
+              - entity: sensor.wh_statistik_elektr_energie_gestern
+              - entity: sensor.wh_statistik_elektr_energie_heute
+              - entity: sensor.wh_statistik_elektr_energie_jahr
+              - entity: sensor.wh_statistik_elektr_energie_monat
+              - entity: sensor.wh_statistik_gesamt_energie_gestern
+              - entity: sensor.wh_statistik_gesamt_energie_heute
+              - entity: sensor.wh_statistik_gesamt_energie_ii_gestern
+              - entity: sensor.wh_statistik_gesamt_energie_ii_heute
+              - entity: sensor.wh_statistik_gesamt_energie_ii_jahr
+              - entity: sensor.wh_statistik_gesamt_energie_ii_monat
+              - entity: sensor.wh_statistik_gesamt_energie_jahr
+              - entity: sensor.wh_statistik_gesamt_energie_monat
+              - entity: sensor.wh_statistik_heizen_energie_gestern
+              - entity: sensor.wh_statistik_heizen_energie_heute
+              - entity: sensor.wh_statistik_heizen_energie_jahr
+              - entity: sensor.wh_statistik_heizen_energie_monat
+              - entity: sensor.wh_statistik_kuhlen_energie_gestern
+              - entity: sensor.wh_statistik_kuhlen_energie_heute
+              - entity: sensor.wh_statistik_kuhlen_energie_jahr
+              - entity: sensor.wh_statistik_kuhlen_energie_monat
+              - entity: sensor.wh_statistik_warmwasser_energie_gestern
+              - entity: sensor.wh_statistik_warmwasser_energie_heute
+              - entity: sensor.wh_statistik_warmwasser_energie_jahr
+              - entity: sensor.wh_statistik_warmwasser_energie_monat
+      - type: grid
+        cards:
+          - type: heading
+            heading: '42388'
+            heading_style: title
+          - type: vertical-stack
+            title: Wärmepumpe (API)
+            cards:
+              - type: entities
+                entities:
+                  - number.heizkreis_1_absenk
+                  - number.heizkreis_1_aktraumsoll
+                  - select.heizkreis_1_betriebsart
+                  - number.heizkreis_1_komfort
+                  - number.heizkreis_1_normal
+                  - select.heizkreis_1_pp_funktion
+                  - number.warmwasser_absenkww
+                  - number.warmwasser_normalww
+                  - select.warmwasser_ww_push
+              - type: entities
+                entities:
+                  - entity: sensor.2_wez_betriebsstunden_e1
+                  - entity: sensor.2_wez_betriebsstunden_e2
+                  - entity: sensor.2_wez_schaltspiele_e1
+                  - entity: sensor.2_wez_schaltspiele_e2
+                  - entity: sensor.2_wez_status_e_heizung_1
+                  - entity: sensor.2_wez_status_e_heizung_2
+                  - entity: sensor.heizkreis_at_langzeitwert
+                  - entity: sensor.heizkreis_at_mittelwert
+                  - entity: sensor.heizkreis_aussentemperatur
+                  - entity: sensor.heizkreis_raumsolltemperatur
+                  - entity: sensor.heizkreis_vorlaufsolltemperatur
+                  - entity: sensor.heizkreis_vorlauftemperatur
+                  - entity: sensor.statistik_elektrische_energie_jahr
+                  - entity: sensor.statistik_elektrische_energie_monat
+                  - entity: sensor.statistik_elektrische_energie_tag
+                  - entity: sensor.statistik_th_energie_gesamt_jahr
+                  - entity: sensor.statistik_th_energie_gesamt_monat
+                  - entity: sensor.statistik_th_energie_gesamt_tag
+                  - entity: sensor.statistik_th_energie_heizen_jahr
+                  - entity: sensor.statistik_th_energie_heizen_monat
+                  - entity: sensor.statistik_th_energie_heizen_tag
+                  - entity: sensor.statistik_th_energie_ww_jahr
+                  - entity: sensor.statistik_th_energie_ww_monat
+                  - entity: sensor.statistik_th_energie_ww_tag
+                  - entity: sensor.warmeleistung
+                  - entity: sensor.warmepumpe_aussengerat_variante
+                  - entity: sensor.warmepumpe_betrieb
+                  - entity: sensor.warmepumpe_betriebsstd_verdichter
+                  - entity: sensor.warmepumpe_drehzahl_pumpe_m1
+                  - entity: sensor.warmepumpe_druckgas
+                  - entity: sensor.warmepumpe_ist_frequenz_verdichter
+                  - entity: sensor.warmepumpe_kaltemittel_innen
+                  - entity: sensor.warmepumpe_leistungsanforderung
+                  - entity: sensor.warmepumpe_luftansaugtemperatur
+                  - entity: sensor.warmepumpe_lwt
+                  - entity: sensor.warmepumpe_rucklauftemperatur
+                  - entity: sensor.warmepumpe_schaltdifferenz_dynamisch
+                  - entity: sensor.warmepumpe_schaltspiele_abtauen
+                  - entity: sensor.warmepumpe_schaltspiele_verdichter
+                  - entity: sensor.warmepumpe_soll_frequenz_verdichter
+                  - entity: sensor.warmepumpe_solltemperatur
+                  - entity: sensor.warmepumpe_stellung_umschaltventil
+                  - entity: sensor.warmepumpe_stormeldung
+                  - entity: sensor.warmepumpe_version_wwp_cpu
+                  - entity: sensor.warmepumpe_version_wwp_sg
+                  - entity: sensor.warmepumpe_volumenstrom
+                  - entity: sensor.warmepumpe_warmetauscher_ag_eintritt
+                  - entity: sensor.warmepumpe_warmetauscher_ag_mitte
+                  - entity: sensor.warmepumpe_warmetauscher_innen
+                  - entity: sensor.warmepumpe_warmwassertemperatur
+    max_columns: 4
+    path: technikraum
+  - title: Gästezimmer
+    path: gaestezimmer
+    icon: mdi:bed-double-outline
+    subview: true
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:bed-double-outline
+            heading: Klima
+          - type: vertical-stack
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.gastezimmer_temperatur
+                    name: Temperatur
+                  - entity: sensor.gastezimmer_luftfeuchtigkeit
+                    name: Luftfeuchte
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - sensor.gastezimmer_luftfeuchtigkeit
+                  - sensor.gastezimmer_temperatur
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.fenster_gastezimmer_state
+                    state_not: closed
+                card:
+                  type: tile
+                  entity: binary_sensor.gastezimmer_fenster
+                  name: Fenster
+              - features: null
+                type: tile
+                entity: binary_sensor.va2589878272_batterie
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:bed-double-outline
+            heading: Heizung
+          - type: thermostat
+            entity: climate.gastezimmer
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:bed-double-outline
+            heading: Licht
+          - type: entities
+            entities:
+              - entity: light.gastezimmer_licht_licht
+                name: Licht
+          - type: entities
+            entities:
+              - entity: number.gastezimmer_licht_einschalthelligkeit
+                name: Einschalthelligkeit
+              - entity: number.gastezimmer_licht_einschaltstrompegel
+                name: Einschaltstrompegel
+              - entity: update.gastezimmer_licht_firmware
+                name: Firmware
+              - entity: number.gastezimmer_licht_start_farbtemperatur
+                name: Start-Farbtemperatur
+              - entity: select.gastezimmer_licht_startverhalten
+                name: Startverhalten
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:bed-double-outline
+            heading: Fenster
+          - type: entities
+            entities:
+              - entity: binary_sensor.gastezimmer_fenster_state
+                name: Öffnung
+    max_columns: 4
+  - title: Live-Strom
+    path: live-strom
+    icon: mdi:home-lightning-bolt-outline
+    subview: true
+    cards:
+      - type: vertical-stack
+        title: Live-Werte
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.pv_leistung_in_watt
+                needle: true
+                severity:
+                  green: 1
+                  yellow: 0.5
+                  red: 0
+                name: Garagensolar
+                max: 4250
+                unit: W
+              - type: entities
+                entities:
+                  - entity: sensor.solarman_load_consumption_today
+                    name: Täglich
+                    icon: mdi:solar-power
+                  - entity: sensor.solarman_load_consumption_total
+                    name: Gesamt
+                  - entity: sensor.solarman_inverter_status
+                    name: Status
+                  - entity: sensor.solarman_total_active_power_output
+                state_color: false
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                needle: true
+                severity:
+                  green: -3600
+                  yellow: 0
+                  red: 500
+                name: Netz Bezug
+                max: 10000
+                unit: W
+                entity: sensor.tibber_pulse_xxx_energie
+                min: -3600
+              - type: entities
+                entities:
+                  - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
+                    icon: mdi:currency-eur
+                    name: Täglich
+                  - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
+                  - entity: >-
+                      sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+                    name: Gesamt
+                  - entity: sensor.tibber_pulse_xxx_stromerzeugung
+                    name: Einspeisung
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.solar_eigenverbrauch_watt_v2
+                name: Eigenverbrauch
+                needle: true
+                severity:
+                  green: 500
+                  yellow: 5
+                  red: 0
+                max: 4250
+              - type: entities
+                entities:
+                  - entity: sensor.xxx_strompreis
+                  - entity: sensor.garagensolar_vorteil
+                  - entity: sensor.garagensolar_vorteil_in_euro
+                    name: Vorteil in Euro
+                  - entity: sensor.solar_eigenverbrauch_watt_v2
+          - type: horizontal-stack
+            title: Solarman
+            cards:
+              - type: entities
+                entities:
+                  - entity: sensor.solarman_alert
+                    name: Alert
+                  - entity: sensor.solarman_ambient_temperature_1
+                    name: Ambient temperature 1
+                  - entity: sensor.solarman_fault_1
+                    name: Fault 1
+                  - entity: sensor.solarman_fault_2
+                    name: Fault 2
+                  - entity: sensor.solarman_frequency_grid
+                    name: Frequency Grid
+                  - entity: sensor.solarman_grid_current_l1
+                    name: Grid Current L1
+                  - entity: sensor.solarman_grid_current_l2
+                    name: Grid Current L2
+                  - entity: sensor.solarman_grid_current_l3
+                    name: Grid Current L3
+                  - entity: sensor.solarman_grid_voltage_l1
+                    name: Grid Voltage L1
+                  - entity: sensor.solarman_grid_voltage_l2
+                    name: Grid Voltage L2
+                  - entity: sensor.solarman_grid_voltage_l3
+                    name: Grid Voltage L3
+                  - entity: sensor.solarman_insulation_resistance
+                    name: Insulation Resistance
+                  - entity: sensor.solarman_inverter_status
+                    name: Inverter status
+                  - entity: sensor.solarman_load_consumption_today
+                    name: Load consumption today
+                  - entity: sensor.solarman_load_consumption_total
+                    name: Load consumption total
+                  - entity: sensor.solarman_module_temperature_1
+                    name: Module temperature 1
+                  - entity: sensor.solarman_pv_generation_today
+                    name: PV Generation today
+                  - entity: sensor.solarman_pv_generation_total
+                    name: PV Generation total
+                  - entity: sensor.solarman_pv1_current
+                    name: PV1 Current
+                  - entity: sensor.solarman_pv1_power
+                    name: PV1 Power
+                  - entity: sensor.solarman_pv1_voltage
+                    name: PV1 Voltage
+                  - entity: sensor.solarman_pv2_current
+                    name: PV2 Current
+                  - entity: sensor.solarman_pv2_power
+                    name: PV2 Power
+                  - entity: sensor.solarman_pv2_voltage
+                    name: PV2 Voltage
+                  - entity: sensor.solarman_radiator_temperature_1
+                    name: Radiator temperature 1
+                  - entity: sensor.solarman_status_connection
+                    name: Status_connection
+                  - entity: sensor.solarman_status_lastupdate
+                    name: Status_lastUpdate
+                  - entity: sensor.solarman_total_active_power_output
+                    name: Total Active Power Output
+    type: panel
+  - title: Testing
+    icon: mdi:alert
+    path: testing
+    badges: []
+    cards:
+      - type: vertical-stack
+        title: Ausgeschaltet
+        cards: []
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: vertical-stack
+        card_param: cards
+        filter:
+          template: >-
+            {% set area_filter = ['wohnung','Steckdose Wohnzimmer','Allgemein']
+            %}
+
+            {% set areas = states.light
+              | map(attribute='entity_id')
+              | map('area_name') | unique | reject('none') | rejectattr('entity_id','in', area_filter) | list %}
+            {%- for area in areas -%}  
+                {%- if area not in area_filter -%}
+                   {{{ 'type': 'vertical-stack',
+                  'title': area,
+                  'cards': 
+                    [{                     
+                       'type': 'custom:auto-entities',
+                       'show_empty' : 'false',
+                       'card' : 
+                       { 'type': 'grid',
+                          'columns': 2,
+                          'square': false,
+                       },
+                       'card_param': 'cards',
+                       'filter':
+                       { 'include': 
+                       [{ 'domain' : 'light', 
+                           'area' : area,
+                           'options':
+                           {'type' : 'tile'}}],
+                         'exclude': 
+                       [{  'name' : 'Reolink*'},
+                        {  'state': 'unavailable'}
+                        ]},           
+                 
+                       }]}}}, 
+              {%- endif -%} 
+              {%- endfor %}
+      - type: custom:auto-entities
+        card:
+          title: Summe Energieverbrauch
+          type: entities
+          state_color: false
+        filter:
+          include:
+            - state: '>= 0'
+              attributes:
+                device_class: energy
+              options:
+                type: custom:template-entity-row
+                name: >
+                  {# Definiere die Sensoren, die mit einem eigenen Namen
+                  dargestellt werden sollen. Ansonsten wird der 'friendly name'
+                  verwendet #} {% set name_map = {
+                    "sensor.hobbyraum_steckdose_summe_verbraucht": "Hobbyraum Steckdose Heizung",
+                    "sensor.hobbyraum_luftungstecker_summe_verbraucht": "Hobbyraum Steckdose Lüfter",
+                    "sensor.technikraum_steckdose_summe_verbraucht": "Technikraum Steckdose",
+                    "sensor.kuche_kaffeemaschine_summe_verbraucht": "Küche Kaffemaschine",
+                    "sensor.kuche_spulmaschine_summe_verbraucht": "Küche Spülmaschine",
+                    "sensor.kuche_wasserkocher_summe_verbraucht": "Küche Wasserkocher",
+                    "sensor.kuche_kuhlschrank_summe_verbraucht": "Küche Kühlschrank",
+                    "sensor.toilette_waschmaschine_summe_verbraucht": "Toilette Waschmaschine",
+                    "sensor.smart_plug_2_mss305_energy_kwh_main_channel": "Schreibtisch Steckdose",
+                    "sensor.smart_plug_1_mss305_energy_kwh_main_channel": "Wohnzimmer Steckdose"
+                  } %}
+
+                  {{ name_map.get(config.entity,
+                  states[config.entity].attributes.friendly_name) }}
+                state: >
+                  {# Definiere ob und mit wieviel Kommastellen Watt angezeigt
+                  werden soll #} {% set Kommastellen = 3 -%} {% set value =
+                  states(config.entity) | float(0) | round(Kommastellen) %}
+
+                  {{ value }} kWh
+                card_mod:
+                  style: |
+                    :host {
+                      {# Definiere Farbe und Schriftgröße je nach Watt Limit (Minimalwert) #}
+                      {% set colors = {'gray': '#808080', 'blue': '#0090FF', 'orange': '#FFA500', 'red': '#FF3700'} %}
+                      {% set sizes = {'gray': '13px', 'blue': '18px', 'orange': '18px', 'red': '18px'} %}
+                      
+                      {% set value = states(config.entity) | int %}
+
+                      {# Default Schwarz #}
+                      color: black;
+                      --card-mod-icon-color: black;
+                      .info, .state {
+                        font-size: black;
+                      }
+
+                      {# Apply styles based on the value #}
+
+                      {% if value >= 0 %}
+                      color: {{ colors.gray }};
+                      --card-mod-icon-color: {{ colors.gray }};
+                      .info, .state {
+                        font-size: {{ sizes.gray }};
+                      }
+                      {% endif %}
+
+                      {% if value >= 10 %}
+                        color: {{ colors.blue }};
+                        --card-mod-icon-color: {{ colors.blue }};
+                        .info, .state {
+                          font-size: {{ sizes.blue }};
+                        }
+                      {% endif %}
+
+                      {% if value >= 100 %}
+                        color: {{ colors.orange }};
+                        --card-mod-icon-color: {{ colors.orange }};
+                        .info, .state {
+                          font-size: {{ sizes.orange }};
+                        }
+                      {% endif %}
+
+                      {% if value >= 300 %}
+                        color: {{ colors.red }};
+                        --card-mod-icon-color: {{ colors.red }};
+                        .info, .state {
+                          font-size: {{ sizes.red }};
+                        }
+                      {% endif %}
+
+                      --card-mod-icon: mdi:lightning-bolt-circle;
+                    }
+          exclude:
+            - device: /42388/
+            - device: /Solarman/
+            - entity_id: sensor.wh_statistik_abtauen_energie_monat
+            - entity_id: sensor.e_sax_export
+            - entity_id: sensor.e_sax_import
+            - entity_id: sensor.sax_a_capacity_2
+            - entity_id: sensor.solarman_load_consumption_total
+            - entity_id: sensor.stromzahler_energieverbrauch_hochtarif
+            - entity_id: sensor.solar_einspeisung_energy_end_of_day
+            - entity_id: sensor.wh_statistik_gesamt_energie_monat
+            - entity_id: sensor.wh_statistik_gesamt_energie_jahr
+            - entity_id: sensor.wh_statistik_gesamt_energie_ii_monat
+            - entity_id: sensor.wh_statistik_gesamt_energie_ii_jahr
+            - entity_id: sensor.wh_statistik_heizen_energie_monat
+            - entity_id: sensor.wh_statistik_heizen_energie_jahr
+            - entity_id: sensor.wh_statistik_elektr_energie_monat
+            - entity_id: sensor.wh_statistik_elektr_energie_jahr
+            - entity_id: sensor.wh_statistik_gesamt_energie_gestern
+            - entity_id: sensor.wh_statistik_gesamt_energie_ii_gestern
+            - entity_id: sensor.wh_statistik_warmwasser_energie_monat
+            - entity_id: sensor.wh_statistik_warmwasser_energie_jahr
+            - entity_id: sensor.wh_statistik_heizen_energie_gestern
+            - entity_id: sensor.wh_statistik_gesamt_energie_ii_heute
+            - entity_id: sensor.wh_statistik_gesamt_energie_heute
+            - entity_id: sensor.wh_statistik_abtauen_energie_jahr
+            - entity_id: sensor.wh_statistik_warmwasser_energie_heute
+            - entity_id: sensor.wh_statistik_warmwasser_energie_gestern
+            - entity_id: sensor.statistik_th_energie_heizen_jahr
+            - entity_id: sensor.statistik_elektrische_energie_monat
+            - entity_id: sensor.statistik_elektrische_energie_jahr
+            - entity_id: sensor.stromzahler_energieeinspeisung
+            - entity_id: sensor.solar_generation_today
+            - entity_id: sensor.wh_statistik_heizen_energie_heute
+            - entity_id: sensor.wh_statistik_elektr_energie_gestern
+        sort:
+          method: state
+          reverse: true
+          numeric: true
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: vertical-stack
+        card_param: cards
+        filter:
+          template: >-
+            {% set area_filter = ['wohnung','Steckdose Wohnzimmer','Allgemein']
+            %}
+
+            {% set areas = states.switch
+              | map(attribute='entity_id')
+              | map('area_name') | unique | reject('none') | rejectattr('entity_id','in', area_filter) | list %}
+            {%- for area in areas -%}  
+                {%- if area not in area_filter -%}
+                   {{{ 'type': 'vertical-stack',
+                  'title': area,
+                  'cards': 
+                    [{                     
+                       'type': 'custom:auto-entities',
+                       'show_empty' : 'false',
+                       'card' : 
+                       { 'type': 'grid',
+                          'columns': 2,
+                          'square': false,
+                       },
+                       'card_param': 'cards',
+                       'filter':
+                       { 'include': 
+                       [{ 'domain' : 'switch', 
+                           'area' : area,
+                           'options':
+                           {'type' : 'tile'}}],
+                         'exclude': 
+                       [{  'name' : 'Reolink*'},
+                        {  'state': 'unavailable'}
+                        ]},           
+                 
+                       }]}}}, 
+              {%- endif -%} 
+              {%- endfor %}
+      - type: entities
+        entities:
+          - entity: sensor.tibber_pulse_xxx_durchschnittliche_leistung
+            name: Durchschnittliche Leistung
+          - entity: sensor.tibber_pulse_xxx_energie
+            name: Energie
+          - entity: >-
+              sensor.tibber_pulse_xxx_geschatzter_verbrauch_aktuelle_stunde
+            name: Geschätzter Verbrauch aktuelle Stunde
+          - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
+            name: Kumulierte Kosten
+          - entity: sensor.tibber_pulse_xxx_kumulierte_produktion
+            name: Kumulierte Produktion
+          - entity: >-
+              sensor.tibber_pulse_xxx_kumulierte_produktion_laufende_stunde
+            name: Kumulierte Produktion laufende Stunde
+          - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
+            name: Kumulierter Verbrauch
+          - entity: >-
+              sensor.tibber_pulse_xxx_kumulierter_verbrauch_aktuelle_stunde
+            name: Kumulierter Verbrauch aktuelle Stunde
+          - entity: sensor.tibber_pulse_xxx_maximale_leistung
+            name: Maximale Leistung
+          - entity: sensor.tibber_pulse_xxx_minimale_leistung
+            name: Minimale Leistung
+          - entity: sensor.xxx_monatliche_kosten
+            name: Monatliche Kosten
+          - entity: sensor.xxx_monatlicher_nettoverbrauch
+            name: Monatlicher Nettoverbrauch
+          - entity: sensor.xxx_monatlicher_spitzenstundenverbrauch
+            name: Monatlicher Spitzenstundenverbrauch
+          - entity: >-
+              sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
+            name: Produktion auf der letzten Meile
+          - entity: sensor.tibber_pulse_xxx_stromerzeugung
+            name: Stromerzeugung
+          - entity: sensor.xxx_strompreis
+            name: Strompreis
+          - entity: >-
+              sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+            name: Verbrauch auf der letzten Meile
+          - entity: sensor.xxx_zeitpunkt_des_maximalen_stundenverbrauchs
+            name: Zeitpunkt des maximalen Stundenverbrauchs
+        title: Tibber Pulse XXX
+      - type: custom:auto-entities
+        card:
+          title: Aktueller Stromverbrauch
+          type: entities
+          state_color: false
+        filter:
+          include:
+            - state: '>= 0'
+              attributes:
+                device_class: power
+              options:
+                type: custom:template-entity-row
+                name: >
+                  {# Definiere die Sensoren, die mit einem eigenen Namen
+                  dargestellt werden sollen. Ansonsten wird der 'friendly name'
+                  verwendet #} {% set name_map = {
+                    "sensor.hobbyraum_steckdose_leistung": "Hobbyraum Steckdose",
+                    "sensor.kuche_kaffeemaschine_leistung": "Küche Kaffemaschine",
+                    "sensor.kuche_spulmaschine_leistung": "Küche Spülmaschine",
+                    "sensor.kuche_wasserkocher_leistung": "Küche Wasserkocher",
+                    "sensor.kuche_kuhlschrank_leistung": "Küche Kühlschrank",
+                    "sensor.smart_plug_2_mss305_power_w_main_channel": "Schreibtisch Steckdose",
+                    "sensor.smart_plug_1_mss305_power_w_main_channel": "Wohnzimmer Steckdose"
+                  } %}
+
+                  {{ name_map.get(config.entity,
+                  states[config.entity].attributes.friendly_name) }}
+                state: >
+                  {# Definiere ob und mit wieviel Kommastellen Watt angezeigt
+                  werden soll #} {% set Kommastellen = 0 -%} {% set value =
+                  states(config.entity) | float(0) | round(Kommastellen) %}
+
+                  {{ value }} W
+                card_mod:
+                  style: |
+                    :host {
+                      {# Definiere Farbe und Schriftgröße je nach Watt Limit (Minimalwert) #}
+                      {% set colors = {'gray': '#808080', 'blue': '#0090FF', 'orange': '#FFA500', 'red': '#FF3700'} %}
+                      {% set sizes = {'gray': '13px', 'blue': '18px', 'orange': '18px', 'red': '18px'} %}
+                      
+                      {% set value = states(config.entity) | int %}
+
+                      {# Default Schwarz #}
+                      color: black;
+                      --card-mod-icon-color: black;
+                      .info, .state {
+                        font-size: black;
+                      }
+
+                      {# Apply styles based on the value #}
+
+                      {% if value >= 0 %}
+                      color: {{ colors.gray }};
+                      --card-mod-icon-color: {{ colors.gray }};
+                      .info, .state {
+                        font-size: {{ sizes.gray }};
+                      }
+                      {% endif %}
+
+                      {% if value >= 10 %}
+                        color: {{ colors.blue }};
+                        --card-mod-icon-color: {{ colors.blue }};
+                        .info, .state {
+                          font-size: {{ sizes.blue }};
+                        }
+                      {% endif %}
+
+                      {% if value >= 100 %}
+                        color: {{ colors.orange }};
+                        --card-mod-icon-color: {{ colors.orange }};
+                        .info, .state {
+                          font-size: {{ sizes.orange }};
+                        }
+                      {% endif %}
+
+                      {% if value >= 300 %}
+                        color: {{ colors.red }};
+                        --card-mod-icon-color: {{ colors.red }};
+                        .info, .state {
+                          font-size: {{ sizes.red }};
+                        }
+                      {% endif %}
+
+                      --card-mod-icon: mdi:lightning-bolt-circle;
+                    }
+          exclude:
+            - entity_id: sensor.warmeleistung
+            - entity_id: sensor.wh_warmepumpe_warmeleistung
+            - entity_id: sensor.poweropti_wattage_current
+            - entity_id: sensor.solar_eigenverbrauch_watt_v2
+            - entity_id: sensor.stromspeicher_leistung_smartmeter
+            - entity_id: sensor.pv_leistung_in_watt
+            - entity_id: sensor.solarman_pv1_power
+            - entity_id: sensor.solarman_pv2_power
+            - entity_id: sensor.solar_einspeisung_watt
+            - entity_id: sensor.p_sax_export
+            - entity_id: sensor.p_sax_import
+            - entity_id: sensor.stromspeicher_leistung
+        sort:
+          method: state
+          reverse: true
+          numeric: true
+  - title: Garten
+    path: garten
+    icon: mdi:leaf
+    subview: true
+    badges: []
+    cards:
+      - type: vertical-stack
+        title: Bewässerung
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: tile
+                entity: switch.remotebewcmp_garten_sprinkler
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/bewasserung
+                name: Bewässerungscomputer Hauptschalter
+                icon: mdi:light-switch
+          - type: horizontal-stack
+            cards:
+              - type: tile
+                entity: switch.remotebewcmp_rasen_oben
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/bewasserung
+                name: Rasen oben
+                icon: mdi:timer-play-outline
+              - type: tile
+                entity: number.remotebewcmp_rasen_oben_laufzeit
+                name: Laufzeit
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/bewasserung
+      - type: vertical-stack
+        title: Pumpe
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: tile
+                entity: switch.gartenpumpe
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/garten-pumpe
+                name: Bewässerungscomputer Hauptschalter
+                icon: ''
+      - type: conditional
+        conditions:
+          - condition: screen
+            media_query: '(min-width: 0px)'
+        card:
+          type: vertical-stack
+          title: Garage
+          cards:
+            - type: horizontal-stack
+              cards:
+                - type: tile
+                  entity: cover.garage_door
+                - type: tile
+                  entity: cover.garage_door_2
+            - type: tile
+              entity: switch.licht_garage_2_og
+      - type: thermostat
+        entity: climate.gastezimmer
+        features:
+          - type: climate-hvac-modes
+            hvac_modes:
+              - 'off'
+              - auto
+              - heat
+  - title: Garten-Pumpe
+    path: garten-pumpe
+    icon: mdi:pump
+    subview: true
+    badges:
+      - entity: switch.gartenpumpe
+      - entity: sensor.gartenpumpe_power
+      - entity: sensor.gartenpumpe_energy
+    cards:
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: toggle
+        entity: switch.gartenpumpe
+        name: Pumpe
+      - graph: line
+        type: sensor
+        entity: sensor.gartenpumpe_power
+        detail: 2
+        unit: Watt
+        hours_to_show: 48
+        name: Verbrauch
+  - title: Bewässerung
+    path: bewasserung
+    icon: mdi:hydro-power
+    subview: true
+    badges: []
+    cards:
+      - type: horizontal-stack
+        title: Bewässerungs-System
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            entity: switch.remotebewcmp_garten_sprinkler
+            icon: mdi:hydro-power
+            name: Bewässerungscomputer
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.remotebewcmp_wifi_signal_percent
+                    name: WiFi
+                  - show_name: false
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: button.remotebewcmp_garten_sprinkler_neu_starten
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: number.remotebewcmp_garten_sprinkler_multiplier
+                    min: 0
+                    max: 5
+                    name: Multi
+                  - type: gauge
+                    entity: number.remotebewcmp_garten_sprinkler_repeat
+                    min: 0
+                    max: 5
+                    name: Rep.
+                  - show_name: false
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: switch.remotebewcmp_garten_sprinkler_reverse
+                    icon: mdi:keyboard-tab-reverse
+      - type: horizontal-stack
+        title: Relay/Valve 1
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            icon: mdi:sprinkler
+            name: Blumenwiese
+            entity: switch.remotebewcmp_blumenwiese
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: number.remotebewcmp_blumenwiese_laufzeit
+                    name: Laufzeit
+                    min: 30
+                    max: 600
+                    needle: false
+                  - show_name: false
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: switch.remotebewcmp_aktiviere_blumenwiese
+                    icon: mdi:power
+              - type: horizontal-stack
+                cards:
+                  - type: history-graph
+                    entities:
+                      - entity: switch.remotebewcmp_blumenwiese
+                        name: Verl.
+                    hours_to_show: 22
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            title: Relay/Valve 2
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                icon: mdi:sprinkler
+                name: Rasen Oben
+                entity: switch.remotebewcmp_rasen_oben
+              - type: vertical-stack
+                cards:
+                  - type: horizontal-stack
+                    cards:
+                      - type: gauge
+                        entity: number.remotebewcmp_rasen_oben_laufzeit
+                        name: Laufzeit
+                        min: 30
+                        max: 600
+                        needle: false
+                      - show_name: false
+                        show_icon: true
+                        type: button
+                        tap_action:
+                          action: toggle
+                        entity: switch.remotebewcmp_aktiviere_rasen_oben
+                        icon: mdi:power
+                  - type: horizontal-stack
+                    cards:
+                      - type: history-graph
+                        entities:
+                          - entity: switch.remotebewcmp_rasen_oben
+                            name: Verl.
+                        hours_to_show: 22
+          - graph: line
+            type: sensor
+            entity: sensor.rasen_oben_daily_adjusted_run_time
+            detail: 2
+      - type: horizontal-stack
+        title: Relay/Valve 3
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            icon: mdi:sprinkler
+            name: Gemüse
+            entity: switch.remotebewcmp_gemuse
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: number.remotebewcmp_gemuse_laufzeit
+                    name: Laufzeit
+                    min: 30
+                    max: 600
+                    needle: false
+                  - show_name: false
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: switch.remotebewcmp_aktiviere_gemuse
+                    icon: mdi:power
+              - type: horizontal-stack
+                cards:
+                  - type: history-graph
+                    entities:
+                      - entity: switch.remotebewcmp_gemuse
+                        name: Verl.
+                    hours_to_show: 22
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            title: Relay/Valve 4
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                icon: mdi:sprinkler
+                name: Himbeeren
+                entity: switch.remotebewcmp_himbeeren
+              - type: vertical-stack
+                cards:
+                  - type: horizontal-stack
+                    cards:
+                      - type: gauge
+                        entity: number.remotebewcmp_himbeeren_laufzeit
+                        name: Laufzeit
+                        min: 30
+                        max: 600
+                        needle: false
+                      - show_name: false
+                        show_icon: true
+                        type: button
+                        tap_action:
+                          action: toggle
+                        entity: switch.remotebewcmp_aktiviere_himbeeren
+                        icon: mdi:power
+                  - type: horizontal-stack
+                    cards:
+                      - type: history-graph
+                        entities:
+                          - entity: switch.remotebewcmp_himbeeren
+                            name: Verl.
+                        hours_to_show: 22
+          - graph: line
+            type: sensor
+            entity: sensor.himbeeren_daily_adjusted_run_time
+            detail: 2
+  - title: Robi
+    path: robi
+    icon: mdi:robot-vacuum
+    subview: true
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.vac_wohnung_saugen
+                  data:
+                    skip_condition: true
+                entity: vacuum.roomba
+                name: Wohnung saugen
+                hold_action:
+                  action: none
+                icon: mdi:floor-plan
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target: {}
+                  data:
+                    skip_condition: true
+                entity: vacuum.roomba
+                name: Wohnung saugen
+                hold_action:
+                  action: none
+                icon: mdi:floor-plan
+          - type: horizontal-stack
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.vac_wohnbereich_saugen
+                  data:
+                    skip_condition: true
+                entity: vacuum.roomba
+                name: Wohnzimmer saugen
+                hold_action:
+                  action: none
+                icon: mdi:sofa-outline
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.vac_wohnbereich_kombifahrt
+                  data:
+                    skip_condition: true
+                entity: vacuum.roomba
+                name: Wohnbereich Kombi
+                hold_action:
+                  action: none
+                icon: mdi:sofa-outline
+          - type: horizontal-stack
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.vac_badezimmer_saugen
+                  data:
+                    skip_condition: true
+                entity: vacuum.roomba
+                name: Flur Saugen
+                hold_action:
+                  action: none
+                icon: mdi:floor-plan
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  target:
+                    entity_id: automation.vac_clean_bath
+                  data:
+                    skip_condition: true
+                entity: vacuum.roomba
+                name: Bad Tiefenreinigung
+                hold_action:
+                  action: none
+                icon: mdi:shower
+      - type: entities
+        entities:
+          - entity: sensor.roomba_abgebrochene_missionen
+            name: Abgebrochene Missionen
+          - entity: sensor.roomba_batterie
+            name: Batterie
+          - entity: sensor.roomba_batteriezyklen
+            name: Batteriezyklen
+          - entity: sensor.roomba_durchschnittliche_missionszeit
+            name: Durchschnittliche Missionszeit
+          - entity: sensor.roomba_erfolgreiche_missionen
+            name: Erfolgreiche Missionen
+          - entity: sensor.roomba_fehlgeschlagene_missionen
+            name: Fehlgeschlagene Missionen
+          - entity: sensor.roomba_gesamte_gereinigte_flache
+            name: Gesamte gereinigte Fläche
+          - entity: sensor.roomba_gesamtreinigungszeit
+            name: Gesamtreinigungszeit
+          - entity: sensor.roomba_missionen_insgesamt
+            name: Missionen insgesamt
+        title: Roomba
+  - title: Bad
+    path: bad
+    icon: mdi:shower
+    subview: true
+    badges: []
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Klima
+            icon: mdi:home-thermometer-outline
+          - type: vertical-stack
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.bad_temperatur
+                    name: Temperatur
+                  - entity: sensor.bad_luftfeuchtigkeit
+                    name: Luftfeuchte
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - sensor.bad_luftfeuchtigkeit
+                  - sensor.bad_temperatur
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+                unit: '%'
+              - features:
+                  - type: target-temperature
+                type: tile
+                entity: binary_sensor.va2675456768_batterie
+                name: Batterie
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Heizung
+            icon: mdi:radiator
+          - type: thermostat
+            entity: climate.bad
+      - type: grid
+        cards:
+          - type: heading
+            heading: Bad Fenster
+            heading_style: title
+            icon: mdi:window-closed
+          - type: entities
+            entities:
+              - entity: binary_sensor.bad_fenster_state
+                name: Öffnung
+            title: Bad Fenster Status
+    max_columns: 4
+  - title: Flur
+    path: flur
+    icon: mdi:floor-plan
+    subview: true
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: switch.toilette_steckdose_waschmaschine_schalter
+            name: Schalter
+        title: Flur Steckdose Ladegerät
+      - type: entities
+        entities:
+          - entity: number.toilette_steckdose_waschmaschine_ein_aus_ubergangszeit
+            name: Ein/Aus-Übergangszeit
+          - entity: number.toilette_steckdose_waschmaschine_einschalthelligkeit
+            name: Einschalthelligkeit
+          - entity: number.toilette_steckdose_waschmaschine_einschaltstrompegel
+            name: Einschaltstrompegel
+          - entity: update.toilette_steckdose_waschmaschine_firmware
+            name: Firmware
+          - entity: select.toilette_steckdose_waschmaschine_startverhalten
+            name: Startverhalten
+        title: Flur Steckdose Ladegerät
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: vertical-stack
+            title: Klima
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.flur_temperatur
+                    name: Temperatur
+                  - entity: sensor.flur_luftfeuchtigkeit
+                    name: Luftfeuchte
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - sensor.flur_luftfeuchtigkeit
+                  - sensor.flur_temperatur
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+                unit: '%'
+              - features: null
+                type: tile
+                entity: binary_sensor.va1951284992_batterie
+                name: Batterie
+          - type: thermostat
+            entity: climate.flur
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: entities
+            entities:
+              - entity: light.flur_licht_og_licht
+                name: Licht
+            title: Flur Licht OG
+          - type: entities
+            entities:
+              - entity: number.flur_licht_og_ein_aus_ubergangszeit
+                name: Ein/Aus-Übergangszeit
+              - entity: number.flur_licht_og_einschalthelligkeit
+                name: Einschalthelligkeit
+              - entity: number.flur_licht_og_einschaltstrompegel
+                name: Einschaltstrompegel
+              - entity: update.flur_licht_og_firmware
+                name: Firmware
+              - entity: number.flur_licht_og_start_farbtemperatur
+                name: Start-Farbtemperatur
+              - entity: select.flur_licht_og_startverhalten
+                name: Startverhalten
+            title: Flur Licht OG
+          - type: entities
+            entities:
+              - entity: binary_sensor.flur_bewegungssensor_og_belegung
+                name: Belegung
+              - entity: sensor.flur_bewegungssensor_og_beleuchtungsstarke
+                name: Beleuchtungsstärke
+              - binary_sensor.flur_dunkel
+              - entity: binary_sensor.flur_bewegungssensor_og_offnung
+                name: Öffnung
+            title: Flur Bewegungssensor OG
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: entities
+            entities:
+              - entity: light.flur_licht_ug_licht
+                name: Licht
+            title: Flur Licht UG
+          - type: entities
+            entities:
+              - entity: number.flur_licht_ug_ein_aus_ubergangszeit
+                name: Ein/Aus-Übergangszeit
+              - entity: number.flur_licht_ug_einschalthelligkeit
+                name: Einschalthelligkeit
+              - entity: number.flur_licht_ug_einschaltstrompegel
+                name: Einschaltstrompegel
+              - entity: update.flur_licht_ug_firmware
+                name: Firmware
+              - entity: number.flur_licht_ug_start_farbtemperatur
+                name: Start-Farbtemperatur
+              - entity: select.flur_licht_ug_startverhalten
+                name: Startverhalten
+            title: Flur Licht UG
+          - type: entities
+            entities:
+              - entity: binary_sensor.flur_bewegungssensor_ug_belegung
+                name: Belegung
+              - entity: sensor.flur_bewegungssensor_ug_beleuchtungsstarke
+                name: Beleuchtungsstärke
+              - binary_sensor.flur_dunkel_ug
+              - entity: binary_sensor.flur_bewegungssensor_ug_offnung
+                name: Öffnung
+            title: Flur Bewegungssensor UG
+    max_columns: 4
+  - title: Schlafzimmer
+    path: schlafzimmer
+    icon: mdi:bed
+    subview: true
+    badges: []
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: vertical-stack
+            title: Klima
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.schlafzimmer_temperatur
+                    name: Temperatur
+                  - entity: sensor.schlafzimmer_luftfeuchtigkeit
+                    name: Luftfeuchte
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - sensor.schlafzimmer_luftfeuchtigkeit
+                  - sensor.schlafzimmer_temperatur
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+              - features:
+                  - type: target-temperature
+                  - type: climate-hvac-modes
+                    hvac_modes:
+                      - auto
+                      - heat
+                      - 'off'
+                type: tile
+                entity: binary_sensor.va0006187008_batterie
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: vertical-stack
+            cards:
+              - type: thermostat
+                entity: climate.schlafzimmer
+              - type: glance
+                entities:
+                  - entity: sensor.core300s_luftqualitat
+                    name: Luftqualität
+                  - entity: sensor.core300s_pm2_5
+                    name: PM2.5
+                  - entity: sensor.core300s_lebensdauer_des_filters
+                    name: Lebensdauer des Filters
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: vertical-stack
+            title: Klima
+            cards:
+              - type: entities
+                title: Schlafzimmer Bett Licht
+                entities:
+                  - entity: light.schlafzimmer_bett_licht_licht
+                    name: Licht
+                  - entity: number.schlafzimmer_bett_licht_ein_aus_ubergangszeit
+                    name: Ein/Aus-Übergangszeit
+                  - entity: number.schlafzimmer_bett_licht_einschalthelligkeit
+                    name: Einschalthelligkeit
+                  - entity: number.schlafzimmer_bett_licht_einschaltstrompegel
+                    name: Einschaltstrompegel
+                  - entity: update.schlafzimmer_bett_licht_firmware
+                    name: Firmware
+                  - entity: select.schlafzimmer_bett_licht_startverhalten
+                    name: Startverhalten
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: vertical-stack
+            cards:
+              - type: entity
+                entity: fan.core300s
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: entities
+            entities:
+              - entity: binary_sensor.schlafzimmer_fenster_state
+                name: Status
+            title: Schlafzimmer Fenster
+    max_columns: 4
+  - title: Büro
+    path: buero
+    icon: mdi:desk
+    subview: true
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Klima
+            icon: mdi:home-thermometer
+          - type: vertical-stack
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.buro_temperatur
+                    name: Temperatur
+                  - entity: sensor.buro_luftfeuchtigkeit
+                    name: Luftfeuchte
+          - type: vertical-stack
+            cards:
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - sensor.buro_luftfeuchtigkeit
+                  - sensor.buro_temperatur
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+          - type: thermostat
+            entity: climate.buro
+          - type: vertical-stack
+            cards:
+              - features: null
+                type: tile
+                entity: binary_sensor.va2456567040_batterie
+    max_columns: 4
+  - title: Toilette
+    path: toilette
+    icon: mdi:toilet
+    subview: true
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: vertical-stack
+            title: Klima
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.toilette_temperatur
+                    name: Temperatur
+                  - entity: sensor.toilette_luftfeuchtigkeit
+                    name: Luftfeuchte
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - sensor.toilette_luftfeuchtigkeit
+                  - sensor.toilette_temperatur
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+              - type: entities
+                entities:
+                  - entity: binary_sensor.va1713388544_verbindungsstatus
+              - features: null
+                type: tile
+                entity: binary_sensor.va1713388544_batterie
+              - type: entities
+                entities:
+                  - entity: binary_sensor.toilette_fenster
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: thermostat
+            entity: climate.toilette
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: entities
+            entities:
+              - entity: sensor.toilette_waschmaschine_leistung
+                name: Leistung
+              - entity: sensor.toilette_waschmaschine_spannung
+                name: Spannung
+              - entity: sensor.toilette_waschmaschine_stromstarke
+                name: Stromstärke
+              - entity: sensor.toilette_waschmaschine_summe_verbraucht
+                name: Summe verbraucht
+            title: Toilette Waschmaschine
+          - type: entities
+            entities:
+              - entity: switch.toilette_waschmaschine_schalter
+                name: Schalter
+            title: Toilette Waschmaschine
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
+          - type: entities
+            entities:
+              - entity: binary_sensor.toilette_fenster_state
+            title: Toilette Fenster
+          - type: entities
+            entities:
+              - entity: binary_sensor.toilette_wasser_feuchtigkeit
+                name: Feuchtigkeit
+            title: Toilette Wasser
+    max_columns: 4
+  - title: Wohnzimmer
+    icon: mdi:sofa
+    subview: true
+    badges: []
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Klima
+            icon: mdi:home-thermometer
+          - type: vertical-stack
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.wohnzimmer_temperatur
+                    name: Temperatur
+                  - entity: sensor.wohnzimmer_luftfeuchtigkeit
+                    name: Luftfeuchte
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - sensor.wohnzimmer_luftfeuchtigkeit
+                  - sensor.wohnzimmer_temperatur
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+                unit: °C
+              - features:
+                  - type: target-temperature
+                  - type: climate-hvac-modes
+                    hvac_modes:
+                      - auto
+                      - heat
+                      - 'off'
+                type: tile
+                entity: binary_sensor.va1683908608_batterie
+              - features:
+                  - type: target-temperature
+                  - type: climate-hvac-modes
+                    hvac_modes:
+                      - auto
+                      - heat
+                      - 'off'
+                type: tile
+                entity: binary_sensor.va1652046592_batterie
+              - features:
+                  - type: target-temperature
+                  - type: climate-hvac-modes
+                    hvac_modes:
+                      - auto
+                      - heat
+                      - 'off'
+                type: tile
+                entity: binary_sensor.va3043900160_batterie
+          - type: thermostat
+            entity: climate.wohnzimmer
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Küche
+            icon: mdi:stove
+          - type: vertical-stack
+            cards:
+              - type: entities
+                title: Kochfeld
+                entities:
+                  - entity: sensor.kochfeld_duration
+                    name: Duration
+                  - entity: sensor.kochfeld_operation_state
+                    name: Operation State
+                  - entity: sensor.kochfeld_program_progress
+                    name: Program Progress
+                  - entity: sensor.kochfeld_remaining_program_time
+                    name: Remaining Program Time
+                  - entity: binary_sensor.kochfeld_remote_control
+                    name: Remote Control
+          - type: entities
+            entities:
+              - entity: sensor.kuche_kochfeld_leistung
+              - entity: sensor.kuche_kochfeld_stromstarke
+              - entity: sensor.kuche_kochfeld_spannung
+              - entity: sensor.kuche_kochfeld_summe_verbraucht
+              - entity: switch.kuche_kochfeld_schalter
+            title: Kochfeld Steckdose
+          - type: vertical-stack
+            cards:
+              - type: entities
+                title: Backofen
+                entities:
+                  - entity: binary_sensor.oven_2_door
+                    name: Door
+                  - entity: sensor.oven_2_duration
+                    name: Duration
+                  - entity: sensor.oven_2_operation_state
+                    name: Operation State
+                  - entity: sensor.oven_2_program_progress
+                    name: Program Progress
+                  - entity: sensor.oven_2_remaining_program_time
+                    name: Remaining Program Time
+                  - entity: binary_sensor.oven_2_remote_control
+                    name: Remote Control
+                  - entity: binary_sensor.oven_2_remote_start
+                    name: Remote Start
+      - type: grid
+        cards:
+          - type: heading
+            heading: Küche Kühlschrank
+          - type: entities
+            entities:
+              - entity: sensor.kuche_kuhlschrank_leistung
+              - entity: sensor.kuche_kuhlschrank_stromstarke
+              - entity: sensor.kuche_kuhlschrank_spannung
+              - entity: sensor.kuche_kuhlschrank_summe_verbraucht
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Steckdose Fernseher
+          - type: tile
+            entity: switch.smart_switch_23011241132999510d0148e1e9b70773_outlet
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: >-
+              sensor.smart_switch_23011241132999510d0148e1e9b70773_config_overtemp_type
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.smart_switch_23011241132999510d0148e1e9b70773_consumption
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.smart_switch_23011241132999510d0148e1e9b70773_energy
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.smart_switch_23011241132999510d0148e1e9b70773_power
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.smart_switch_23011241132999510d0148e1e9b70773_current
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.smart_switch_23011241132999510d0148e1e9b70773_voltage
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Mi Air Purifier Pro H
+            icon: mdi:air-filter
+          - type: entities
+            entities:
+              - entity: fan.zhimi_vb2_d53d_air_purifier
+                name: Air Purifier
+              - entity: switch.zhimi_vb2_d53d_switch_status
+                name: Air Purifier Switch Status
+              - entity: switch.zhimi_vb2_d53d_alarm
+                name: Alarm
+              - entity: light.zhimi_vb2_d53d_indicator_light
+                name: Indicator Light
+              - entity: number.zhimi_vb2_d53d_favorite_level
+                name: Motor-speed favorite-level
+          - type: entities
+            entities:
+              - entity: sensor.zhimi_vb2_d53d_pm25_density
+                name: Environment PM2.5 Density
+              - entity: sensor.zhimi_vb2_d53d_relative_humidity
+                name: Environment Relative Humidity
+              - entity: sensor.zhimi_vb2_d53d_temperature
+                name: Environment Temperature
+              - entity: sensor.zhimi_vb2_d53d_filter_life_level
+                name: Filter Life Level
+              - entity: sensor.zhimi_vb2_d53d_filter_used_time
+                name: Filter Used Time
+    max_columns: 4
+    path: wohnzimmer
+  - title: Werkstatt
+    path: werkstatt
+    icon: mdi:toolbox
+    subview: true
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Klima
+            icon: mdi:toolbox
+          - type: entities
+            entities:
+              - entity: sensor.werkstatt_klima_druck
+                name: Druck
+              - entity: sensor.werkstatt_klima_luftfeuchtigkeit
+                name: Luftfeuchtigkeit
+              - entity: sensor.werkstatt_klima_temperatur
+                name: Temperatur
+    max_columns: 4
+  - title: Garage
+    path: garage
+    icon: mdi:garage
+    subview: true
+    badges: []
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Smart Wi-Fi Garage Door Opener
+            icon: mdi:garage
+          - type: entities
+            entities:
+              - entity: cover.smart_wi_fi_garage_door_opener_msg100_main_channel
+                name: (msg100) - Main channel
+    max_columns: 4
+  - title: Hobbyraum
+    path: hobbyraum
+    icon: mdi:weight-lifter
+    subview: true
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:weight-lifter
+            heading: Klima
+          - type: vertical-stack
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.hobbyraum_temperatur
+                    name: Temperatur
+                  - entity: sensor.hobbyraum_luftfeuchtigkeit
+                    name: Luftfeuchte
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - sensor.hobbyraum_temperatur
+                  - sensor.hobbyraum_luftfeuchtigkeit
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.fenster_hobbyraum_state
+                    state_not: closed
+                card:
+                  type: tile
+                  entity: binary_sensor.hobbyraum_fenster
+                  name: Fenster
+              - features: null
+                type: tile
+                entity: binary_sensor.va1766735616_batterie
+              - features: null
+                type: tile
+                entity: binary_sensor.va1852914432_batterie
+              - type: entities
+                entities:
+                  - entity: binary_sensor.va1766735616_verbindungsstatus
+              - type: entities
+                entities:
+                  - entity: binary_sensor.va1852914432_verbindungsstatus
+          - type: thermostat
+            entity: climate.hobbyraum
+            features:
+              - type: climate-hvac-modes
+                hvac_modes:
+                  - 'off'
+                  - auto
+                  - heat
+      - type: grid
+        cards:
+          - type: heading
+            heading: 'FR:HJ10RE001190 '
+          - chart_type: line
+            period: 5minute
+            type: statistics-graph
+            entities:
+              - sensor.fr_hj10re001190_radon
+            stat_types:
+              - mean
+            title: Radon Hobbyraum
+            days_to_show: 3
+            unit: Bq/m3
+          - type: entities
+            entities:
+              - entity: sensor.fr_hj10re001190_radon
+              - entity: sensor.fr_hj10re001190_radon_peak
+              - entity: sensor.fr_hj10re001190_radon_1_day_level
+              - entity: sensor.fr_hj10re001190_radon_1_month_level
+              - entity: sensor.fr_hj10re001190_radon_uptime
+              - entity: sensor.fr_hj10re001190_radon_uptime_string
+              - entity: sensor.fr_hj10re001190_radon_c_pulse_last
+              - entity: sensor.fr_hj10re001190_radon_c_pulse_now
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:weight-lifter
+            heading: Infrarotheizung
+          - type: entities
+            entities:
+              - entity: sensor.hobbyraum_steckdose_leistung
+                name: Leistung
+              - entity: sensor.hobbyraum_steckdose_spannung
+                name: Spannung
+              - entity: sensor.hobbyraum_steckdose_stromstarke
+                name: Stromstärke
+              - entity: sensor.hobbyraum_steckdose_summe_verbraucht
+                name: Summe verbraucht
+          - type: thermostat
+            entity: climate.infrarotheizung_hobbyraum
+          - type: tile
+            entity: switch.hobbyraum_luftungstecker_schalter
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: input_boolean.infrarotheizung_aktivieren
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:weight-lifter
+            heading: Fenster
+          - type: entities
+            entities:
+              - switch.radio_keller_internet_access
+            title: Connect 120
+          - type: entities
+            entities:
+              - entity: binary_sensor.hobbyraum_fenster_state
+                name: Status
+            title: Hobbyraum Fenster
+    max_columns: 4
+  - title: Gartenhaus
+    path: gartenhaus
+    icon: mdi:greenhouse
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Camera
+            icon: mdi:greenhouse
+          - type: grid
+            square: false
+            columns: 1
+            cards:
+              - type: entities
+                entities:
+                  - entity: binary_sensor.gartenhaus_camera_bewegung
+                    name: Bewegung
+                  - entity: binary_sensor.gartenhaus_camera_fahrzeug
+                    name: Fahrzeug
+                  - entity: binary_sensor.gartenhaus_camera_person
+                    name: Person
+              - type: picture-entity
+                entity: camera.gartenhaus_camera_fliessend
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Camera
+            icon: mdi:greenhouse
+          - type: entities
+            entities:
+              - entity: switch.gartenhaus_camera_audio_aufnehmen
+                name: Audio aufnehmen
+              - entity: switch.gartenhaus_camera_aufzeichnen
+                name: Aufzeichnen
+              - entity: number.gartenhaus_camera_bewegungsempfindlichkeit
+                name: Bewegungsempfindlichkeit
+              - entity: switch.gartenhaus_camera_e_mail_bei_ereignis
+                name: E-Mail bei Ereignis
+              - entity: update.gartenhaus_camera_firmware
+                name: Firmware
+              - entity: switch.gartenhaus_camera_ftp_upload
+                name: FTP-Upload
+              - entity: switch.gartenhaus_camera_infrarotlicht_im_nachtmodus
+                name: Infrarotlicht im Nachtmodus
+              - entity: number.gartenhaus_camera_ki_fahrzeug_empfindlichkeit
+                name: KI-Fahrzeug-Empfindlichkeit
+              - entity: number.gartenhaus_camera_ki_personen_empfindlichkeit
+                name: KI-Personen-Empfindlichkeit
+              - entity: number.gartenhaus_camera_lautstarke
+                name: Lautstärke
+              - entity: switch.gartenhaus_camera_push_benachrichtigungen
+                name: Push-Benachrichtigungen
+              - entity: select.gartenhaus_camera_tag_nacht_modus
+                name: Tag-Nacht-Modus
+    max_columns: 4
+title: Raumansicht

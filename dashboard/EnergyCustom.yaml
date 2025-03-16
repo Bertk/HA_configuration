@@ -1,0 +1,102 @@
+views:
+  - title: Home
+    type: sidebar
+    badges: []
+    cards:
+      - type: custom:mini-graph-card
+        name: Strom Leistung
+        icon: mdi:solar-power
+        hours_to_show: 36
+        points_per_hour: 2
+        line_width: 1
+        entities:
+          - entity: sensor.stromspeicher_leistung_smartmeter
+            name: Smartmeter
+          - entity: sensor.tibber_pulse_xxx_energie
+            name: Stromzähler
+          - entity: sensor.pv_leistung_in_watt
+            name: PV
+          - entity: sensor.stromspeicher_leistung
+            name: Battery
+          - entity: binary_sensor.night
+            color: rgba(0, 0, 0,.25)
+            y_axis: secondary
+            aggregate_func: min
+            show_state: true
+            show_line: false
+            show_points: false
+            show_legend: false
+        show:
+          labels: true
+          fill: true
+        state_map:
+          - value: 'off'
+            label: Day
+          - value: 'on'
+            label: Night
+      - type: history-graph
+        entities:
+          - entity: sensor.tibber_pulse_xxx_energie
+          - entity: sensor.stromspeicher_leistung
+          - entity: sensor.pv_leistung_in_watt
+          - entity: sensor.stromspeicher_leistung_smartmeter
+        hours_to_show: 36
+      - type: entities
+        entities:
+          - entity: sensor.solarman_alert
+            name: Alert
+          - entity: sensor.solarman_ambient_temperature_1
+            name: Ambient temperature 1
+          - entity: sensor.solarman_fault_1
+            name: Fault 1
+          - entity: sensor.solarman_fault_2
+            name: Fault 2
+          - entity: sensor.solarman_frequency_grid
+            name: Frequency Grid
+          - entity: sensor.solarman_grid_current_l1
+            name: Grid Current L1
+          - entity: sensor.solarman_grid_current_l2
+            name: Grid Current L2
+          - entity: sensor.solarman_grid_current_l3
+            name: Grid Current L3
+          - entity: sensor.solarman_grid_voltage_l1
+            name: Grid Voltage L1
+          - entity: sensor.solarman_grid_voltage_l2
+            name: Grid Voltage L2
+          - entity: sensor.solarman_grid_voltage_l3
+            name: Grid Voltage L3
+          - entity: sensor.solarman_insulation_resistance
+            name: Insulation Resistance
+          - entity: sensor.solarman_inverter_status
+            name: Inverter status
+          - entity: sensor.solarman_load_consumption_today
+            name: Load consumption today
+          - entity: sensor.solarman_load_consumption_total
+            name: Load consumption total
+          - entity: sensor.solarman_module_temperature_1
+            name: Module temperature 1
+          - entity: sensor.solarman_pv_generation_today
+            name: PV Generation today
+          - entity: sensor.solarman_pv_generation_total
+            name: PV Generation total
+          - entity: sensor.solarman_pv1_current
+            name: PV1 Current
+          - entity: sensor.solarman_pv1_power
+            name: PV1 Power
+          - entity: sensor.solarman_pv1_voltage
+            name: PV1 Voltage
+          - entity: sensor.solarman_pv2_current
+            name: PV2 Current
+          - entity: sensor.solarman_pv2_power
+            name: PV2 Power
+          - entity: sensor.solarman_pv2_voltage
+            name: PV2 Voltage
+          - entity: sensor.solarman_radiator_temperature_1
+            name: Radiator temperature 1
+          - entity: sensor.solarman_status_connection
+            name: Status_connection
+          - entity: sensor.solarman_status_lastupdate
+            name: Status_lastUpdate
+          - entity: sensor.solarman_total_active_power_output
+            name: Total Active Power Output
+        title: Solarman
