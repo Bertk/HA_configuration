@@ -1,4 +1,4 @@
-# ![](https://github.com/user-attachments/assets/e53dcd01-0d7f-4957-9e76-d1bbea6ed7c0 =100x100) HA_configuration
+# ![HA icon](assets/HA_100x100.png) HA_configuration
 
 My home assistant configuration YAML files and some screenshots
 
@@ -81,3 +81,16 @@ This dashboard provides an overview of various views for configurations and devi
 >
 > - [Einbindung Speicher über Modbus TCP](https://community.simon42.com/t/einbindung-speicher-ueber-modbus-tcp/13450)
 > - [Weishaupt Heatpump integration via modbus](https://community.home-assistant.io/t/weishaupt-heatpump-integration-via-modbus/436823)
+>
+> I used  for my Home Assistant first steps (German language)
+>
+> - [In Home Assistant Stromzähler ⚡️ auslesen mit Powerfox](https://www.simon42.com/home-assistant-stromzaehler/)
+> - [Home Assistant Template Sensoren & Hilfsentitäten (Helfer) 101](https://www.simon42.com/home-assistant-template-sensoren-hilfsentitaten/)
+> - [Home Assistant Dashboard mit Abschnitten (neue Methode 2024)!](https://www.simon42.com/home-assistant-dashboards/)
+> - [Home Assistant Automation Tutorial – Komplett & verständlich erklärt](https://www.simon42.com/home-assistant-automation-tutorial/)
+
+> [!TIP]
+> Description for HA (custom) integration development
+>
+> - [Set up development environment](https://developers.home-assistant.io/docs/development_environment/)
+> - [Mount custom_components to devcontainer](https://samrambles.com/guides/writing-home-assistant-integrations/index.html#development-environment-setup)
