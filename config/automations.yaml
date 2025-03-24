@@ -474,13 +474,18 @@
       seconds: 0
   - trigger: numeric_state
     entity_id:
-    - sensor.poweropti_usage_total
+    - sensor.tibber_pulse_xxx_stromerzeugung
     below: -2000
-  condition:
-  - condition: template
-    value_template: '{{ this.attributes.last_triggered is none or this.attributes.last_triggered
-      < today_at() }}'
-  action:
+  conditions:
+  - condition: and
+    conditions:
+    - condition: template
+      value_template: '{{ this.attributes.last_triggered is none or this.attributes.last_triggered
+        < today_at() }}'
+    - condition: numeric_state
+      entity_id: sensor.tibber_pulse_xxx_stromerzeugung
+      above: 1000
+  actions:
   - action: notify.bert_devices
     metadata: {}
     data:
@@ -828,7 +833,7 @@
   triggers:
   - trigger: numeric_state
     entity_id:
-    - sensor.poweropti_wattage_current
+    - sensor.tibber_pulse_xxx_stromerzeugung
     for:
       hours: 0
       minutes: 5
@@ -837,15 +842,15 @@
     id: Starten
   - trigger: numeric_state
     entity_id:
-    - sensor.poweropti_wattage_current
+    - sensor.tibber_pulse_xxx_stromerzeugung
     for:
       hours: 0
       minutes: 0
       seconds: 30
     above: 0
     id: Stoppen
-  condition: []
-  action:
+  conditions: []
+  actions:
   - choose:
     - conditions:
       - condition: state
@@ -896,7 +901,7 @@
     id: manuell
   - trigger: numeric_state
     entity_id:
-    - sensor.stromspeicher_leistung
+    - sensor.sax_battery_a_power
     above: 100
     id: Einspeisung 100 Watt
   conditions: []
@@ -916,13 +921,12 @@
             minutes: 0
             seconds: 10
       sequence:
-      - metadata: {}
+      - action: number.set_value
+        metadata: {}
         data:
-          address: 44
-          slave: 64
-          hub: SAX_a
-          value: '[{{states.input_select.sax_a_leistungsgrenzwert_laden.state|int|bitwise_and(0xffff)}}]'
-        action: modbus.write_register
+          value: '{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}'
+        target:
+          entity_id: number.maximum_charge_power
       - action: system_log.write
         metadata: {}
         data:
@@ -937,13 +941,12 @@
         entity_id: input_select.sax_a_leistungsgrenzwert_laden
         state: '0'
       sequence:
-      - metadata: {}
+      - action: number.set_value
+        metadata: {}
         data:
-          address: 44
-          slave: 64
-          hub: SAX_a
-          value: '[{{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}]'
-        action: modbus.write_register
+          value: '{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}'
+        target:
+          entity_id: number.maximum_charge_power
       - action: system_log.write
         metadata: {}
         data:
@@ -961,7 +964,7 @@
   description: ''
   triggers:
   - entity_id:
-    - sensor.stromspeicher_soc
+    - sensor.sax_battery_a_soc
     id: SOC_above_20
     for:
       hours: 0
@@ -971,7 +974,7 @@
     enabled: true
     trigger: numeric_state
   - entity_id:
-    - sensor.stromspeicher_soc
+    - sensor.sax_battery_a_soc
     id: SOC_below_10
     below: 10
     for:
@@ -981,7 +984,7 @@
     enabled: true
     trigger: numeric_state
   - entity_id:
-    - sensor.stromspeicher_soc
+    - sensor.sax_battery_a_soc
     id: SOC_below_8
     below: 8
     for:
@@ -991,7 +994,7 @@
     enabled: true
     trigger: numeric_state
   - entity_id:
-    - sensor.stromspeicher_soc
+    - sensor.sax_battery_a_soc
     id: SOC_below_6
     below: 6
     for:
@@ -1001,7 +1004,7 @@
     enabled: true
     trigger: numeric_state
   - entity_id:
-    - sensor.stromspeicher_soc
+    - sensor.sax_battery_a_soc
     id: SOC_below_4
     below: 4
     for:
@@ -1011,7 +1014,7 @@
     enabled: true
     trigger: numeric_state
   - entity_id:
-    - sensor.stromspeicher_soc
+    - sensor.sax_battery_a_soc
     id: SOC_below_2
     below: 2
     for:
@@ -1029,12 +1032,12 @@
       seconds: 5
     id: New-discharge-limit
   - trigger: template
-    value_template: '{{states(''sensor.stromspeicher_leistung'')|float(0) - states(''input_select.sax_a_leistungsgrenzwert_entladen'')
+    value_template: '{{states(''sensor.sax_battery_a_power'')|float(0) - states(''input_select.sax_a_leistungsgrenzwert_entladen'')
       |float(0) - float(10) > 0 }}'
     id: Above_Limit
   - trigger: numeric_state
     entity_id:
-    - sensor.stromspeicher_soc
+    - sensor.sax_battery_a_soc
     below: 50
     id: SOC_below_50
     for:
@@ -1086,6 +1089,9 @@
           id:
           - SOC_below_50
         - condition: numeric_state
+          entity_id: sensor.sax_battery_a_soc
+          above: 10
+        - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.speicher_export_strompreis
         - condition: template
@@ -1096,7 +1102,7 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '500'
+          option: '750'
     - conditions:
       - condition: and
         conditions:
@@ -1114,7 +1120,7 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '500'
+          option: '750'
     - conditions:
       - condition: trigger
         id:
@@ -1122,13 +1128,12 @@
         - entladen_refresh
         - Above_Limit
       sequence:
-      - action: modbus.write_register
+      - action: number.set_value
         metadata: {}
         data:
-          address: 43
-          slave: 64
-          hub: SAX_a
-          value: '[{{states.input_select.sax_a_leistungsgrenzwert_entladen.state|int|bitwise_and(0xffff)}}]'
+          value: '{{states.input_select.sax_a_leistungsgrenzwert_entladen.state}}'
+        target:
+          entity_id: number.maximum_discharge_power
       - action: system_log.write
         metadata: {}
         data:
@@ -1141,9 +1146,14 @@
           name: 'Set Batterie Entladeleistung '
           message: P(Entladen) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_entladen.state|int}}W
     - conditions:
-      - condition: trigger
-        id:
-        - Preis_Tibber_niedrig
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - Preis_Tibber_niedrig
+        - condition: numeric_state
+          entity_id: sensor.sax_battery_a_soc
+          above: 10
       sequence:
       - action: input_select.select_option
         target:
@@ -1157,8 +1167,8 @@
           id:
           - Preis_Tibber_hoch
         - condition: numeric_state
-          entity_id: sensor.stromspeicher_soc
-          above: 20
+          entity_id: sensor.sax_battery_a_soc
+          above: 30
       sequence:
       - action: input_select.select_option
         metadata: {}

@@ -10,13 +10,13 @@ views:
         points_per_hour: 2
         line_width: 1
         entities:
-          - entity: sensor.stromspeicher_leistung_smartmeter
+          - entity: sensor.sax_battery_a_smartmeter
             name: Smartmeter
           - entity: sensor.tibber_pulse_xxx_energie
             name: Stromzähler
           - entity: sensor.pv_leistung_in_watt
             name: PV
-          - entity: sensor.stromspeicher_leistung
+          - entity: sensor.sax_battery_a_power
             name: Battery
           - entity: binary_sensor.night
             color: rgba(0, 0, 0,.25)
@@ -37,9 +37,9 @@ views:
       - type: history-graph
         entities:
           - entity: sensor.tibber_pulse_xxx_energie
-          - entity: sensor.stromspeicher_leistung
+          - entity: sensor.sax_battery_a_power
           - entity: sensor.pv_leistung_in_watt
-          - entity: sensor.stromspeicher_leistung_smartmeter
+          - entity: sensor.sax_battery_a_smartmeter
         hours_to_show: 36
       - type: entities
         entities:

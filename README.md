@@ -94,3 +94,4 @@ This dashboard provides an overview of various views for configurations and devi
 >
 > - [Set up development environment](https://developers.home-assistant.io/docs/development_environment/)
 > - [Mount custom_components to devcontainer](https://samrambles.com/guides/writing-home-assistant-integrations/index.html#development-environment-setup)
+> - [integration blueprint](https://github.com/ludeeus/integration_blueprint)

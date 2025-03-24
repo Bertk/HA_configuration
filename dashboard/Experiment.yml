@@ -756,6 +756,8 @@ views:
                   action: navigate
                   navigation_path: /dashboard-experiment/technikraum
                 name: Temperatur
+                features_position: bottom
+                vertical: false
               - type: tile
                 tap_action:
                   action: navigate
@@ -773,8 +775,10 @@ views:
                 entity: sensor.absolute_luftfeuchtigkeit_technikraum
                 icon: mdi:water-circle
               - type: tile
-                entity: sensor.stromspeicher_soc
+                entity: sensor.sax_battery_a_soc
                 name: Stromspeicher
+                features_position: bottom
+                vertical: false
               - type: tile
                 entity: sensor.wh_warmwasser_warmwassertemperatur
                 name: Warmwasser
@@ -821,24 +825,47 @@ views:
           - type: vertical-stack
             cards:
               - type: tile
+                features_position: bottom
+                vertical: false
+                entity: sensor.berts_ebike_remaining_range
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/gartenhaus
+              - type: tile
+                features_position: bottom
+                vertical: false
+                entity: sensor.berts_ebike_remaining_battery
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/gartenhaus
+              - type: tile
                 entity: binary_sensor.gartenhaus_camera_bewegung
                 tap_action:
                   action: navigate
                   navigation_path: /dashboard-experiment/gartenhaus
                 name: Bewegung
+                features_position: bottom
+                vertical: false
               - type: tile
                 entity: binary_sensor.gartenhaus_camera_person
                 tap_action:
                   action: navigate
                   navigation_path: /dashboard-experiment/gartenhaus
                 name: Person
+                features_position: bottom
+                vertical: false
               - type: tile
                 entity: binary_sensor.gartenhaus_camera_fahrzeug
                 tap_action:
                   action: navigate
                   navigation_path: /dashboard-experiment/gartenhaus
                 name: Fahrzeug
-              - type: picture-entity
+                features_position: bottom
+                vertical: false
+              - show_state: true
+                show_name: true
+                camera_view: auto
+                type: picture-entity
                 entity: camera.gartenhaus_camera_fliessend
   - title: Live-Energie
     icon: mdi:lightning-bolt
@@ -903,12 +930,18 @@ views:
                 display_zero_state: true
               home: {}
               battery:
-                entity: sensor.stromspeicher_leistung
-                state_of_charge: sensor.stromspeicher_soc
+                entity: sensor.sax_battery_a_power
+                state_of_charge: sensor.sax_battery_a_soc
               individual:
                 - secondary_info: {}
                   name: Wallbox
                   entity: sensor.ehvucdqv_leistung
+                - entity: sensor.toilette_waschmaschine_leistung
+                  secondary_info: {}
+                  name: Waschmaschine
+                - entity: sensor.kuche_spulmaschine_leistung
+                  secondary_info: {}
+                  name: Spülmaschine
             clickable_entities: true
             display_zero_lines:
               mode: show
@@ -987,18 +1020,19 @@ views:
           - type: entities
             title: Stromspeicher
             entities:
-              - entity: sensor.stromspeicher_leistung
-              - entity: sensor.stromspeicher_leistung_smartmeter
-              - entity: sensor.stromspeicher_soc
-              - entity: sensor.sax_a_zyklen_2
-              - entity: sensor.sax_a_capacity_2
-              - entity: sensor.sax_a_temp_2
-              - entity: sensor.sax_a_schaltzustand
-              - entity: switch.sax_a_an_aus
+              - entity: sensor.sax_battery_a_storage_status
+              - entity: sensor.sax_battery_a_power
+              - entity: sensor.sax_battery_a_smartmeter
+              - entity: sensor.sax_battery_a_soc
+              - entity: sensor.sax_battery_a_cycles
+              - entity: sensor.sax_battery_a_capacity
+              - entity: sensor.sax_battery_a_temperature
+              - entity: sensor.sax_battery_a_status
+              - entity: switch.sax_battery_system_sax_battery_a_on_off
               - entity: input_select.sax_a_leistungsgrenzwert_entladen
               - entity: input_select.sax_a_leistungsgrenzwert_laden
-              - entity: sensor.sax_a_energy_produced
-              - entity: sensor.sax_a_energy_consumed
+              - entity: sensor.sax_battery_a_energy_consumed
+              - entity: sensor.sax_battery_a_energy_produced
       - type: grid
         cards:
           - type: heading
@@ -1049,8 +1083,6 @@ views:
             hours_to_show: 12
       - type: grid
         cards:
-          - type: heading
-            heading: WH Heizkreis
           - type: entities
             entities:
               - entity: sensor.wh_heizkreis_anforderung_typ
@@ -1066,10 +1098,41 @@ views:
               - entity: number.wh_heizkreis_raumsolltemperatur_komfort
               - entity: number.wh_heizkreis_raumsolltemperatur_normal
               - entity: number.wh_heizkreis_sommer_winter_umschaltung
+            title: WH Heizkreis
+          - type: entities
+            entities:
+              - entity: number.wh_warmwasser_warmwasser_absenk
+              - entity: number.wh_warmwasser_warmwasser_normal
+              - entity: select.wh_warmwasser_warmwasser_push
+              - entity: sensor.wh_warmwasser_warmwassersolltemperatur
+              - entity: sensor.wh_warmwasser_warmwassertemperatur
+              - entity: sensor.wh_warmwasser_ww_konfiguration
+            title: WH Warmwasser
       - type: grid
         cards:
-          - type: heading
-            heading: WH Wärmepumpe
+          - type: entities
+            entities:
+              - entity: select.wh_system_systembetriebsart
+              - entity: sensor.wh_system_aussentemperatur
+              - entity: sensor.wh_system_betriebsanzeige
+              - entity: sensor.wh_system_fehler
+              - entity: sensor.wh_system_fehlerfrei
+              - entity: sensor.wh_system_warnung
+              - entity: sensor.wh_system_luftansaugtemperatur
+            title: WH System
+          - type: entities
+            entities:
+              - entity: number.wh_2_warmeerzeuger_grenztemperatur
+              - entity: sensor.wh_2_warmeerzeuger_betriebsstunden_e1
+              - entity: sensor.wh_2_warmeerzeuger_betriebsstunden_e2
+              - entity: sensor.wh_2_warmeerzeuger_schaltspiele_e_heizung_2
+              - entity: sensor.wh_2_warmeerzeuger_schaltspiele_e_heizung_1
+              - entity: sensor.wh_2_warmeerzeuger_status_e_heizung_1
+              - entity: sensor.wh_2_warmeerzeuger_status_2_wez
+              - entity: sensor.wh_2_warmeerzeuger_status_e_heizung_2
+            title: WH 2. Wärmeerzeuger
+      - type: grid
+        cards:
           - type: entities
             entities:
               - entity: sensor.wh_warmepumpe_betrieb
@@ -1090,49 +1153,9 @@ views:
               - entity: >-
                   sensor.wh_warmepumpe_vorlauftemperatur_prazise_summenvorlauf_b7
               - entity: sensor.wh_warmepumpe_warmeleistung
+            title: WH Wärmepumpe
       - type: grid
         cards:
-          - type: heading
-            heading: WH Warmwasser
-          - type: entities
-            entities:
-              - entity: number.wh_warmwasser_warmwasser_absenk
-              - entity: number.wh_warmwasser_warmwasser_normal
-              - entity: select.wh_warmwasser_warmwasser_push
-              - entity: sensor.wh_warmwasser_warmwassersolltemperatur
-              - entity: sensor.wh_warmwasser_warmwassertemperatur
-              - entity: sensor.wh_warmwasser_ww_konfiguration
-      - type: grid
-        cards:
-          - type: heading
-            heading: WH System
-          - type: entities
-            entities:
-              - entity: select.wh_system_systembetriebsart
-              - entity: sensor.wh_system_aussentemperatur
-              - entity: sensor.wh_system_betriebsanzeige
-              - entity: sensor.wh_system_fehler
-              - entity: sensor.wh_system_fehlerfrei
-              - entity: sensor.wh_system_warnung
-              - entity: sensor.wh_system_luftansaugtemperatur
-      - type: grid
-        cards:
-          - type: heading
-            heading: WH 2. Wärmeerzeuger
-          - type: entities
-            entities:
-              - entity: number.wh_2_warmeerzeuger_grenztemperatur
-              - entity: sensor.wh_2_warmeerzeuger_betriebsstunden_e1
-              - entity: sensor.wh_2_warmeerzeuger_betriebsstunden_e2
-              - entity: sensor.wh_2_warmeerzeuger_schaltspiele_e_heizung_2
-              - entity: sensor.wh_2_warmeerzeuger_schaltspiele_e_heizung_1
-              - entity: sensor.wh_2_warmeerzeuger_status_e_heizung_1
-              - entity: sensor.wh_2_warmeerzeuger_status_2_wez
-              - entity: sensor.wh_2_warmeerzeuger_status_e_heizung_2
-      - type: grid
-        cards:
-          - type: heading
-            heading: WH Eingänge/Ausgänge
           - type: entities
             entities:
               - entity: sensor.wh_eingange_ausgange_eingang_de1
@@ -1143,10 +1166,9 @@ views:
               - entity: sensor.wh_eingange_ausgange_konf_eingang_de2
               - entity: sensor.wh_eingange_ausgange_konf_eingang_sgr1
               - entity: sensor.wh_eingange_ausgange_konf_eingang_sgr2
+            title: WH Eingänge/Ausgänge
       - type: grid
         cards:
-          - type: heading
-            heading: WH Statistik
           - type: entities
             entities:
               - entity: sensor.wh_statistik_abtauen_energie_gestern
@@ -1177,6 +1199,7 @@ views:
               - entity: sensor.wh_statistik_warmwasser_energie_heute
               - entity: sensor.wh_statistik_warmwasser_energie_jahr
               - entity: sensor.wh_statistik_warmwasser_energie_monat
+            title: WH Statistik
       - type: grid
         cards:
           - type: heading
@@ -1729,7 +1752,7 @@ views:
             name: Verbrauch auf der letzten Meile
           - entity: sensor.xxx_zeitpunkt_des_maximalen_stundenverbrauchs
             name: Zeitpunkt des maximalen Stundenverbrauchs
-        title: Tibber Pulse XXX
+        title: Tibber Pulse xxx
       - type: custom:auto-entities
         card:
           title: Aktueller Stromverbrauch
@@ -1820,14 +1843,14 @@ views:
             - entity_id: sensor.wh_warmepumpe_warmeleistung
             - entity_id: sensor.poweropti_wattage_current
             - entity_id: sensor.solar_eigenverbrauch_watt_v2
-            - entity_id: sensor.stromspeicher_leistung_smartmeter
+            - entity_id: sensor.sax_battery_a_smartmeter
             - entity_id: sensor.pv_leistung_in_watt
             - entity_id: sensor.solarman_pv1_power
             - entity_id: sensor.solarman_pv2_power
             - entity_id: sensor.solar_einspeisung_watt
             - entity_id: sensor.p_sax_export
             - entity_id: sensor.p_sax_import
-            - entity_id: sensor.stromspeicher_leistung
+            - entity_id: sensor.sax_battery_a_power
         sort:
           method: state
           reverse: true
@@ -2312,25 +2335,7 @@ views:
     icon: mdi:floor-plan
     subview: true
     badges: []
-    cards:
-      - type: entities
-        entities:
-          - entity: switch.toilette_steckdose_waschmaschine_schalter
-            name: Schalter
-        title: Flur Steckdose Ladegerät
-      - type: entities
-        entities:
-          - entity: number.toilette_steckdose_waschmaschine_ein_aus_ubergangszeit
-            name: Ein/Aus-Übergangszeit
-          - entity: number.toilette_steckdose_waschmaschine_einschalthelligkeit
-            name: Einschalthelligkeit
-          - entity: number.toilette_steckdose_waschmaschine_einschaltstrompegel
-            name: Einschaltstrompegel
-          - entity: update.toilette_steckdose_waschmaschine_firmware
-            name: Firmware
-          - entity: select.toilette_steckdose_waschmaschine_startverhalten
-            name: Startverhalten
-        title: Flur Steckdose Ladegerät
+    cards: []
     type: sections
     sections:
       - type: grid
@@ -2431,6 +2436,45 @@ views:
               - entity: binary_sensor.flur_bewegungssensor_ug_offnung
                 name: Öffnung
             title: Flur Bewegungssensor UG
+      - type: grid
+        cards:
+          - type: heading
+            heading: Flur on/off switch Akkuladegerät
+          - type: tile
+            entity: number.flur_on_off_switch_akkuladegerat_ein_aus_ubergangszeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: number.flur_on_off_switch_akkuladegerat_einschalthelligkeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: number.flur_on_off_switch_akkuladegerat_einschaltstrompegel
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: update.flur_on_off_switch_akkuladegerat_firmware
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: select.flur_on_off_switch_akkuladegerat_startverhalten
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
     max_columns: 4
   - title: Schlafzimmer
     path: schlafzimmer
@@ -2852,6 +2896,38 @@ views:
                 name: Filter Life Level
               - entity: sensor.zhimi_vb2_d53d_filter_used_time
                 name: Filter Used Time
+      - type: grid
+        cards:
+          - type: heading
+            heading: Küche Spülmaschine
+          - type: tile
+            entity: sensor.kuche_spulmaschine_leistung
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.kuche_spulmaschine_spannung
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.kuche_spulmaschine_stromstarke
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.kuche_spulmaschine_summe_verbraucht
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
     max_columns: 4
     path: wohnzimmer
   - title: Werkstatt
@@ -3085,5 +3161,86 @@ views:
                 name: Push-Benachrichtigungen
               - entity: select.gartenhaus_camera_tag_nacht_modus
                 name: Tag-Nacht-Modus
+      - type: grid
+        cards:
+          - type: heading
+            heading: Bert‘s eBike
+          - type: tile
+            entity: binary_sensor.berts_ebike_battery
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.berts_ebike_battery_health
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.berts_ebike_crashed
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.berts_ebike_mileage
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.berts_ebike_remaining_battery
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.berts_ebike_remaining_battery_internal_pcb
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.berts_ebike_remaining_range
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.berts_ebike_saved_co2
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.berts_ebike_stolen
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.berts_ebike_time_driven
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.berts_ebike_update_available
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
     max_columns: 4
 title: Raumansicht

@@ -181,8 +181,8 @@
       unit_of_measurement: W
       device_class: power
       state: >
-        {% if states('sensor.stromspeicher_leistung') | float(0) >= 0 %}
-            {% set P_SAX_export = states('sensor.stromspeicher_leistung') | float(0) |abs %}
+        {% if states('sensor.sax_battery_a_power') | float(0) >= 0 %}
+            {% set P_SAX_export = states('sensor.sax_battery_a_power') | float(0) |abs %}
         {% else %}
             {% set P_SAX_export = float(0) %}
         {% endif %}
@@ -195,8 +195,8 @@
       unit_of_measurement: W
       device_class: power
       state: >
-        {% if states('sensor.stromspeicher_leistung') | float(0) <= 0 %}
-            {% set P_SAX_import = states('sensor.stromspeicher_leistung') | float(0) |abs %}
+        {% if states('sensor.sax_battery_a_power') | float(0) <= 0 %}
+            {% set P_SAX_import = states('sensor.sax_battery_a_power') | float(0) |abs %}
         {% else %}
             {% set P_SAX_import = float(0) %}
         {% endif %}
@@ -218,17 +218,17 @@
         {{float(states('input_number.wpp_schaltspiele_abtauen')) | round(0) - float(states('sensor.wpp_schaltspiele_abtauen_end_of_day')) | round(0)}}
       availability: "{{ has_value('input_number.wpp_schaltspiele_abtauen') and has_value('sensor.wpp_schaltspiele_abtauen_end_of_day')}}"
     # Tibber Strompreis
-    - name: "Strompreis Max XXX"
+    - name: "Strompreis Max xxx"
       unique_id: sensor.xxx_strompreis_max
       state: "{{ state_attr('sensor.xxx_strompreis','max_price') }}"
       unit_of_measurement: EUR/kWh
       icon: mdi:currency-eur
-    - name: "Strompreis Min XXX"
+    - name: "Strompreis Min xxx"
       unique_id: sensor.xxx_strompreis_min
       state: "{{ state_attr('sensor.xxx_strompreis','min_price') }}"
       unit_of_measurement: EUR/kWh
       icon: mdi:currency-eur
-    - name: "Strompreis Avg XXX"
+    - name: "Strompreis Avg xxx"
       unique_id: sensor.xxx_strompreis_avg
       state: "{{ state_attr('sensor.xxx_strompreis','avg_price') }}"
       unit_of_measurement: EUR/kWh
