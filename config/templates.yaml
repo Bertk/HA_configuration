@@ -173,34 +173,6 @@
       state: >
         {{ (float(243.12) * ((float(17.62)*float(states('sensor.hobbyraum_temperatur')))/(float(243.12)+float(states('sensor.hobbyraum_temperatur'))) + log(float(states('sensor.hobbyraum_luftfeuchtigkeit'))/100)) / ((float(17.62)*float(243.12))/(float(243.12)+float(states('sensor.hobbyraum_temperatur'))) - log(float(states('sensor.hobbyraum_luftfeuchtigkeit'))/100)))  | round(1) }}
 
-    # Berechnet SAX-Speicherentladung P_SAX_export, wenn P_SAX positiv
-    - name: P_SAX_export
-      unique_id: "P_SAX_export"
-      state_class: measurement
-      icon: mdi:battery-arrow-down
-      unit_of_measurement: W
-      device_class: power
-      state: >
-        {% if states('sensor.sax_battery_a_power') | float(0) >= 0 %}
-            {% set P_SAX_export = states('sensor.sax_battery_a_power') | float(0) |abs %}
-        {% else %}
-            {% set P_SAX_export = float(0) %}
-        {% endif %}
-        {{ P_SAX_export }}
-    # Berechnet SAX-Speicherentladung P_SAX_import, wenn P_SAX negativ
-    - name: P_SAX_import
-      unique_id: "P_SAX_import"
-      state_class: measurement
-      icon: mdi:battery-arrow-up
-      unit_of_measurement: W
-      device_class: power
-      state: >
-        {% if states('sensor.sax_battery_a_power') | float(0) <= 0 %}
-            {% set P_SAX_import = states('sensor.sax_battery_a_power') | float(0) |abs %}
-        {% else %}
-            {% set P_SAX_import = float(0) %}
-        {% endif %}
-        {{ P_SAX_import }}
     # Wärmepumpe Schaltspiele Verdichter heute
     - name: "WPP Schaltspiele Verdichter heute"
       unique_id: "wpp_schaltspiele_verdichter_heute"
