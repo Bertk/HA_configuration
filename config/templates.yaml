@@ -205,6 +205,33 @@
       state: "{{ state_attr('sensor.xxx_strompreis','avg_price') }}"
       unit_of_measurement: EUR/kWh
       icon: mdi:currency-eur
+    # sax-power energy check with intergral helper sensor.sax_battery_combined_power
+    - name: sax_power_output
+      unique_id: "sax_power_output"
+      state_class: measurement
+      icon: mdi:mdiBatteryArrowUpOutline
+      unit_of_measurement: W
+      device_class: power
+      state: >-
+        {% if is_number(states('sensor.sax_battery_combined_power')) and states('sensor.sax_battery_combined_power') | float(0) > 0 %}
+            {{ (states('sensor.sax_battery_combined_power') | float(0)) | round (0) }}
+        {% else %}
+            {{ float(0) }}
+        {% endif %}
+      availability: "{{ has_value('sensor.sax_battery_combined_power') }}"
+    - name: sax_power_input
+      unique_id: "sax_power_input"
+      state_class: measurement
+      icon: mdi:mdiBatteryArrowDownOutline
+      unit_of_measurement: W
+      device_class: power
+      state: >-
+        {% if is_number(states('sensor.sax_battery_combined_power')) and states('sensor.sax_battery_combined_power') | float(0) < 0 %}
+            {{ (states('sensor.sax_battery_combined_power') | float(0)) *-1| round (0) }}
+        {% else %}
+            {{ float(0) }}
+        {% endif %}
+      availability: "{{ has_value('sensor.sax_battery_combined_power') }}"
 
 - trigger:
     - trigger: time

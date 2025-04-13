@@ -894,52 +894,54 @@
   alias: Sax_a Ladeleistung setzen
   description: ''
   triggers:
-  - entity_id:
-    - input_select.sax_a_leistungsgrenzwert_laden
-    enabled: true
-    trigger: state
-    id: manuell
-  - trigger: numeric_state
+  - trigger: state
     entity_id:
-    - sensor.sax_battery_a_power
-    above: 100
-    id: Einspeisung 100 Watt
+    - input_select.sax_a_leistungsgrenzwert_laden
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    id: New-charge-limit
+  - trigger: sun
+    event: sunrise
+    offset: 0
+    id: Sonnenaufgang
+  - trigger: time_pattern
+    minutes: /15
+    id: Charging-condition
   conditions: []
   actions:
   - choose:
     - conditions:
       - condition: trigger
         id:
-        - Einspeisung 100 Watt
-      - condition: and
-        conditions:
-        - condition: state
-          entity_id: input_select.sax_a_leistungsgrenzwert_laden
-          state: '0'
-          for:
-            hours: 0
-            minutes: 0
-            seconds: 10
-      sequence:
-      - action: number.set_value
-        metadata: {}
-        data:
-          value: '{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}'
-        target:
-          entity_id: number.maximum_charge_power
-      - action: system_log.write
-        metadata: {}
-        data:
-          level: info
-          logger: homeassistant.components.automation.set_sax_a_ladeleistung
-          message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
-    - conditions:
-      - condition: trigger
-        id:
-        - manuell
+        - Charging-condition
+      - condition: time
+        after: '11:00:00'
+      - condition: numeric_state
+        entity_id: sensor.solarman_total_active_power_output
+        above: 1.5
       - condition: state
         entity_id: input_select.sax_a_leistungsgrenzwert_laden
         state: '0'
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 0
+      - condition: numeric_state
+        entity_id: sensor.sax_battery_a_soc
+        below: 95
+      sequence:
+      - action: input_select.select_option
+        metadata: {}
+        data:
+          option: '3500'
+        target:
+          entity_id: input_select.sax_a_leistungsgrenzwert_laden
+    - conditions:
+      - condition: trigger
+        id:
+        - New-charge-limit
       sequence:
       - action: number.set_value
         metadata: {}
@@ -958,6 +960,17 @@
         data:
           name: 'Set Batterie Ladeleistung '
           message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
+    - conditions:
+      - condition: trigger
+        id:
+        - Sonnenaufgang
+      sequence:
+      - action: input_select.select_option
+        metadata: {}
+        data:
+          option: '0'
+        target:
+          entity_id: input_select.sax_a_leistungsgrenzwert_laden
   mode: single
 - id: '1728049706106'
   alias: Sax_a monitor Entladeleistung
@@ -1065,6 +1078,11 @@
   - trigger: time_pattern
     id: entladen_refresh
     minutes: /10
+  - trigger: numeric_state
+    entity_id:
+    - sensor.xxx_strompreis
+    above: input_number.strompreis_speicher_export_stop
+    id: Strompreis-No-Export
   conditions: []
   actions:
   - choose:
@@ -1154,12 +1172,15 @@
         - condition: numeric_state
           entity_id: sensor.sax_battery_a_soc
           above: 10
+        - condition: numeric_state
+          entity_id: sensor.xxx_strompreis
+          above: input_number.strompreis_speicher_export_stop
       sequence:
       - action: input_select.select_option
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '500'
+          option: '750'
     - conditions:
       - condition: and
         conditions:
@@ -1174,6 +1195,17 @@
         metadata: {}
         data:
           option: '1000'
+        target:
+          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+    - conditions:
+      - condition: trigger
+        id:
+        - Strompreis-No-Export
+      sequence:
+      - action: select.select_option
+        metadata: {}
+        data:
+          option: '0'
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
   mode: single
@@ -1296,11 +1328,9 @@
     below: input_number.strompreis_heizung_aus
     id: Heizung unter 40 cent
   conditions:
-  - condition: not
-    conditions:
-    - condition: state
-      entity_id: sensor.wh_system_betriebsanzeige
-      state: ''
+  - condition: state
+    entity_id: sensor.wh_warmepumpe_betrieb
+    state: heatpump_operationmode_heating
   actions:
   - if:
     - condition: trigger

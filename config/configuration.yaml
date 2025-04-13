@@ -16,48 +16,6 @@ input_select: !include input_select.yaml
 recorder:
   purge_keep_days: 14
 
-# custom rest sensor for poweropti device
-# rest:
-#   - resource: https://backend.powerfox.energy/api/2/my/main/current?unit=kwh
-#     method: GET
-#     authentication: basic
-#     username: !secret poweropti_username
-#     password: !secret poweropti_password
-#     timeout: 10
-#     scan_interval: 30
-#     sensor:
-#       - name: "poweropti_cloud"
-#         unique_id: "poweropti-cloud"
-#         json_attributes:
-#           - "watt"
-#           - "timestamp"
-#           - "a_Plus"
-#           - "a_Plus_HT"
-#           - "a_Plus_NT"
-#           - "a_Minus"
-#           - "outdated"
-#       - name: "PowerOpti wattage current"
-#         unique_id: "poweropti_wattage_current"
-#         device_class: "power"
-#         state_class: "measurement"
-#         unit_of_measurement: "W"
-#         value_template: "{{ value_json.watt }}"
-#         availability: "{{ is_number(state_attr('sensor.poweropti_cloud', 'watt'))  and state_attr('sensor.poweropti_cloud', 'outdated') == false}}"
-#       - name: "PowerOpti usage total"
-#         unique_id: "poweropti_usage_total"
-#         device_class: "energy"
-#         state_class: "total_increasing"
-#         unit_of_measurement: "kWh"
-#         value_template: "{{ value_json.a_Plus }}"
-#         availability: "{{is_number(state_attr('sensor.poweropti_cloud', 'a_Plus')) and (state_attr('sensor.poweropti_cloud', 'outdated') == false) and (state_attr('sensor.poweropti_cloud', 'a_Plus')|round(0) > float(0))}}"
-#       - name: "PowerOpti production total"
-#         unique_id: "poweropti_production_total"
-#         device_class: "energy"
-#         state_class: "total_increasing"
-#         unit_of_measurement: "kWh"
-#         value_template: "{{ value_json.a_Minus }}"
-#         availability: "{{is_number(state_attr('sensor.poweropti_cloud', 'a_Minus')) and (state_attr('sensor.poweropti_cloud', 'outdated') == false) and (state_attr('sensor.poweropti_cloud', 'a_Minus')|round(0) > float(0))}}"
-
 rest:
   - resource: https://api.tibber.com/v1-beta/gql
     method: POST

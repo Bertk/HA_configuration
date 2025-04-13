@@ -1,0 +1,20 @@
+#################################################################
+## Sensors
+#################################################################
+
+- platform: integration
+  name: sax_energy_input
+  unique_id: sax_energy_input
+  source: sensor.sax_power_input
+  method: trapezoidal
+  round: 2
+  max_sub_interval:
+    minutes: 1
+- platform: integration
+  name: sax_energy_output
+  unique_id: sax_energy_output
+  source: sensor.sax_power_output
+  method: trapezoidal
+  round: 2
+  max_sub_interval:
+    minutes: 1
