@@ -11,17 +11,47 @@ views:
             heading_style: title
             heading: Wetter Fürth
             icon: mdi:weather-cloudy
-          - type: vertical-stack
-            cards:
-              - type: weather-forecast
-                entity: weather.furth
-                show_current: true
-                show_forecast: true
-                forecast_type: hourly
-                secondary_info_attribute: humidity
-              - type: custom:horizon-card
-                language: de
-                timeFormat: 24h
+          - type: custom:weather-chart-card
+            entity: weather.fuerth_bayern
+            show_main: true
+            show_temperature: true
+            show_current_condition: true
+            show_attributes: true
+            show_time: true
+            show_time_seconds: false
+            show_day: false
+            show_date: true
+            show_humidity: true
+            show_pressure: true
+            show_wind_direction: true
+            show_wind_speed: true
+            show_sun: true
+            show_feels_like: false
+            show_dew_point: false
+            show_wind_gust_speed: false
+            show_visibility: false
+            show_last_changed: false
+            use_12hour_format: false
+            icons_size: 25
+            animated_icons: false
+            icon_style: style1
+            autoscroll: false
+            forecast:
+              precipitation_type: rainfall
+              show_probability: false
+              labels_font_size: '11'
+              precip_bar_size: '100'
+              style: style2
+              show_wind_forecast: true
+              condition_icons: true
+              round_temp: false
+              type: hourly
+              number_of_forecasts: '0'
+              disable_animation: false
+            units:
+              speed: ''
+            title: ''
+          - type: custom:horizon-card
         column_span: 1
       - type: grid
         cards:
@@ -32,20 +62,18 @@ views:
           - type: vertical-stack
             cards:
               - type: entity
-                entity: weather.furth
-                attribute: pressure
-                unit: hPa
+                entity: sensor.fuerth_bayern_druck
                 icon: mdi:gauge
                 state_color: true
+                name: Luftdruck
               - type: entity
-                entity: weather.furth
-                attribute: dew_point
+                entity: sensor.fuerth_bayern_taupunkt
                 name: Taupunkt
                 icon: mdi:water-alert
                 card_mod:
                   style: >
-                    {% if state_attr('weather.furth', 'dew_point')|float(0) <
-                    0.0 %}
+                    {% if states('sensor.fuerth_bayern_taupunkt')|float(0) < 0.0
+                    %}
                       :host {
                           --paper-item-icon-color: green;
                         }
@@ -56,7 +84,7 @@ views:
                         color: green;
                         font-size: 25px;
                         } 
-                    {% elif state_attr('weather.furth', 'dew_point')|float(0) >
+                    {% elif states('sensor.fuerth_bayern_taupunkt')|float(0) >
                     10.0 %}
                       :host {
                           --paper-item-icon-color: red;
@@ -222,6 +250,65 @@ views:
       - type: grid
         cards:
           - type: heading
+            heading: Schlafzimmer
+            heading_style: title
+            icon: mdi:bed
+          - type: vertical-stack
+            cards:
+              - type: tile
+                entity: sensor.schlafzimmer_temperatur
+                name: Temperatur
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/schlafzimmer
+                features_position: bottom
+                vertical: false
+              - type: tile
+                entity: sensor.schlafzimmer_luftfeuchtigkeit
+                show_entity_picture: false
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/schlafzimmer
+                icon: mdi:water-percent
+                card_mod:
+                  style: |
+                    ha-card {
+                     {% if states(config.entity)|float(0) > 65 %}
+                        --card-mod-icon-color: red;
+                     {% endif %}  
+                    }
+              - type: tile
+                icon: mdi:water-circle
+                entity: sensor.absolute_luftfeuchtigkeit_schlafzimmer
+              - type: conditional
+                conditions:
+                  - condition: numeric_state
+                    entity: sensor.schlafzimmer_heizung
+                    above: 0
+                card:
+                  type: tile
+                  entity: sensor.schlafzimmer_heizung
+                  name: Heizung
+              - type: conditional
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.schlafzimmer_fenster_state
+                    state: 'on'
+                card:
+                  type: tile
+                  entity: binary_sensor.schlafzimmer_fenster_state
+                  name: Fenster offen
+                  card_mod:
+                    style: |
+                      ha-card {
+                       {% if states(config.entity) == "on"%}
+                          --card-mod-icon-color: red;
+                       {% endif %}  
+                      }      
+      - type: grid
+        cards:
+          - type: heading
             heading_style: title
             heading: Gästezimmer
             icon: mdi:bed
@@ -278,71 +365,6 @@ views:
                           --card-mod-icon-color: red;
                        {% endif %}  
                       }      
-      - type: grid
-        cards:
-          - type: heading
-            heading: Schlafzimmer
-            heading_style: title
-            icon: mdi:bed
-          - type: vertical-stack
-            cards:
-              - type: tile
-                entity: sensor.schlafzimmer_temperatur
-                show_entity_picture: false
-                tap_action:
-                  action: navigate
-                  navigation_path: /dashboard-experiment/schlafzimmer
-                name: 'Temperatur '
-              - type: tile
-                entity: sensor.schlafzimmer_luftfeuchtigkeit
-                show_entity_picture: false
-                tap_action:
-                  action: navigate
-                  navigation_path: /dashboard-experiment/schlafzimmer
-                name: 'Luftfeuchtigkeit '
-                card_mod:
-                  style: |
-                    ha-card {
-                       {% if states(config.entity)|float(0) > 65 %}
-                          --card-mod-icon-color: red;
-                       {% endif %}  
-                    }
-              - type: tile
-                icon: mdi:water-circle
-                entity: sensor.absolute_luftfeuchtigkeit_schlafzimmer
-              - type: conditional
-                conditions:
-                  - condition: numeric_state
-                    entity: sensor.schlafzimmer_heizung
-                    above: 0
-                card:
-                  type: tile
-                  entity: sensor.schlafzimmer_heizung
-                  name: Heizung
-              - type: conditional
-                conditions:
-                  - condition: state
-                    entity: binary_sensor.schlafzimmer_fenster_state
-                    state: 'on'
-                card:
-                  type: tile
-                  entity: binary_sensor.schlafzimmer_fenster_state
-                  name: Fenster offen
-                  card_mod:
-                    style: |
-                      ha-card {
-                       {% if states(config.entity) == "on"%}
-                          --card-mod-icon-color: red;
-                       {% endif %}  
-                      } 
-              - type: entities
-                entities:
-                  - entity: light.schlafzimmer_bett_licht_licht
-                    name: Bett Licht
-              - type: entities
-                entities:
-                  - entity: fan.core300s
-                    name: Aktivieren Core300S
       - type: grid
         cards:
           - type: heading
@@ -923,8 +945,8 @@ views:
                   '40': g
                   '41': i
                   '42': e
-                  production: sensor.tibber_pulse_xxx_stromerzeugung
                   consumption: sensor.tibber_pulse_xxx_energie
+                  production: sensor.tibber_pulse_xxx_stromerzeugung
               solar:
                 entity: sensor.solarman_total_active_power_output
                 display_zero_state: true
@@ -942,6 +964,9 @@ views:
                 - entity: sensor.kuche_spulmaschine_leistung
                   secondary_info: {}
                   name: Spülmaschine
+                - entity: sensor.kuche_kochfeld_leistung
+                  secondary_info: {}
+                  name: Kochfeld
             clickable_entities: true
             display_zero_lines:
               mode: show
@@ -971,6 +996,8 @@ views:
               navigation_path: /dashboard-experiment/live-strom
             entity: >-
               sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+            features_position: bottom
+            vertical: false
           - type: tile
             name: Einspeisung
             tap_action:
@@ -978,6 +1005,8 @@ views:
               navigation_path: /dashboard-experiment/live-strom
             entity: >-
               sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
+            features_position: bottom
+            vertical: false
           - type: tile
             name: Leistung
             tap_action:
@@ -990,6 +1019,9 @@ views:
               action: navigate
               navigation_path: /dashboard-experiment/live-strom
             entity: sensor.xxx_strompreis
+            features_position: bottom
+            vertical: false
+            icon: mdi:currency-eur
           - type: tile
             name: Monatliche Kosten
             tap_action:
@@ -1357,141 +1389,6 @@ views:
               - entity: binary_sensor.gastezimmer_fenster_state
                 name: Öffnung
     max_columns: 4
-  - title: Live-Strom
-    path: live-strom
-    icon: mdi:home-lightning-bolt-outline
-    subview: true
-    cards:
-      - type: vertical-stack
-        title: Live-Werte
-        cards:
-          - type: horizontal-stack
-            cards:
-              - type: gauge
-                entity: sensor.pv_leistung_in_watt
-                needle: true
-                severity:
-                  green: 1
-                  yellow: 0.5
-                  red: 0
-                name: Garagensolar
-                max: 4250
-                unit: W
-              - type: entities
-                entities:
-                  - entity: sensor.solarman_load_consumption_today
-                    name: Täglich
-                    icon: mdi:solar-power
-                  - entity: sensor.solarman_load_consumption_total
-                    name: Gesamt
-                  - entity: sensor.solarman_inverter_status
-                    name: Status
-                  - entity: sensor.solarman_total_active_power_output
-                state_color: false
-          - type: horizontal-stack
-            cards:
-              - type: gauge
-                needle: true
-                severity:
-                  green: -3600
-                  yellow: 0
-                  red: 500
-                name: Netz Bezug
-                max: 10000
-                unit: W
-                entity: sensor.tibber_pulse_xxx_energie
-                min: -3600
-              - type: entities
-                entities:
-                  - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
-                    icon: mdi:currency-eur
-                    name: Täglich
-                  - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
-                  - entity: >-
-                      sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
-                    name: Gesamt
-                  - entity: sensor.tibber_pulse_xxx_stromerzeugung
-                    name: Einspeisung
-          - type: horizontal-stack
-            cards:
-              - type: gauge
-                entity: sensor.solar_eigenverbrauch_watt_v2
-                name: Eigenverbrauch
-                needle: true
-                severity:
-                  green: 500
-                  yellow: 5
-                  red: 0
-                max: 4250
-              - type: entities
-                entities:
-                  - entity: sensor.xxx_strompreis
-                  - entity: sensor.garagensolar_vorteil
-                  - entity: sensor.garagensolar_vorteil_in_euro
-                    name: Vorteil in Euro
-                  - entity: sensor.solar_eigenverbrauch_watt_v2
-          - type: horizontal-stack
-            title: Solarman
-            cards:
-              - type: entities
-                entities:
-                  - entity: sensor.solarman_alert
-                    name: Alert
-                  - entity: sensor.solarman_ambient_temperature_1
-                    name: Ambient temperature 1
-                  - entity: sensor.solarman_fault_1
-                    name: Fault 1
-                  - entity: sensor.solarman_fault_2
-                    name: Fault 2
-                  - entity: sensor.solarman_frequency_grid
-                    name: Frequency Grid
-                  - entity: sensor.solarman_grid_current_l1
-                    name: Grid Current L1
-                  - entity: sensor.solarman_grid_current_l2
-                    name: Grid Current L2
-                  - entity: sensor.solarman_grid_current_l3
-                    name: Grid Current L3
-                  - entity: sensor.solarman_grid_voltage_l1
-                    name: Grid Voltage L1
-                  - entity: sensor.solarman_grid_voltage_l2
-                    name: Grid Voltage L2
-                  - entity: sensor.solarman_grid_voltage_l3
-                    name: Grid Voltage L3
-                  - entity: sensor.solarman_insulation_resistance
-                    name: Insulation Resistance
-                  - entity: sensor.solarman_inverter_status
-                    name: Inverter status
-                  - entity: sensor.solarman_load_consumption_today
-                    name: Load consumption today
-                  - entity: sensor.solarman_load_consumption_total
-                    name: Load consumption total
-                  - entity: sensor.solarman_module_temperature_1
-                    name: Module temperature 1
-                  - entity: sensor.solarman_pv_generation_today
-                    name: PV Generation today
-                  - entity: sensor.solarman_pv_generation_total
-                    name: PV Generation total
-                  - entity: sensor.solarman_pv1_current
-                    name: PV1 Current
-                  - entity: sensor.solarman_pv1_power
-                    name: PV1 Power
-                  - entity: sensor.solarman_pv1_voltage
-                    name: PV1 Voltage
-                  - entity: sensor.solarman_pv2_current
-                    name: PV2 Current
-                  - entity: sensor.solarman_pv2_power
-                    name: PV2 Power
-                  - entity: sensor.solarman_pv2_voltage
-                    name: PV2 Voltage
-                  - entity: sensor.solarman_radiator_temperature_1
-                    name: Radiator temperature 1
-                  - entity: sensor.solarman_status_connection
-                    name: Status_connection
-                  - entity: sensor.solarman_status_lastupdate
-                    name: Status_lastUpdate
-                  - entity: sensor.solarman_total_active_power_output
-                    name: Total Active Power Output
-    type: panel
   - title: Testing
     icon: mdi:alert
     path: testing
@@ -1855,6 +1752,164 @@ views:
           method: state
           reverse: true
           numeric: true
+  - title: Live-Strom
+    path: live-strom
+    icon: mdi:home-lightning-bolt-outline
+    subview: true
+    cards:
+      - type: vertical-stack
+        title: Live-Werte
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.pv_leistung_in_watt
+                needle: true
+                severity:
+                  green: 1
+                  yellow: 0.5
+                  red: 0
+                name: Garagensolar
+                max: 4250
+                unit: W
+              - type: entities
+                entities:
+                  - entity: sensor.solarman_load_consumption_today
+                    name: Täglich
+                    icon: mdi:solar-power
+                  - entity: sensor.solarman_load_consumption_total
+                    name: Gesamt
+                  - entity: sensor.solarman_inverter_status
+                    name: Status
+                  - entity: sensor.solarman_total_active_power_output
+                state_color: false
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                needle: true
+                severity:
+                  green: -3600
+                  yellow: 0
+                  red: 500
+                name: Netz Bezug
+                max: 10000
+                unit: W
+                entity: sensor.tibber_pulse_xxx_energie
+                min: -3600
+              - type: entities
+                entities:
+                  - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
+                    icon: mdi:currency-eur
+                    name: Täglich
+                  - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
+                  - entity: >-
+                      sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+                    name: Gesamt
+                  - entity: sensor.tibber_pulse_xxx_stromerzeugung
+                    name: Einspeisung
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.solar_eigenverbrauch_watt_v2
+                name: Eigenverbrauch
+                needle: true
+                severity:
+                  green: 500
+                  yellow: 5
+                  red: 0
+                max: 4250
+              - type: entities
+                entities:
+                  - entity: sensor.xxx_strompreis
+                  - entity: sensor.garagensolar_vorteil
+                  - entity: sensor.garagensolar_vorteil_in_euro
+                    name: Vorteil in Euro
+                  - entity: sensor.solar_eigenverbrauch_watt_v2
+          - type: horizontal-stack
+            title: Solarman
+            cards:
+              - type: entities
+                entities:
+                  - entity: sensor.solarman_alert
+                    name: Alert
+                  - entity: sensor.solarman_ambient_temperature_1
+                    name: Ambient temperature 1
+                  - entity: sensor.solarman_fault_1
+                    name: Fault 1
+                  - entity: sensor.solarman_fault_2
+                    name: Fault 2
+                  - entity: sensor.solarman_frequency_grid
+                    name: Frequency Grid
+                  - entity: sensor.solarman_grid_current_l1
+                    name: Grid Current L1
+                  - entity: sensor.solarman_grid_current_l2
+                    name: Grid Current L2
+                  - entity: sensor.solarman_grid_current_l3
+                    name: Grid Current L3
+                  - entity: sensor.solarman_grid_voltage_l1
+                    name: Grid Voltage L1
+                  - entity: sensor.solarman_grid_voltage_l2
+                    name: Grid Voltage L2
+                  - entity: sensor.solarman_grid_voltage_l3
+                    name: Grid Voltage L3
+                  - entity: sensor.solarman_insulation_resistance
+                    name: Insulation Resistance
+                  - entity: sensor.solarman_inverter_status
+                    name: Inverter status
+                  - entity: sensor.solarman_load_consumption_today
+                    name: Load consumption today
+                  - entity: sensor.solarman_load_consumption_total
+                    name: Load consumption total
+                  - entity: sensor.solarman_module_temperature_1
+                    name: Module temperature 1
+                  - entity: sensor.solarman_pv_generation_today
+                    name: PV Generation today
+                  - entity: sensor.solarman_pv_generation_total
+                    name: PV Generation total
+                  - entity: sensor.solarman_pv1_current
+                    name: PV1 Current
+                  - entity: sensor.solarman_pv1_power
+                    name: PV1 Power
+                  - entity: sensor.solarman_pv1_voltage
+                    name: PV1 Voltage
+                  - entity: sensor.solarman_pv2_current
+                    name: PV2 Current
+                  - entity: sensor.solarman_pv2_power
+                    name: PV2 Power
+                  - entity: sensor.solarman_pv2_voltage
+                    name: PV2 Voltage
+                  - entity: sensor.solarman_radiator_temperature_1
+                    name: Radiator temperature 1
+                  - entity: sensor.solarman_status_connection
+                    name: Status_connection
+                  - entity: sensor.solarman_status_lastupdate
+                    name: Status_lastUpdate
+                  - entity: sensor.solarman_total_active_power_output
+                    name: Total Active Power Output
+    type: panel
+  - title: Garten-Pumpe
+    path: garten-pumpe
+    icon: mdi:pump
+    subview: true
+    badges:
+      - entity: switch.gartenpumpe
+      - entity: sensor.gartenpumpe_power
+      - entity: sensor.gartenpumpe_energy
+    cards:
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: toggle
+        entity: switch.gartenpumpe
+        name: Pumpe
+      - graph: line
+        type: sensor
+        entity: sensor.gartenpumpe_power
+        detail: 2
+        unit: Watt
+        hours_to_show: 48
+        name: Verbrauch
   - title: Garten
     path: garten
     icon: mdi:leaf
@@ -1924,29 +1979,6 @@ views:
               - 'off'
               - auto
               - heat
-  - title: Garten-Pumpe
-    path: garten-pumpe
-    icon: mdi:pump
-    subview: true
-    badges:
-      - entity: switch.gartenpumpe
-      - entity: sensor.gartenpumpe_power
-      - entity: sensor.gartenpumpe_energy
-    cards:
-      - show_name: true
-        show_icon: true
-        type: button
-        tap_action:
-          action: toggle
-        entity: switch.gartenpumpe
-        name: Pumpe
-      - graph: line
-        type: sensor
-        entity: sensor.gartenpumpe_power
-        detail: 2
-        unit: Watt
-        hours_to_show: 48
-        name: Verbrauch
   - title: Bewässerung
     path: bewasserung
     icon: mdi:hydro-power
@@ -2487,7 +2519,7 @@ views:
       - type: grid
         cards:
           - type: heading
-            heading: Neuer Abschnitt
+            heading_style: subtitle
           - type: vertical-stack
             title: Klima
             cards:
@@ -2519,7 +2551,7 @@ views:
       - type: grid
         cards:
           - type: heading
-            heading: Neuer Abschnitt
+            heading_style: title
           - type: vertical-stack
             cards:
               - type: thermostat
@@ -2535,7 +2567,7 @@ views:
       - type: grid
         cards:
           - type: heading
-            heading: Neuer Abschnitt
+            heading_style: title
           - type: vertical-stack
             title: Klima
             cards:
@@ -2557,7 +2589,7 @@ views:
       - type: grid
         cards:
           - type: heading
-            heading: Neuer Abschnitt
+            heading_style: title
           - type: vertical-stack
             cards:
               - type: entity
@@ -2565,7 +2597,7 @@ views:
       - type: grid
         cards:
           - type: heading
-            heading: Neuer Abschnitt
+            heading_style: title
           - type: entities
             entities:
               - entity: binary_sensor.schlafzimmer_fenster_state
@@ -3011,18 +3043,18 @@ views:
                   type: tile
                   entity: binary_sensor.hobbyraum_fenster
                   name: Fenster
-              - features: null
-                type: tile
+              - type: tile
+                features_position: bottom
+                vertical: false
                 entity: binary_sensor.va1766735616_batterie
-              - features: null
-                type: tile
+              - type: tile
+                features_position: bottom
+                vertical: false
                 entity: binary_sensor.va1852914432_batterie
-              - type: entities
-                entities:
-                  - entity: binary_sensor.va1766735616_verbindungsstatus
-              - type: entities
-                entities:
-                  - entity: binary_sensor.va1852914432_verbindungsstatus
+              - type: tile
+                entity: binary_sensor.va1766735616_verbindungsstatus
+              - type: tile
+                entity: binary_sensor.va1852914432_verbindungsstatus
           - type: thermostat
             entity: climate.hobbyraum
             features:
