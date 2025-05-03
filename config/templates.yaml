@@ -154,7 +154,7 @@
       unit_of_measurement: "g/m^3"
       state_class: "measurement"
       state: >
-        {{(float(state_attr('weather.furth','humidity'))*6.112*2.1674*e**((float(state_attr('weather.furth','temperature'))*17.67)/(float(state_attr('weather.furth','temperature'))+243.5))/(float(state_attr('weather.furth','temperature'))+273.15))|round(2)}}
+        {{(float(states('sensor.fuerth_bayern_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.fuerth_bayern_temperatur'))*17.67)/(float(states('sensor.fuerth_bayern_temperatur'))+243.5))/(float(states('sensor.fuerth_bayern_temperatur'))+273.15))|round(2)}}
     # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur außen die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
     #- name: "Absolute Luftfeuchtigkeit außen2"
     #  unique_id: "AbsoluteHumidityOutside2"
@@ -164,10 +164,6 @@
     #    {{ 1000*e**(19.016-(4064.95/(float(state_attr('weather.furth','temperature'))+236.25)))*100/(461.66*(float(state_attr('weather.furth','temperature'))+273.15)) * float(state_attr('weather.furth','temperature'))/100 | float }}
     # Errechnet Taupunkt
     # https://techbotch.org/blog/dewpoint-calculation-hassio/index.html
-    - name: "Taupunkt außen"
-      unit_of_measurement: "°C"
-      state: >
-        {{ (float(243.12) * ((float(17.62)*state_attr('weather.furth','temperature'))/(float(243.12)+state_attr('weather.furth','temperature')) + log(state_attr('weather.furth','humidity')/100)) / ((float(17.62)*float(243.12))/(float(243.12)+state_attr('weather.furth','temperature')) - log(state_attr('weather.furth','humidity')/100)))  | round(1) }}
     - name: "Taupunkt Hobbyraum"
       unit_of_measurement: "°C"
       state: >
@@ -271,3 +267,42 @@
       device_class: energy
       state: "{{states('sensor.ehvucdqv_sitzungsenergie')|float(0)}}"
       availability: "{{ has_value('sensor.ehvucdqv_sitzungsenergie') and states('sensor.ehvucdqv_sitzungsenergie')|is_number}}"
+
+# Stündliche Wettervorhersagen
+- trigger:
+    - trigger: time_pattern
+      hours: /1
+  action:
+      - action: weather.get_forecasts
+        target:
+           entity_id: weather.fuerth_bayern
+        data:
+          type: hourly
+        response_variable: stundenvorhersage
+  sensor:
+    # Hier ein Template-Sensor, der verschieden Daten der stündlichen Vorhersage als Attribute gespeichert hat
+        - name: Wetter-Vorhersage der nächsten Stunde
+          unique_id: forecast_next_1_hour
+          state: "{{ now().isoformat() }}"
+          icon: mdi:hours-24
+          attributes:
+            condition: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].condition }}"
+            cloud_coverage: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].cloud_coverage }}"
+            temperature: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].temperature }}"
+    # Alternativ ein Template-Sensor, der die Temperatur der stündlichen Vorhersage Status hat (Vorteile bei Verlauf, Automationen, etc.)
+        - name: Temperatur-Vorhersage der nächsten Stunde
+          unique_id: temperature_forecast_next_hour
+          state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].temperature }}"
+          unit_of_measurement: °C
+        - name: Bedingungs-Vorhersage der nächsten Stunde
+          unique_id: condition_forecast_next_hour
+          state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].condition }}"
+    # Sonnenenstrahlung in 5 Stunden
+        - name: Sonneneinstrahlung-Vorhersage in 5 Stunden
+          unique_id: sun_irradiance_forecast_in_5_hours
+          state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[5].sun_irradiance }}"
+          unit_of_measurement: W/m²
+        - name: Sonnenscheindauer-Vorhersage in 5 Stunden
+          unique_id: sun_duration_forecast_in_5_hours
+          state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[5].sun_duration }}"
+          unit_of_measurement: s

@@ -41,16 +41,18 @@ This dashboard provides an overview of various views for configurations and devi
 
 ### Custom integration installed using HACS
 
-|integration name| comment|
+|integration/cards name| comment|
 |---|:---:|
-|[Deutscher Wetterdienst](https://github.com/hg1337/homeassistant-dwd)||
+|[Deutscher Wetterdienst](https://github.com/FL550/dwd_weather)||
 |[Solarman](https://github.com/StephanJoubert/home_assistant_solarman)||
 |[HACS](https://github.com/hacs/integration)||
-|[SAX Power Home battery management](https://github.com/matfroh/sax_battery_ha)|current state: work in progress (prerelease) |
+|[SAX Power Home battery management](https://github.com/matfroh/sax_battery_ha)||
 |[Weishaupt Wärmepumpe](https://github.com/OStrama/weishaupt_modbus)||
 |[Weishaupt WEM Portal](https://github.com/erikkastelec/hass-WEM-Portal)| better energy value precision|
 |[Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot)||
-
+|[Weather Chart Card](https://github.com/mlamberts78/weather-chart-card)||
+|[mini-graph-card](https://github.com/kalkih/mini-graph-card||)
+|[card-mod 3](https://github.com/thomasloven/lovelace-card-mod)||
 ### HA integrations
 
 |integration name| comment|

@@ -193,11 +193,10 @@
     entity_id: sensor.hobbyraum_luftfeuchtigkeit
     above: 65
   - condition: template
-    value_template: '{{state_attr(''weather.furth'', ''dew_point'') | float < float(12)
-      }}'
+    value_template: '{{states(''sensor.fuerth_bayern_taupunkt'') | float < float(12)}}'
   - condition: template
     value_template: '{{states(''sensor.hobbyraum_temperatur'') | float|round(1) -
-      4.0 > state_attr(''weather.furth'', ''temperature'') | float }}'
+      4.0 > states(''sensor.fuerth_bayern_temperatur'') | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_hobbyraum'') |float
       > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
@@ -273,8 +272,8 @@
     entity_id: sensor.wohnzimmer_luftfeuchtigkeit
     above: 65
   - condition: template
-    value_template: '{{states(''sensor.wohnzimmer_temperatur'') | float > state_attr(''weather.furth'',
-      ''temperature'') | float }}'
+    value_template: '{{states(''sensor.wohnzimmer_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
+      | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_wohnzimmer'') |float
       > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
@@ -401,8 +400,8 @@
     entity_id: sensor.gastezimmer_luftfeuchtigkeit
     above: 65
   - condition: template
-    value_template: '{{states(''sensor.gastezimmer_temperatur'') | float > state_attr(''weather.furth'',
-      ''temperature'') | float }}'
+    value_template: '{{states(''sensor.gastezimmer_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
+      | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_gastezimmer'')
       |float > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
@@ -440,8 +439,8 @@
     entity_id: sensor.toilette_luftfeuchtigkeit
     above: 65
   - condition: template
-    value_template: '{{states(''sensor.toilette_temperatur'') | float > state_attr(''weather.furth'',
-      ''temperature'') | float }}'
+    value_template: '{{states(''sensor.toilette_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
+      | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_toilette'') |float
       > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
@@ -780,8 +779,8 @@
     entity_id: sensor.schlafzimmer_luftfeuchtigkeit
     above: 65
   - condition: template
-    value_template: '{{(states(''sensor.schlafzimmer_temperatur'') | float) > (state_attr(''weather.furth'',
-      ''temperature'') | float) }}'
+    value_template: '{{(states(''sensor.schlafzimmer_temperatur'') | float) > (states(''sensor.fuerth_bayern_temperatur'')
+      | float) }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_schlafzimmer'')
       |float > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
@@ -921,6 +920,7 @@
       - condition: numeric_state
         entity_id: sensor.solarman_total_active_power_output
         above: 1.5
+        enabled: false
       - condition: state
         entity_id: input_select.sax_a_leistungsgrenzwert_laden
         state: '0'
@@ -964,6 +964,9 @@
       - condition: trigger
         id:
         - Sonnenaufgang
+      - condition: numeric_state
+        entity_id: sensor.sonneneinstrahlung_vorhersage_in_5_stunden
+        above: 1500
       sequence:
       - action: input_select.select_option
         metadata: {}
@@ -971,6 +974,11 @@
           option: '0'
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_laden
+      - action: logbook.log
+        metadata: {}
+        data:
+          name: 'Set Batterie Ladeleistung '
+          message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
   mode: single
 - id: '1728049706106'
   alias: Sax_a monitor Entladeleistung

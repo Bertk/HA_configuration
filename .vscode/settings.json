@@ -1,20 +1,5 @@
 {
     "files.associations": {
         "*.yaml": "home-assistant"
-    },
-    "cSpell.words": [
-        "Easee",
-        "HACS",
-        "Hobbyroom",
-        "HVAC",
-        "Meross",
-        "Modbus",
-        "Reolink",
-        "Solarman",
-        "Tado",
-        "Tibber",
-        "Wallbox",
-        "Weishaupt",
-        "Zigbee"
-    ]
+    }
 }
