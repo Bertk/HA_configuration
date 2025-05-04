@@ -90,75 +90,75 @@
     #                            https://www.condair.de/berechnungstools/feuchterechner
     - name: "Absolute Luftfeuchtigkeit Bad"
       unique_id: "AbsoluteHumidityBad"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.bad_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.bad_temperatur'))*17.67)/(float(states('sensor.bad_temperatur'))+243.5))/(float(states('sensor.bad_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Hobbyraum"
       unique_id: "AbsoluteHumidityHR"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.hobbyraum_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.hobbyraum_temperatur'))*17.67)/(float(states('sensor.hobbyraum_temperatur'))+243.5))/(float(states('sensor.hobbyraum_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Schlafzimmer"
       unique_id: "AbsoluteHumiditySZ"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.schlafzimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.schlafzimmer_temperatur'))*17.67)/(float(states('sensor.schlafzimmer_temperatur'))+243.5))/(float(states('sensor.schlafzimmer_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Wohnzimmer"
       unique_id: "AbsoluteHumidityWZ"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.wohnzimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.wohnzimmer_temperatur'))*17.67)/(float(states('sensor.wohnzimmer_temperatur'))+243.5))/(float(states('sensor.wohnzimmer_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Flur"
       unique_id: "AbsoluteHumidityFlur"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.flur_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.flur_temperatur'))*17.67)/(float(states('sensor.flur_temperatur'))+243.5))/(float(states('sensor.flur_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Gästezimmer"
       unique_id: "AbsoluteHumidityGZ"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.gastezimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.gastezimmer_temperatur'))*17.67)/(float(states('sensor.gastezimmer_temperatur'))+243.5))/(float(states('sensor.gastezimmer_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Büro"
       unique_id: "AbsoluteHumidityBuro"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.buro_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.buro_temperatur'))*17.67)/(float(states('sensor.buro_temperatur'))+243.5))/(float(states('sensor.buro_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Toilette"
       unique_id: "AbsoluteHumidityToilette"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.toilette_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.toilette_temperatur'))*17.67)/(float(states('sensor.toilette_temperatur'))+243.5))/(float(states('sensor.toilette_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Werkstatt"
       unique_id: "AbsoluteHumidityWerkstatt"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.werkstatt_klima_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.werkstatt_klima_temperatur'))*17.67)/(float(states('sensor.werkstatt_klima_temperatur'))+243.5))/(float(states('sensor.werkstatt_klima_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Technikraum"
       unique_id: "AbsoluteHumidityTechnik"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.technikraum_klima_luftfeuchtigkeit_2'))*6.112*2.1674*e**((float(states('sensor.technikraum_klima_temperatur_2'))*17.67)/(float(states('sensor.technikraum_klima_temperatur_2'))+243.5))/(float(states('sensor.technikraum_klima_temperatur_2'))+273.15))|round(2)}}
     # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur außen die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
     - name: "Absolute Luftfeuchtigkeit außen"
       unique_id: "AbsoluteHumidityOutside"
-      unit_of_measurement: "g/m^3"
+      unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.fuerth_bayern_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.fuerth_bayern_temperatur'))*17.67)/(float(states('sensor.fuerth_bayern_temperatur'))+243.5))/(float(states('sensor.fuerth_bayern_temperatur'))+273.15))|round(2)}}
     # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur außen die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
     #- name: "Absolute Luftfeuchtigkeit außen2"
     #  unique_id: "AbsoluteHumidityOutside2"
-    #  unit_of_measurement: "g/m^3"
+    #  unit_of_measurement: "g/m³"
     #  state_class: "measurement"
     #  state: >
     #    {{ 1000*e**(19.016-(4064.95/(float(state_attr('weather.furth','temperature'))+236.25)))*100/(461.66*(float(state_attr('weather.furth','temperature'))+273.15)) * float(state_attr('weather.furth','temperature'))/100 | float }}
@@ -273,36 +273,36 @@
     - trigger: time_pattern
       hours: /1
   action:
-      - action: weather.get_forecasts
-        target:
-           entity_id: weather.fuerth_bayern
-        data:
-          type: hourly
-        response_variable: stundenvorhersage
+    - action: weather.get_forecasts
+      target:
+        entity_id: weather.fuerth_bayern
+      data:
+        type: hourly
+      response_variable: stundenvorhersage
   sensor:
     # Hier ein Template-Sensor, der verschieden Daten der stündlichen Vorhersage als Attribute gespeichert hat
-        - name: Wetter-Vorhersage der nächsten Stunde
-          unique_id: forecast_next_1_hour
-          state: "{{ now().isoformat() }}"
-          icon: mdi:hours-24
-          attributes:
-            condition: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].condition }}"
-            cloud_coverage: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].cloud_coverage }}"
-            temperature: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].temperature }}"
+    - name: Wetter-Vorhersage der nächsten Stunde
+      unique_id: forecast_next_1_hour
+      state: "{{ now().isoformat() }}"
+      icon: mdi:hours-24
+      attributes:
+        condition: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].condition }}"
+        cloud_coverage: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].cloud_coverage }}"
+        temperature: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].temperature }}"
     # Alternativ ein Template-Sensor, der die Temperatur der stündlichen Vorhersage Status hat (Vorteile bei Verlauf, Automationen, etc.)
-        - name: Temperatur-Vorhersage der nächsten Stunde
-          unique_id: temperature_forecast_next_hour
-          state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].temperature }}"
-          unit_of_measurement: °C
-        - name: Bedingungs-Vorhersage der nächsten Stunde
-          unique_id: condition_forecast_next_hour
-          state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].condition }}"
+    - name: Temperatur-Vorhersage der nächsten Stunde
+      unique_id: temperature_forecast_next_hour
+      state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].temperature }}"
+      unit_of_measurement: °C
+    - name: Bedingungs-Vorhersage der nächsten Stunde
+      unique_id: condition_forecast_next_hour
+      state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[1].condition }}"
     # Sonnenenstrahlung in 5 Stunden
-        - name: Sonneneinstrahlung-Vorhersage in 5 Stunden
-          unique_id: sun_irradiance_forecast_in_5_hours
-          state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[5].sun_irradiance }}"
-          unit_of_measurement: W/m²
-        - name: Sonnenscheindauer-Vorhersage in 5 Stunden
-          unique_id: sun_duration_forecast_in_5_hours
-          state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[5].sun_duration }}"
-          unit_of_measurement: s
+    - name: Sonneneinstrahlung-Vorhersage in 5 Stunden
+      unique_id: sun_irradiance_forecast_in_5_hours
+      state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[5].sun_irradiance }}"
+      unit_of_measurement: W/m²
+    - name: Sonnenscheindauer-Vorhersage in 5 Stunden
+      unique_id: sun_duration_forecast_in_5_hours
+      state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[5].sun_duration }}"
+      unit_of_measurement: s
