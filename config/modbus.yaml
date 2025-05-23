@@ -1,3 +1,4 @@
+# Wird nicht benötigt da es von der SAX Batterie Integration übernommen wird
 # Sax-Batterie über Modbus
 - name: SAX_a
   type: tcp

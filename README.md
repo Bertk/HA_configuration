@@ -51,8 +51,9 @@ This dashboard provides an overview of various views for configurations and devi
 |[Weishaupt WEM Portal](https://github.com/erikkastelec/hass-WEM-Portal)| better energy value precision|
 |[Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot)||
 |[Weather Chart Card](https://github.com/mlamberts78/weather-chart-card)||
-|[mini-graph-card](https://github.com/kalkih/mini-graph-card||)
+|[mini-graph-card](https://github.com/kalkih/mini-graph-card)||
 |[card-mod 3](https://github.com/thomasloven/lovelace-card-mod)||
+
 ### HA integrations
 
 |integration name| comment|

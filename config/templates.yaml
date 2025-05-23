@@ -149,12 +149,12 @@
       state: >
         {{(float(states('sensor.technikraum_klima_luftfeuchtigkeit_2'))*6.112*2.1674*e**((float(states('sensor.technikraum_klima_temperatur_2'))*17.67)/(float(states('sensor.technikraum_klima_temperatur_2'))+243.5))/(float(states('sensor.technikraum_klima_temperatur_2'))+273.15))|round(2)}}
     # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur außen die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
-    - name: "Absolute Luftfeuchtigkeit außen"
-      unique_id: "AbsoluteHumidityOutside"
-      unit_of_measurement: "g/m³"
-      state_class: "measurement"
-      state: >
-        {{(float(states('sensor.fuerth_bayern_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.fuerth_bayern_temperatur'))*17.67)/(float(states('sensor.fuerth_bayern_temperatur'))+243.5))/(float(states('sensor.fuerth_bayern_temperatur'))+273.15))|round(2)}}
+    # - name: "Absolute Luftfeuchtigkeit außen"
+    #   unique_id: "AbsoluteHumidityOutside"
+    #   unit_of_measurement: "g/m³"
+    #   state_class: "measurement"
+    #   state: >
+    #     {{(float(states('sensor.fuerth_bayern_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.fuerth_bayern_temperatur'))*17.67)/(float(states('sensor.fuerth_bayern_temperatur'))+243.5))/(float(states('sensor.fuerth_bayern_temperatur'))+273.15))|round(2)}}
     # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur außen die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
     #- name: "Absolute Luftfeuchtigkeit außen2"
     #  unique_id: "AbsoluteHumidityOutside2"

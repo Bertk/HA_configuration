@@ -199,7 +199,7 @@
       4.0 > states(''sensor.fuerth_bayern_temperatur'') | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_hobbyraum'') |float
-      > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
+      > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float) }}'
   - condition: numeric_state
     entity_id: zone.home
     above: 0
@@ -207,16 +207,16 @@
   - metadata: {}
     data:
       message: Luftfeuchtigkeit ist hoch! Bitte lüften. Unterschied {{ (float(states('sensor.absolute_luftfeuchtigkeit_hobbyraum'))
-        - float(states('sensor.absolute_luftfeuchtigkeit_aussen'))) |round(1)  }}
-        g/m^3
+        - float(states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit'))) |round(1)  }}
+        g/m³
       title: Hobbyraum
     action: notify.bert_devices
   - action: persistent_notification.create
     metadata: {}
     data:
       message: Luftfeuchtigkeit ist hoch! Bitte lüften. Unterschied {{ (float(states('sensor.absolute_luftfeuchtigkeit_hobbyraum'))
-        - float(states('sensor.absolute_luftfeuchtigkeit_aussen'))) |round(1)  }}
-        g/m^3
+        - float(states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit'))) |round(1)  }}
+        g/m³
       title: Hobbyraum
   mode: single
 - id: '1712561366726'
@@ -239,7 +239,7 @@
     above: 65
   - condition: template
     value_template: '{{ states(''sensor.absolute_luftfeuchtigkeit_bad'') |float >
-      states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float }}'
+      states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float }}'
   - condition: numeric_state
     entity_id: zone.home
     above: 0
@@ -276,7 +276,7 @@
       | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_wohnzimmer'') |float
-      > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
+      > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float) }}'
   - condition: numeric_state
     entity_id: zone.home
     above: 0
@@ -404,7 +404,8 @@
       | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_gastezimmer'')
-      |float > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
+      |float > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float)
+      }}'
   - condition: numeric_state
     entity_id: zone.home
     above: 0
@@ -443,7 +444,7 @@
       | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_toilette'') |float
-      > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
+      > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float) }}'
   - condition: numeric_state
     entity_id: zone.home
     above: 0
@@ -783,7 +784,8 @@
       | float) }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_schlafzimmer'')
-      |float > states(''sensor.absolute_luftfeuchtigkeit_aussen'') |float) }}'
+      |float > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float)
+      }}'
   - condition: numeric_state
     entity_id: zone.home
     above: 0
@@ -916,7 +918,7 @@
         id:
         - Charging-condition
       - condition: time
-        after: '11:00:00'
+        after: '11:30:00'
       - condition: numeric_state
         entity_id: sensor.solarman_total_active_power_output
         above: 1.5
