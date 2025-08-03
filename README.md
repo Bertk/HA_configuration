@@ -87,7 +87,6 @@ This dashboard provides an overview of various views for configurations and devi
 >
 > I used  for my Home Assistant first steps (German language)
 >
-> - [In Home Assistant Stromzähler ⚡️ auslesen mit Powerfox](https://www.simon42.com/home-assistant-stromzaehler/)
 > - [Home Assistant Template Sensoren & Hilfsentitäten (Helfer) 101](https://www.simon42.com/home-assistant-template-sensoren-hilfsentitaten/)
 > - [Home Assistant Dashboard mit Abschnitten (neue Methode 2024)!](https://www.simon42.com/home-assistant-dashboards/)
 > - [Home Assistant Automation Tutorial – Komplett & verständlich erklärt](https://www.simon42.com/home-assistant-automation-tutorial/)
