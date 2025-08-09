@@ -58,6 +58,7 @@ logbook:
 
 # modbus: !include modbus.yaml
 template: !include templates.yaml
+sensor: !include sensors.yaml
 
 climate:
   - platform: generic_thermostat

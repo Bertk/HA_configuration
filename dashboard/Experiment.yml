@@ -102,8 +102,10 @@ views:
                 entity: sensor.wh_system_aussentemperatur
               - type: tile
                 icon: mdi:water-circle
-                entity: sensor.absolute_luftfeuchtigkeit_aussen
                 name: Absolute Luftfeuchtigkeit Fürth
+                features_position: bottom
+                vertical: false
+                entity: sensor.fuerth_bayern_absolute_luftfeuchtigkeit
                 card_mod:
                   style: |
                     ha-card {

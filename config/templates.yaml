@@ -306,3 +306,12 @@
       unique_id: sun_duration_forecast_in_5_hours
       state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[5].sun_duration }}"
       unit_of_measurement: s
+    # Sonnenenstrahlung in 6 Stunden
+    - name: Sonneneinstrahlung-Vorhersage in 6 Stunden
+      unique_id: sun_irradiance_forecast_in_6_hours
+      state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[6].sun_irradiance }}"
+      unit_of_measurement: W/m²
+    - name: Sonnenscheindauer-Vorhersage in 6 Stunden
+      unique_id: sun_duration_forecast_in_6_hours
+      state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[6].sun_duration }}"
+      unit_of_measurement: s

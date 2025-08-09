@@ -918,21 +918,26 @@
         id:
         - Charging-condition
       - condition: time
-        after: '11:30:00'
+        after: '12:30:00'
       - condition: numeric_state
         entity_id: sensor.solarman_total_active_power_output
         above: 1.5
         enabled: false
-      - condition: state
-        entity_id: input_select.sax_a_leistungsgrenzwert_laden
-        state: '0'
-        for:
-          hours: 0
-          minutes: 0
-          seconds: 0
       - condition: numeric_state
         entity_id: sensor.sax_battery_a_soc
         below: 95
+      - condition: or
+        conditions:
+        - condition: numeric_state
+          entity_id: number.maximum_charge_power
+          below: 1
+        - condition: state
+          entity_id: input_select.sax_a_leistungsgrenzwert_laden
+          state: '0'
+          for:
+            hours: 0
+            minutes: 0
+            seconds: 0
       sequence:
       - action: input_select.select_option
         metadata: {}
@@ -1190,7 +1195,7 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '750'
+          option: '1000'
     - conditions:
       - condition: and
         conditions:
@@ -1402,16 +1407,34 @@
     - sensor.fr_hj10re001190_radon
     above: 100
     id: Über_100
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+    below: 150
   - trigger: numeric_state
     entity_id:
     - sensor.fr_hj10re001190_radon
     above: 150
     id: Über_150
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+    below: 200
   - trigger: numeric_state
     entity_id:
     - sensor.fr_hj10re001190_radon
     above: 200
-  conditions: []
+    id: Über_200
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  conditions:
+  - condition: numeric_state
+    entity_id: zone.home
+    above: 0
   actions:
   - action: notify.persistent_notification
     metadata: {}

@@ -2,6 +2,8 @@
 ## Sensors
 #################################################################
 
+# actual defined in configuration.yaml !!!!!
+
 - platform: integration
   name: sax_energy_input
   unique_id: sax_energy_input
