@@ -50,7 +50,7 @@ Experiment
 - Device and pump controls
 - Subviews for garden, garage, hobby room, and more
 
-Integrations
+## Integrations
 
 - Modbus: SAX battery control and monitoring
 - REST: Tibber electricity price API
