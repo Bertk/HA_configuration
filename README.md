@@ -1,6 +1,61 @@
 # ![HA icon](assets/HA_100x100.png) HA_configuration
 
-My home assistant configuration YAML files and some screenshots
+My home assistant configuration YAML files and some screenshots.
+
+This repository contains a comprehensive Home Assistant setup for smart home automation, energy monitoring, and device control.
+
+## Features
+
+- Automations: Extensive YAML-based automations for heating, lighting, ventilation, leak detection, and more.
+- Energy Dashboard: Custom Lovelace dashboards for real-time and historical energy data, including solar generation, battery status, and smart meter readings.
+- Device Integrations:
+  - SAX battery via Modbus TCP
+  - Tibber electricity price integration
+  - Solarman PV sensors
+  - Generic thermostat for infrared heating
+- Sensors & Templates: Advanced template sensors for energy, humidity, dew point, and cost calculations.
+- Input Selects: Dynamic controls for battery charge/discharge limits.
+- Notifications: Mobile and persistent notifications for events and alerts.
+
+## Directory Structure
+
+```yaml
+config/
+  automations.yaml      # All automations and triggers
+  configuration.yaml    # Main configuration, integrations, sensors
+  input_select.yaml     # Input selects for battery control
+  modbus.yaml           # Modbus integration for SAX battery
+  sensors.yaml          # Integration sensors for energy tracking
+  templates.yaml        # Template sensors for advanced calculations
+dashboard/
+  EnergyCustom.yml      # Custom Lovelace dashboard for energy
+  Experiment.yml        # Experimental dashboard views
+assets/
+  *.png                 # Dashboard and device icons
+```
+
+## Dashboards
+
+EnergyCustom
+
+- Real-time graphs for solar, battery, smart meter, and grid power
+- Historical data visualization (36 hours)
+- Solarman sensor overview
+- Energy balance and cumulative battery stats
+
+Experiment
+
+- Room-based views (Home, Technikraum, Gästezimmer, etc.)
+- Live energy flows and balances
+- Device and pump controls
+- Subviews for garden, garage, hobby room, and more
+
+Integrations
+
+- Modbus: SAX battery control and monitoring
+- REST: Tibber electricity price API
+- Generic Thermostat: Infrared heating automation
+- Binary Sensors: Night mode, leak detection
 
 ## My actual startup screen
 

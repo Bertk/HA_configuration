@@ -100,3 +100,11 @@ views:
           - entity: sensor.solarman_total_active_power_output
             name: Total Active Power Output
         title: Solarman
+      - title: Verlauf
+        type: history-graph
+        hours_to_show: 14
+        entities:
+          - entity: sensor.sax_battery_cumulative_energy_going_into_the_battery
+          - entity: sensor.sax_energy_input
+          - entity: sensor.sax_energy_output
+          - entity: sensor.sax_battery_cumulative_energy_coming_out_of_the_battery

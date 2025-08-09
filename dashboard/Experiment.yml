@@ -969,6 +969,9 @@ views:
                 - entity: sensor.kuche_kochfeld_leistung
                   secondary_info: {}
                   name: Kochfeld
+                - entity: sensor.hobbyraum_steckdose_leistung
+                  secondary_info: {}
+                  name: Infrarotheizen
             clickable_entities: true
             display_zero_lines:
               mode: show
@@ -1568,91 +1571,6 @@ views:
           reverse: true
           numeric: true
       - type: custom:auto-entities
-        show_empty: false
-        card:
-          type: vertical-stack
-        card_param: cards
-        filter:
-          template: >-
-            {% set area_filter = ['wohnung','Steckdose Wohnzimmer','Allgemein']
-            %}
-
-            {% set areas = states.switch
-              | map(attribute='entity_id')
-              | map('area_name') | unique | reject('none') | rejectattr('entity_id','in', area_filter) | list %}
-            {%- for area in areas -%}  
-                {%- if area not in area_filter -%}
-                   {{{ 'type': 'vertical-stack',
-                  'title': area,
-                  'cards': 
-                    [{                     
-                       'type': 'custom:auto-entities',
-                       'show_empty' : 'false',
-                       'card' : 
-                       { 'type': 'grid',
-                          'columns': 2,
-                          'square': false,
-                       },
-                       'card_param': 'cards',
-                       'filter':
-                       { 'include': 
-                       [{ 'domain' : 'switch', 
-                           'area' : area,
-                           'options':
-                           {'type' : 'tile'}}],
-                         'exclude': 
-                       [{  'name' : 'Reolink*'},
-                        {  'state': 'unavailable'}
-                        ]},           
-                 
-                       }]}}}, 
-              {%- endif -%} 
-              {%- endfor %}
-      - type: entities
-        entities:
-          - entity: sensor.tibber_pulse_xxx_durchschnittliche_leistung
-            name: Durchschnittliche Leistung
-          - entity: sensor.tibber_pulse_xxx_energie
-            name: Energie
-          - entity: >-
-              sensor.tibber_pulse_xxx_geschatzter_verbrauch_aktuelle_stunde
-            name: Geschätzter Verbrauch aktuelle Stunde
-          - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
-            name: Kumulierte Kosten
-          - entity: sensor.tibber_pulse_xxx_kumulierte_produktion
-            name: Kumulierte Produktion
-          - entity: >-
-              sensor.tibber_pulse_xxx_kumulierte_produktion_laufende_stunde
-            name: Kumulierte Produktion laufende Stunde
-          - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
-            name: Kumulierter Verbrauch
-          - entity: >-
-              sensor.tibber_pulse_xxx_kumulierter_verbrauch_aktuelle_stunde
-            name: Kumulierter Verbrauch aktuelle Stunde
-          - entity: sensor.tibber_pulse_xxx_maximale_leistung
-            name: Maximale Leistung
-          - entity: sensor.tibber_pulse_xxx_minimale_leistung
-            name: Minimale Leistung
-          - entity: sensor.xxx_monatliche_kosten
-            name: Monatliche Kosten
-          - entity: sensor.xxx_monatlicher_nettoverbrauch
-            name: Monatlicher Nettoverbrauch
-          - entity: sensor.xxx_monatlicher_spitzenstundenverbrauch
-            name: Monatlicher Spitzenstundenverbrauch
-          - entity: >-
-              sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
-            name: Produktion auf der letzten Meile
-          - entity: sensor.tibber_pulse_xxx_stromerzeugung
-            name: Stromerzeugung
-          - entity: sensor.xxx_strompreis
-            name: Strompreis
-          - entity: >-
-              sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
-            name: Verbrauch auf der letzten Meile
-          - entity: sensor.xxx_zeitpunkt_des_maximalen_stundenverbrauchs
-            name: Zeitpunkt des maximalen Stundenverbrauchs
-        title: Tibber Pulse xxx
-      - type: custom:auto-entities
         card:
           title: Aktueller Stromverbrauch
           type: entities
@@ -1737,6 +1655,7 @@ views:
 
                       --card-mod-icon: mdi:lightning-bolt-circle;
                     }
+            - options: {}
           exclude:
             - entity_id: sensor.warmeleistung
             - entity_id: sensor.wh_warmepumpe_warmeleistung
@@ -1750,10 +1669,96 @@ views:
             - entity_id: sensor.p_sax_export
             - entity_id: sensor.p_sax_import
             - entity_id: sensor.sax_battery_a_power
+            - entity_id: sensor.tibber_pulse_xxx_maximale_leistung
         sort:
           method: state
           reverse: true
           numeric: true
+      - type: entities
+        entities:
+          - entity: sensor.tibber_pulse_xxx_durchschnittliche_leistung
+            name: Durchschnittliche Leistung
+          - entity: sensor.tibber_pulse_xxx_energie
+            name: Energie
+          - entity: >-
+              sensor.tibber_pulse_xxx_geschatzter_verbrauch_aktuelle_stunde
+            name: Geschätzter Verbrauch aktuelle Stunde
+          - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
+            name: Kumulierte Kosten
+          - entity: sensor.tibber_pulse_xxx_kumulierte_produktion
+            name: Kumulierte Produktion
+          - entity: >-
+              sensor.tibber_pulse_xxx_kumulierte_produktion_laufende_stunde
+            name: Kumulierte Produktion laufende Stunde
+          - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
+            name: Kumulierter Verbrauch
+          - entity: >-
+              sensor.tibber_pulse_xxx_kumulierter_verbrauch_aktuelle_stunde
+            name: Kumulierter Verbrauch aktuelle Stunde
+          - entity: sensor.tibber_pulse_xxx_maximale_leistung
+            name: Maximale Leistung
+          - entity: sensor.tibber_pulse_xxx_minimale_leistung
+            name: Minimale Leistung
+          - entity: sensor.xxx_monatliche_kosten
+            name: Monatliche Kosten
+          - entity: sensor.xxx_monatlicher_nettoverbrauch
+            name: Monatlicher Nettoverbrauch
+          - entity: sensor.xxx_monatlicher_spitzenstundenverbrauch
+            name: Monatlicher Spitzenstundenverbrauch
+          - entity: >-
+              sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
+            name: Produktion auf der letzten Meile
+          - entity: sensor.tibber_pulse_xxx_stromerzeugung
+            name: Stromerzeugung
+          - entity: sensor.xxx_strompreis
+            name: Strompreis
+          - entity: >-
+              sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+            name: Verbrauch auf der letzten Meile
+          - entity: sensor.xxx_zeitpunkt_des_maximalen_stundenverbrauchs
+            name: Zeitpunkt des maximalen Stundenverbrauchs
+        title: Tibber Pulse XXX
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: vertical-stack
+        card_param: cards
+        filter:
+          template: >-
+            {% set area_filter = ['wohnung','Steckdose Wohnzimmer','Allgemein']
+            %}
+
+            {% set areas = states.switch
+              | map(attribute='entity_id')
+              | map('area_name') | unique | reject('none') | rejectattr('entity_id','in', area_filter) | list %}
+            {%- for area in areas -%}  
+                {%- if area not in area_filter -%}
+                   {{{ 'type': 'vertical-stack',
+                  'title': area,
+                  'cards': 
+                    [{                     
+                       'type': 'custom:auto-entities',
+                       'show_empty' : 'false',
+                       'card' : 
+                       { 'type': 'grid',
+                          'columns': 2,
+                          'square': false,
+                       },
+                       'card_param': 'cards',
+                       'filter':
+                       { 'include': 
+                       [{ 'domain' : 'switch', 
+                           'area' : area,
+                           'options':
+                           {'type' : 'tile'}}],
+                         'exclude': 
+                       [{  'name' : 'Reolink*'},
+                        {  'state': 'unavailable'}
+                        ]},           
+                 
+                       }]}}}, 
+              {%- endif -%} 
+              {%- endfor %}
   - title: Live-Strom
     path: live-strom
     icon: mdi:home-lightning-bolt-outline
@@ -2646,6 +2651,17 @@ views:
               - features: null
                 type: tile
                 entity: binary_sensor.va2456567040_batterie
+      - type: grid
+        cards:
+          - type: heading
+            heading: Stereo Smart Radio
+          - type: tile
+            entity: media_player.stereo_smart_radio
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
     max_columns: 4
   - title: Toilette
     path: toilette
@@ -2798,14 +2814,8 @@ views:
               - type: entities
                 title: Kochfeld
                 entities:
-                  - entity: sensor.kochfeld_duration
-                    name: Duration
                   - entity: sensor.kochfeld_operation_state
                     name: Operation State
-                  - entity: sensor.kochfeld_program_progress
-                    name: Program Progress
-                  - entity: sensor.kochfeld_remaining_program_time
-                    name: Remaining Program Time
                   - entity: binary_sensor.kochfeld_remote_control
                     name: Remote Control
           - type: entities
@@ -2838,6 +2848,63 @@ views:
       - type: grid
         cards:
           - type: heading
+            heading: Küche Spülmaschine
+          - type: tile
+            entity: sensor.kuche_spulmaschine_leistung
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.kuche_spulmaschine_spannung
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.kuche_spulmaschine_stromstarke
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.kuche_spulmaschine_summe_verbraucht
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: entity
+            entity: switch.kuche_spulmaschine_schalter_2
+            grid_options:
+              columns: 12
+              rows: 2
+          - type: entity
+            entity: switch.kuche_toaster_schalter
+            grid_options:
+              columns: 12
+              rows: 2
+          - type: entity
+            entity: switch.kuche_kaffeemaschine_schalter
+            grid_options:
+              columns: 12
+              rows: 2
+          - type: entity
+            entity: switch.kuche_wasserkocher_schalter_2
+            grid_options:
+              columns: 12
+              rows: 2
+          - type: entity
+            entity: switch.kuche_kuhlschrank_schalter
+            grid_options:
+              columns: 12
+              rows: 2
+      - type: grid
+        cards:
+          - type: heading
             heading: Küche Kühlschrank
           - type: entities
             entities:
@@ -2845,6 +2912,11 @@ views:
               - entity: sensor.kuche_kuhlschrank_stromstarke
               - entity: sensor.kuche_kuhlschrank_spannung
               - entity: sensor.kuche_kuhlschrank_summe_verbraucht
+          - type: entity
+            entity: switch.kuche_kuhlschrank_schalter
+            grid_options:
+              columns: 12
+              rows: 2
       - type: grid
         cards:
           - type: heading
@@ -2933,35 +3005,287 @@ views:
       - type: grid
         cards:
           - type: heading
-            heading: Küche Spülmaschine
+            heading: S8 MaxV Ultra Dock
           - type: tile
-            entity: sensor.kuche_spulmaschine_leistung
+            entity: select.s8_maxv_ultra_dock_entleerungsmodus
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
           - type: tile
-            entity: sensor.kuche_spulmaschine_spannung
+            entity: switch.s8_maxv_ultra_dock_kindersicherung
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading: S8 MaxV Ultra Dock
+          - type: tile
+            entity: sensor.s8_maxv_ultra_dock_dock_fehler
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
           - type: tile
-            entity: sensor.kuche_spulmaschine_stromstarke
+            entity: binary_sensor.s8_maxv_ultra_dock_mopp_trocknung
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
           - type: tile
-            entity: sensor.kuche_spulmaschine_summe_verbraucht
+            entity: sensor.s8_maxv_ultra_dock_verbleibende_zeit_zum_trocknen_des_mopps
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading: S8 MaxV Ultra
+          - type: tile
+            entity: select.s8_maxv_ultra_ausgewahlte_karte
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: switch.s8_maxv_ultra_bitte_nicht_storen
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: time.s8_maxv_ultra_bitte_nicht_storen_beginn
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: time.s8_maxv_ultra_bitte_nicht_storen_ende
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: number.s8_maxv_ultra_lautstarke
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: select.s8_maxv_ultra_mopp_modus
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: switch.roborock_vacuum_a97_internet_access
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: select.s8_maxv_ultra_wisch_intensitat
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading: S8 MaxV Ultra
+          - type: tile
+            entity: sensor.s8_maxv_ultra_aktueller_raum
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_batterie
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: image.s8_maxv_ultra_erdgeschoss
+            show_entity_picture: true
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_gesamter_reinigungsbereich
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_gesamtreinigungszeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_gesamtzahl_reinigungen
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.s8_maxv_ultra_ladestatus
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_letzter_reinigungsbeginn
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_letztes_reinigungsende
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.s8_maxv_ultra_mopp_angebracht
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.s8_maxv_ultra_reinigen
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_reinigungsbereich
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_reinigungsfortschritt
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_reinigungszeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: device_tracker.roborock_vacuum_a97
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_status
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_staubsauger_fehler
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_verbleibende_filterzeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_verbleibende_sensorzeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_verbleibende_zeit_der_hauptburste
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.s8_maxv_ultra_verbleibende_zeit_der_seitenburste
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.s8_maxv_ultra_wasserkasten_angebracht
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.s8_maxv_ultra_wasserknappheit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+          - show_state: true
+            show_name: true
+            camera_view: auto
+            fit_mode: cover
+            type: picture-entity
+            entity: image.s8_maxv_ultra_erdgeschoss_custom
+            name: Erdgeschoss
+            grid_options:
+              columns: 24
+              rows: 8
+        column_span: 2
     max_columns: 4
     path: wohnzimmer
   - title: Werkstatt
@@ -3108,13 +3432,6 @@ views:
           - type: thermostat
             entity: climate.infrarotheizung_hobbyraum
           - type: tile
-            entity: switch.hobbyraum_luftungstecker_schalter
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
             entity: input_boolean.infrarotheizung_aktivieren
             features_position: bottom
             vertical: false
@@ -3136,6 +3453,25 @@ views:
               - entity: binary_sensor.hobbyraum_fenster_state
                 name: Status
             title: Hobbyraum Fenster
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Lüfter Kellerfenster
+          - type: entities
+            entities:
+              - entity: sensor.hobbyraum_luftungstecker_leistung
+              - entity: sensor.hobbyraum_luftungstecker_spannung
+              - entity: sensor.hobbyraum_luftungstecker_stromstarke
+              - entity: sensor.hobbyraum_luftungstecker_summe_verbraucht
+            title: Lüfter
+          - type: tile
+            entity: switch.hobbyraum_luftungstecker_schalter
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
     max_columns: 4
   - title: Gartenhaus
     path: gartenhaus
