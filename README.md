@@ -125,7 +125,7 @@ This dashboard provides an overview of various views for configurations and devi
 |[Modbus](https://www.home-assistant.io/integrations/modbus)||
 |[MusicCast](https://www.home-assistant.io/integrations/yamaha_musiccast)||
 |[Oral-B](https://www.home-assistant.io/integrations/oralb)||
-|[RD200 BLE](https://github.com/jdeath/rd200v2)||
+|[RadonEye RD200 BLE](https://github.com/jdeath/rd200v2)||
 |[RESTful](https://www.home-assistant.io/integrations/rest)||
 |[Reolink](https://www.home-assistant.io/integrations/reolink)||
 |[Sonne](https://www.home-assistant.io/integrations/sun)||
