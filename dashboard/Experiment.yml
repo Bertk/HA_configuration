@@ -611,6 +611,8 @@ views:
                   action: navigate
                   navigation_path: /dashboard-experiment/wohnzimmer
                 name: Temperatur
+                features_position: bottom
+                vertical: false
               - type: tile
                 entity: sensor.wohnzimmer_luftfeuchtigkeit
                 tap_action:
@@ -653,8 +655,7 @@ views:
                        {% endif %}  
                       } 
               - type: entities
-                entities:
-                  - entity: fan.zhimi_vb2_d53d_air_purifier
+                entities: []
       - type: grid
         cards:
           - type: heading
@@ -1054,6 +1055,7 @@ views:
               - entity: sensor.technikraum_klima_temperatur_2
                 name: Temperatur
               - entity: binary_sensor.technikraum_wasser_feuchtigkeit
+              - entity: sensor.technikraum_klima_batterie_2
           - type: entities
             title: Stromspeicher
             entities:
@@ -1070,6 +1072,11 @@ views:
               - entity: input_select.sax_a_leistungsgrenzwert_laden
               - entity: sensor.sax_battery_a_energy_consumed
               - entity: sensor.sax_battery_a_energy_produced
+          - type: entities
+            entities:
+              - entity: binary_sensor.technikraum_wasser_feuchtigkeit
+              - entity: sensor.technikraum_wasser_batterie
+            title: Feuchtigkeit Sensor
       - type: grid
         cards:
           - type: heading
@@ -1350,9 +1357,10 @@ views:
                   type: tile
                   entity: binary_sensor.gastezimmer_fenster
                   name: Fenster
-              - features: null
-                type: tile
-                entity: binary_sensor.va2589878272_batterie
+              - type: tile
+                features_position: bottom
+                vertical: false
+                entity: binary_sensor.va2589878272_batteriestand
       - type: grid
         cards:
           - type: heading
@@ -1393,6 +1401,7 @@ views:
             entities:
               - entity: binary_sensor.gastezimmer_fenster_state
                 name: Öffnung
+              - entity: sensor.gastezimmer_fenster_batterie_3
     max_columns: 4
   - title: Testing
     icon: mdi:alert
@@ -2347,8 +2356,10 @@ views:
               - features:
                   - type: target-temperature
                 type: tile
-                entity: binary_sensor.va2675456768_batterie
-                name: Batterie
+                entity: binary_sensor.va2675456768_batteriestand
+                name: Thermostat Batterie
+                features_position: bottom
+                vertical: false
       - type: grid
         cards:
           - type: heading
@@ -2368,6 +2379,13 @@ views:
               - entity: binary_sensor.bad_fenster_state
                 name: Öffnung
             title: Bad Fenster Status
+          - type: tile
+            entity: sensor.bad_fenster_batterie
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
     max_columns: 4
   - title: Flur
     path: flur
@@ -2401,10 +2419,10 @@ views:
                   - mean
                 hide_legend: false
                 unit: '%'
-              - features: null
-                type: tile
-                entity: binary_sensor.va1951284992_batterie
-                name: Batterie
+              - type: tile
+                features_position: bottom
+                vertical: false
+                entity: binary_sensor.va1951284992_batteriestand
           - type: thermostat
             entity: climate.flur
       - type: grid
@@ -2437,9 +2455,10 @@ views:
                 name: Belegung
               - entity: sensor.flur_bewegungssensor_og_beleuchtungsstarke
                 name: Beleuchtungsstärke
-              - binary_sensor.flur_dunkel
+              - entity: binary_sensor.flur_dunkel
               - entity: binary_sensor.flur_bewegungssensor_og_offnung
                 name: Öffnung
+              - entity: sensor.flur_bewegungssensor_og_batterie
             title: Flur Bewegungssensor OG
       - type: grid
         cards:
@@ -2471,9 +2490,10 @@ views:
                 name: Belegung
               - entity: sensor.flur_bewegungssensor_ug_beleuchtungsstarke
                 name: Beleuchtungsstärke
-              - binary_sensor.flur_dunkel_ug
+              - entity: binary_sensor.flur_dunkel_ug
               - entity: binary_sensor.flur_bewegungssensor_ug_offnung
                 name: Öffnung
+              - entity: sensor.flur_bewegungssensor_ug_batterie
             title: Flur Bewegungssensor UG
       - type: grid
         cards:
@@ -2554,7 +2574,9 @@ views:
                       - heat
                       - 'off'
                 type: tile
-                entity: binary_sensor.va0006187008_batterie
+                features_position: bottom
+                vertical: false
+                entity: binary_sensor.va0006187008_batteriestand
       - type: grid
         cards:
           - type: heading
@@ -2609,6 +2631,7 @@ views:
             entities:
               - entity: binary_sensor.schlafzimmer_fenster_state
                 name: Status
+              - entity: sensor.schlafzimmer_fenster_batterie
             title: Schlafzimmer Fenster
     max_columns: 4
   - title: Büro
@@ -2648,9 +2671,10 @@ views:
             entity: climate.buro
           - type: vertical-stack
             cards:
-              - features: null
-                type: tile
-                entity: binary_sensor.va2456567040_batterie
+              - type: tile
+                entity: binary_sensor.va2456567040_batteriestand
+                features_position: bottom
+                vertical: false
       - type: grid
         cards:
           - type: heading
@@ -2693,15 +2717,16 @@ views:
                 stat_types:
                   - mean
                 hide_legend: false
-              - type: entities
-                entities:
-                  - entity: binary_sensor.va1713388544_verbindungsstatus
-              - features: null
-                type: tile
-                entity: binary_sensor.va1713388544_batterie
+              - type: tile
+                entity: binary_sensor.va1713388544_batteriestand
+                features_position: bottom
+                vertical: false
               - type: entities
                 entities:
                   - entity: binary_sensor.toilette_fenster
+              - type: entities
+                entities:
+                  - entity: sensor.toilette_fenster_batterie
       - type: grid
         cards:
           - type: heading
@@ -3370,17 +3395,17 @@ views:
                   entity: binary_sensor.hobbyraum_fenster
                   name: Fenster
               - type: tile
+                entity: binary_sensor.va1766735616_batteriestand
                 features_position: bottom
                 vertical: false
-                entity: binary_sensor.va1766735616_batterie
+              - type: tile
+                entity: binary_sensor.va1852914432_batteriestand
+                features_position: bottom
+                vertical: false
               - type: tile
                 features_position: bottom
                 vertical: false
-                entity: binary_sensor.va1852914432_batterie
-              - type: tile
-                entity: binary_sensor.va1766735616_verbindungsstatus
-              - type: tile
-                entity: binary_sensor.va1852914432_verbindungsstatus
+                entity: sensor.hobbyraum_fenster_batterie
           - type: thermostat
             entity: climate.hobbyraum
             features:
