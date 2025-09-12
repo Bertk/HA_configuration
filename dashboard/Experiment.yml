@@ -1061,7 +1061,7 @@ views:
             entities:
               - entity: sensor.sax_battery_a_storage_status
               - entity: sensor.sax_battery_a_power
-              - entity: sensor.sax_battery_a_smartmeter
+              - entity: sensor.sax_battery_a_smart_meter_total_power
               - entity: sensor.sax_battery_a_soc
               - entity: sensor.sax_battery_a_cycles
               - entity: sensor.sax_battery_a_capacity
@@ -2807,7 +2807,9 @@ views:
                       - heat
                       - 'off'
                 type: tile
-                entity: binary_sensor.va1683908608_batterie
+                entity: binary_sensor.va3043900160_batteriestand
+                features_position: bottom
+                vertical: false
               - features:
                   - type: target-temperature
                   - type: climate-hvac-modes
@@ -2816,7 +2818,9 @@ views:
                       - heat
                       - 'off'
                 type: tile
-                entity: binary_sensor.va1652046592_batterie
+                entity: binary_sensor.va1652046592_batteriestand
+                features_position: bottom
+                vertical: false
               - features:
                   - type: target-temperature
                   - type: climate-hvac-modes
@@ -2825,7 +2829,9 @@ views:
                       - heat
                       - 'off'
                 type: tile
-                entity: binary_sensor.va3043900160_batterie
+                entity: binary_sensor.va1683908608_batteriestand
+                features_position: bottom
+                vertical: false
           - type: thermostat
             entity: climate.wohnzimmer
       - type: grid
@@ -3000,6 +3006,212 @@ views:
       - type: grid
         cards:
           - type: heading
+            heading: Saros 10
+          - type: tile
+            entity: select.saros_10_ausgewahlte_karte
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: full
+              rows: 1
+          - type: tile
+            entity: switch.saros_10_bitte_nicht_storen
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: full
+              rows: 1
+          - type: tile
+            entity: time.saros_10_bitte_nicht_storen_beginn
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: full
+          - type: tile
+            entity: time.saros_10_bitte_nicht_storen_ende
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: full
+          - type: tile
+            entity: number.saros_10_lautstarke
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: full
+          - type: tile
+            entity: select.saros_10_mopp_modus
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: full
+          - type: tile
+            entity: switch.roborock_vacuum_a147_internet_access
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: full
+          - type: tile
+            entity: select.saros_10_wisch_intensitat
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: full
+      - type: grid
+        cards:
+          - type: heading
+            heading: Saros 10
+          - type: tile
+            entity: sensor.saros_10_aktueller_raum
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_batterie
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: image.saros_10_erdgeschoss
+            show_entity_picture: true
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_gesamter_reinigungsbereich
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_gesamtreinigungszeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_gesamtzahl_reinigungen
+          - type: tile
+            entity: binary_sensor.saros_10_ladestatus
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_letzter_reinigungsbeginn
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_letztes_reinigungsende
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.saros_10_mopp_angebracht
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.saros_10_reinigen
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_reinigungsbereich
+          - type: tile
+            entity: sensor.saros_10_reinigungsfortschritt
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_reinigungszeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: device_tracker.roborock_vacuum_a147
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_status
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_staubsauger_fehler
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_verbleibende_filterzeit
+          - type: tile
+            entity: sensor.saros_10_verbleibende_sensorzeit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_verbleibende_zeit_der_hauptburste
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: sensor.saros_10_verbleibende_zeit_der_seitenburste
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.saros_10_wasserkasten_angebracht
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: binary_sensor.saros_10_wasserknappheit
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+        column_span: 2
+      - type: grid
+        cards:
+          - type: heading
             heading_style: title
             heading: Mi Air Purifier Pro H
             icon: mdi:air-filter
@@ -3030,287 +3242,42 @@ views:
       - type: grid
         cards:
           - type: heading
-            heading: S8 MaxV Ultra Dock
+            heading: Saros 10 Dock
           - type: tile
-            entity: select.s8_maxv_ultra_dock_entleerungsmodus
+            entity: sensor.saros_10_dock_dock_fehler
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
           - type: tile
-            entity: switch.s8_maxv_ultra_dock_kindersicherung
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-      - type: grid
-        cards:
-          - type: heading
-            heading: S8 MaxV Ultra Dock
-          - type: tile
-            entity: sensor.s8_maxv_ultra_dock_dock_fehler
+            entity: binary_sensor.saros_10_dock_mopp_trocknung
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
           - type: tile
-            entity: binary_sensor.s8_maxv_ultra_dock_mopp_trocknung
+            entity: sensor.saros_10_dock_verbleibende_zeit_zum_trocknen_des_mopps
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
           - type: tile
-            entity: sensor.s8_maxv_ultra_dock_verbleibende_zeit_zum_trocknen_des_mopps
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-      - type: grid
-        cards:
-          - type: heading
-            heading: S8 MaxV Ultra
-          - type: tile
-            entity: select.s8_maxv_ultra_ausgewahlte_karte
+            entity: select.saros_10_dock_entleerungsmodus
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
           - type: tile
-            entity: switch.s8_maxv_ultra_bitte_nicht_storen
+            entity: switch.saros_10_dock_kindersicherung
             features_position: bottom
             vertical: false
             grid_options:
               columns: 12
               rows: 1
-          - type: tile
-            entity: time.s8_maxv_ultra_bitte_nicht_storen_beginn
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: time.s8_maxv_ultra_bitte_nicht_storen_ende
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: number.s8_maxv_ultra_lautstarke
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: select.s8_maxv_ultra_mopp_modus
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: switch.roborock_vacuum_a97_internet_access
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: select.s8_maxv_ultra_wisch_intensitat
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-      - type: grid
-        cards:
-          - type: heading
-            heading: S8 MaxV Ultra
-          - type: tile
-            entity: sensor.s8_maxv_ultra_aktueller_raum
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_batterie
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: image.s8_maxv_ultra_erdgeschoss
-            show_entity_picture: true
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_gesamter_reinigungsbereich
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_gesamtreinigungszeit
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_gesamtzahl_reinigungen
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: binary_sensor.s8_maxv_ultra_ladestatus
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_letzter_reinigungsbeginn
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_letztes_reinigungsende
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: binary_sensor.s8_maxv_ultra_mopp_angebracht
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: binary_sensor.s8_maxv_ultra_reinigen
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_reinigungsbereich
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_reinigungsfortschritt
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_reinigungszeit
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: device_tracker.roborock_vacuum_a97
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_status
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_staubsauger_fehler
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_verbleibende_filterzeit
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_verbleibende_sensorzeit
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_verbleibende_zeit_der_hauptburste
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: sensor.s8_maxv_ultra_verbleibende_zeit_der_seitenburste
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: binary_sensor.s8_maxv_ultra_wasserkasten_angebracht
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
-            entity: binary_sensor.s8_maxv_ultra_wasserknappheit
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-      - type: grid
-        cards:
-          - type: heading
-            heading_style: title
-          - show_state: true
-            show_name: true
-            camera_view: auto
-            fit_mode: cover
-            type: picture-entity
-            entity: image.s8_maxv_ultra_erdgeschoss_custom
-            name: Erdgeschoss
-            grid_options:
-              columns: 24
-              rows: 8
-        column_span: 2
     max_columns: 4
     path: wohnzimmer
   - title: Werkstatt

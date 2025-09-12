@@ -3,9 +3,9 @@ sax_a_leistungsgrenzwert_entladen:
   initial: "1000"
   options:
     - "4600"
+    - "3500"
     - "2500"
     - "1000"
-    - "750"
     - "500"
     - "0"
   icon: mdi:battery-arrow-up
