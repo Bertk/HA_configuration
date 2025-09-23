@@ -929,7 +929,7 @@
       - condition: or
         conditions:
         - condition: numeric_state
-          entity_id: number.maximum_charge_power
+          entity_id: number.sax_battery_a_max_charge
           below: 1
         - condition: state
           entity_id: input_select.sax_a_leistungsgrenzwert_laden
@@ -955,7 +955,7 @@
         data:
           value: '{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}'
         target:
-          entity_id: number.maximum_charge_power
+          entity_id: number.sax_battery_a_max_charge
       - action: system_log.write
         metadata: {}
         data:
@@ -1104,6 +1104,17 @@
     - conditions:
       - condition: trigger
         id:
+        - Strompreis-No-Export
+      sequence:
+      - action: select.select_option
+        metadata: {}
+        data:
+          option: '0'
+        target:
+          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+    - conditions:
+      - condition: trigger
+        id:
         - SOC_below_10
         - SOC_below_8
         - SOC_below_6
@@ -1126,7 +1137,7 @@
           above: 10
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
-          above: input_number.speicher_export_strompreis
+          above: input_number.strompreis_speicher_export
         - condition: template
           value_template: '{{states(''sensor.solarman_total_active_power_output'')
             | float(0) == float(0)}}'
@@ -1147,7 +1158,7 @@
             | float(0) > float(0.5)}}'
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
-          above: input_number.speicher_export_strompreis
+          above: input_number.strompreis_speicher_export
       sequence:
       - action: input_select.select_option
         target:
@@ -1210,17 +1221,6 @@
         metadata: {}
         data:
           option: '1000'
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
-    - conditions:
-      - condition: trigger
-        id:
-        - Strompreis-No-Export
-      sequence:
-      - action: select.select_option
-        metadata: {}
-        data:
-          option: '0'
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
   mode: single
