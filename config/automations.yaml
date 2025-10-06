@@ -910,6 +910,7 @@
   - trigger: time_pattern
     minutes: /15
     id: Charging-condition
+    enabled: false
   conditions: []
   actions:
   - choose:
@@ -1389,15 +1390,20 @@
     - action: select.select_option
       metadata: {}
       data:
-        option: hz_operationmode_standby
+        option: sys_operationmode_standby
       target:
         entity_id:
         - select.wh_system_systembetriebsart
   - if:
-    - condition: trigger
-      id:
-      - Strom-billig
-      - Heizen-ein
+    - condition: and
+      conditions:
+      - condition: trigger
+        id:
+        - Strom-billig
+        - Heizen-ein
+      - condition: numeric_state
+        entity_id: sensor.strompreis_avg_xxx
+        below: input_number.strompreis_heizung_aus
     then:
     - action: climate.set_hvac_mode
       metadata: {}
