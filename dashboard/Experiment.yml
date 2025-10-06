@@ -236,6 +236,13 @@ views:
               columns: 12
               rows: 1
           - type: tile
+            entity: input_number.strompreis_speicher_export_stop
+            features_position: bottom
+            vertical: false
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
             entity: sensor.xxx_strompreis
             grid_options:
               columns: 12
@@ -1059,19 +1066,18 @@ views:
           - type: entities
             title: Stromspeicher
             entities:
-              - entity: sensor.sax_battery_a_storage_status
+              - entity: switch.sax_cluster_on_off
               - entity: sensor.sax_battery_a_power
-              - entity: sensor.sax_battery_a_smart_meter_total_power
               - entity: sensor.sax_battery_a_soc
               - entity: sensor.sax_battery_a_cycles
               - entity: sensor.sax_battery_a_capacity
               - entity: sensor.sax_battery_a_temperature
-              - entity: sensor.sax_battery_a_status
-              - entity: switch.sax_battery_system_sax_battery_a_on_off
               - entity: input_select.sax_a_leistungsgrenzwert_entladen
               - entity: input_select.sax_a_leistungsgrenzwert_laden
-              - entity: sensor.sax_battery_a_energy_consumed
-              - entity: sensor.sax_battery_a_energy_produced
+              - entity: sensor.sax_smart_meter_energy_consumed
+                name: Smartmeter Energy Consumed
+              - entity: sensor.sax_smart_meter_energy_produced
+                name: Smartmeter Energy Produced
           - type: entities
             entities:
               - entity: binary_sensor.technikraum_wasser_feuchtigkeit

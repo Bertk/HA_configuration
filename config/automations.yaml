@@ -892,7 +892,7 @@
           hvac_mode: 'off'
   mode: single
 - id: '1728047559032'
-  alias: Sax_a Ladeleistung setzen
+  alias: Sax_a monitor Ladeleistung
   description: ''
   triggers:
   - trigger: state
@@ -929,7 +929,7 @@
       - condition: or
         conditions:
         - condition: numeric_state
-          entity_id: number.sax_battery_a_max_charge
+          entity_id: sensor.sax_battery_a_power
           below: 1
         - condition: state
           entity_id: input_select.sax_a_leistungsgrenzwert_laden
@@ -955,7 +955,7 @@
         data:
           value: '{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}'
         target:
-          entity_id: number.sax_battery_a_max_charge
+          entity_id: number.sax_cluster_max_charge
       - action: system_log.write
         metadata: {}
         data:
@@ -1092,12 +1092,13 @@
       seconds: 0
   - trigger: time_pattern
     id: entladen_refresh
-    minutes: /10
+    minutes: /5
+    enabled: false
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
-    above: input_number.strompreis_speicher_export_stop
     id: Strompreis-No-Export
+    below: input_number.strompreis_speicher_export_stop
   conditions: []
   actions:
   - choose:
@@ -1177,7 +1178,7 @@
         data:
           value: '{{states.input_select.sax_a_leistungsgrenzwert_entladen.state}}'
         target:
-          entity_id: number.maximum_discharge_power
+          entity_id: number.sax_cluster_max_discharge
       - action: system_log.write
         metadata: {}
         data:
@@ -1197,16 +1198,16 @@
           - Preis_Tibber_niedrig
         - condition: numeric_state
           entity_id: sensor.sax_battery_a_soc
-          above: 10
+          above: 15
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
-          above: input_number.strompreis_speicher_export_stop
+          above: input_number.strompreis_speicher_export
       sequence:
       - action: input_select.select_option
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '1000'
+          option: '750'
     - conditions:
       - condition: and
         conditions:
@@ -1223,6 +1224,8 @@
           option: '1000'
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+  trace:
+    stored_traces: 100
   mode: single
 - id: '1732179668111'
   alias: Update Schaltspiele
@@ -1329,28 +1332,44 @@
   mode: single
   max_exceeded: silent
 - id: '1738834207494'
-  alias: Heizung aus- und einschalten
+  alias: Wärmepumpe Heizen/Standby abhängig vom Preis
   description: ''
   triggers:
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
     above: input_number.strompreis_heizung_aus
-    id: Heizung über 40 cent
+    id: Strom-teuer
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
     below: input_number.strompreis_heizung_aus
-    id: Heizung unter 40 cent
+    id: Strom-billig
+  - trigger: numeric_state
+    entity_id:
+    - sensor.strompreis_avg_xxx
+    below: sensor.strompreis_avg_xxx
+    id: Heizen-ein
+  - trigger: numeric_state
+    entity_id:
+    - sensor.strompreis_avg_xxx
+    id: Heizen-aus
+    above: sensor.strompreis_avg_xxx
   conditions:
-  - condition: state
-    entity_id: sensor.wh_warmepumpe_betrieb
-    state: heatpump_operationmode_heating
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: select.wh_system_systembetriebsart
+      state: sys_operationmode_heating
+    - condition: state
+      entity_id: select.wh_system_systembetriebsart
+      state: sys_operationmode_standby
   actions:
   - if:
     - condition: trigger
       id:
-      - Heizung über 40 cent
+      - Heizen-aus
+      - Strom-teuer
     then:
     - action: climate.set_hvac_mode
       metadata: {}
@@ -1366,16 +1385,19 @@
         - efbb3cecd598fb7330300a427dce9a57
         - d46a57130ab7752ec7880c6bf63f93d0
         - 6cb5174cbfcb846cf088918bc707276a
+      enabled: true
     - action: select.select_option
       metadata: {}
       data:
         option: hz_operationmode_standby
       target:
-        entity_id: select.wh_heizkreis_betriebsart
+        entity_id:
+        - select.wh_system_systembetriebsart
   - if:
     - condition: trigger
       id:
-      - Heizung unter 40 cent
+      - Strom-billig
+      - Heizen-ein
     then:
     - action: climate.set_hvac_mode
       metadata: {}
@@ -1391,12 +1413,14 @@
         - efbb3cecd598fb7330300a427dce9a57
         - d46a57130ab7752ec7880c6bf63f93d0
         - 6cb5174cbfcb846cf088918bc707276a
+      enabled: true
     - action: select.select_option
       metadata: {}
       data:
-        option: hz_operationmode_automatic
+        option: sys_operationmode_heating
       target:
-        entity_id: select.wh_heizkreis_betriebsart
+        entity_id:
+        - select.wh_system_systembetriebsart
   mode: single
 - id: '1738915844292'
   alias: Radon Werte Benachrichtigung

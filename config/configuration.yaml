@@ -26,7 +26,7 @@ rest:
       User-Agent: REST
     scan_interval: 300
     sensor:
-      - name: "Electricity price Prognose"
+      - name: "Electricity price Prognose XXX"
         unique_id: sensor.electricity_price_prognose_xxx
         json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
         json_attributes:
@@ -36,19 +36,25 @@ rest:
         unit_of_measurement: EUR/kWh
 
 logger:
-  default: info
-  #  logs:
+  default: warning
+  # logs:
+  #  custom_components.sax_battery: debug
+  #  custom_components.sax_battery.items: debug
+  #  custom_components.sax_battery.coordinator: debug
+  #  pymodbus: error
+  # logs:
   #    pyeasee: debug
   #    custom_components.easee: debug
-  # default: warning
-  #logs:
-  #  homeassistant.components.modbus: debug
-  #  pymodbus: debug
   filters:
     custom_components.solarman.solarman:
       - "Querying .1024 - 1070. failed" # NoSocketAvailableError, Empty
       - "Querying registers .1024 - 1070. failed"
       - "Update of sensor.solarman_pv1_power is taking over 10 seconds"
+    bluetooth_auto_recovery.recove:
+      - "Could not cycle the Bluetooth adapter hci0"
+      - "Could not reset the power state of the Bluetooth adapter hci0"
+    habluetooth.scanner:
+      - "Successful fall-back to passive scanning mode after active scanning failed"
 
 logbook:
   exclude:
