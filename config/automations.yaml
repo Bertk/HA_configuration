@@ -1136,7 +1136,7 @@
           - SOC_below_50
         - condition: numeric_state
           entity_id: sensor.sax_battery_a_soc
-          above: 10
+          above: 20
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
@@ -1148,7 +1148,7 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '750'
+          option: '500'
     - conditions:
       - condition: and
         conditions:
@@ -1166,7 +1166,7 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '750'
+          option: '1000'
     - conditions:
       - condition: trigger
         id:
@@ -1208,7 +1208,7 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '750'
+          option: '500'
     - conditions:
       - condition: and
         conditions:
@@ -1226,7 +1226,7 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
   trace:
-    stored_traces: 100
+    stored_traces: '100'
   mode: single
 - id: '1732179668111'
   alias: Update Schaltspiele
@@ -1348,12 +1348,12 @@
     id: Strom-billig
   - trigger: numeric_state
     entity_id:
-    - sensor.strompreis_avg_xxx
+    - sensor.xxx_strompreis
     below: sensor.strompreis_avg_xxx
     id: Heizen-ein
   - trigger: numeric_state
     entity_id:
-    - sensor.strompreis_avg_xxx
+    - sensor.xxx_strompreis
     id: Heizen-aus
     above: sensor.strompreis_avg_xxx
   conditions:
@@ -1402,8 +1402,8 @@
         - Strom-billig
         - Heizen-ein
       - condition: numeric_state
-        entity_id: sensor.strompreis_avg_xxx
-        below: input_number.strompreis_heizung_aus
+        entity_id: sensor.xxx_strompreis
+        below: sensor.strompreis_avg_xxx
     then:
     - action: climate.set_hvac_mode
       metadata: {}
