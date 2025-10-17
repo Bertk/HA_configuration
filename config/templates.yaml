@@ -316,3 +316,22 @@
       unique_id: sun_duration_forecast_in_6_hours
       state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[6].sun_duration }}"
       unit_of_measurement: s
+
+# Stündliche Strompreis abfragen
+- trigger:
+    - trigger: time
+      at: "00:00:01"
+  action:
+    - action: tibber.get_prices
+      response_variable: tibberprices
+  sensor:
+    - name: "Strompreis in 15 Minutes"
+      unique_id: power_price_15min
+      unit_of_measurement: "€/kWh"
+      state: >
+        {% set target_time = (now() + timedelta(minutes=15)).replace(second=0, microsecond=0).isoformat() %}
+        {% for entry in tibberprices['BertHome'] %}
+          {% if entry.start_time.startswith(target_time[:16]) %}
+            {{ entry.price }}
+          {% endif %}
+        {% endfor %}

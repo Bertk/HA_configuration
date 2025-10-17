@@ -34,18 +34,48 @@ rest:
           - tomorrow
         value_template: "{{ value_json.data.viewer.homes[0].currentSubscription.priceInfo.current.total | float }}"
         unit_of_measurement: EUR/kWh
+  # Tibber API QUARTER_HOURLY
+  - resource: https://api.tibber.com/v1-beta/gql
+    method: POST
+    payload: '{ "query": "{ viewer { homes { currentSubscription { status priceInfo (resolution: QUARTER_HOURLY) { current { total } today { total } tomorrow { total } } } } } }" }'
+    headers:
+      Authorization: !secret tibber_api_key
+      Content-Type: application/json
+      User-Agent: REST
+    scan_interval: 300
+    sensor:
+      name: "Electricity price Prognose 15Min XXX"
+      unique_id: sensor.electricity_price_prognose_15min_xxx
+      json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
+      json_attributes:
+        - today
+        - tomorrow
+      value_template: "{{ value_json.data.viewer.homes[0].currentSubscription.priceInfo.current.total | float }}"
+      unit_of_measurement: EUR/kWh
 
 logger:
   default: warning
-  # logs:
-  #  custom_components.sax_battery: debug
-  #  custom_components.sax_battery.items: debug
+  logs:
+  #  custom_components.sax_battery.number: debug
+    custom_components.sax_battery.switch: debug
+  #  custom_components.sax_battery.soc_manager: debug
+  #  custom_components.sax_battery.power_manager: debug
+    custom_components.sax_battery: debug
   #  custom_components.sax_battery.coordinator: debug
+  #  custom_components.sax_battery.modbusobject: debug
   #  pymodbus: error
-  # logs:
+  #  logs:
   #    pyeasee: debug
   #    custom_components.easee: debug
+  # default: warning
+  # logs:
+  #  custom_components.sax_battery: debug
+  #  pymodbus: debug
   filters:
+    custom_components.sax_battery.number:
+      - "Config number number.sax_cluster_pilot_power unavailable: no value available"
+    pymodbus.logging:
+      - "ERROR: request ask for transaction_id=" # sax_battery transaction_id bug
     custom_components.solarman.solarman:
       - "Querying .1024 - 1070. failed" # NoSocketAvailableError, Empty
       - "Querying registers .1024 - 1070. failed"
@@ -55,6 +85,8 @@ logger:
       - "Could not reset the power state of the Bluetooth adapter hci0"
     habluetooth.scanner:
       - "Successful fall-back to passive scanning mode after active scanning failed"
+
+bluetooth:
 
 logbook:
   exclude:

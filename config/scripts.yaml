@@ -1,0 +1,20 @@
+update_power_price_15min:
+  sequence:
+  - action: tibber.get_prices
+    data: {}
+    response_variable: todays_prices
+  - variables:
+      target_dt: "{{ (now() + timedelta(minutes=15)).replace(second=0, microsecond=0) }}"
+      price_15min: >
+        {% set prices = todays_prices.prices.BertHome %}
+        {% for entry in prices %}
+          {% set entry_dt = strptime(entry.start_time, "%Y-%m-%dT%H:%M:%S.%f%z").replace(second=0, microsecond=0) %}
+          {% if entry_dt == target_dt %}
+            {{ entry.price }}
+          {% endif %}
+        {% endfor %}
+  - action: input_number.set_value
+    target:
+      entity_id: input_number.power_price_15min
+    data:
+      value: "{{ price_15min | default(0) | float }}"

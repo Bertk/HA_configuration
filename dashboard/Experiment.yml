@@ -122,34 +122,93 @@ views:
             heading_style: title
             icon: mdi:currency-eur
           - type: custom:apexcharts-card
-            experimental:
-              hidden_by_default: true
-            graph_span: 48h
-            all_series_config:
-              stroke_width: 2
-            span:
-              start: hour
-              offset: '-24h'
-            now:
-              show: true
-            update_interval: 5min
             header:
               show: true
-              title: Strompreisprognose (€/kWh)
+              title: Strompreisprognose 15min (€/kWh)
               show_states: true
               colorize_states: true
+              standard_format: false
+            experimental:
+              hidden_by_default: true
+              color_threshold: true
+            brush:
+              selection_span: 40h
+              apex_config:
+                enable: true
+                autoScaleYaxis: false
+            apex_config:
+              grid:
+                show: true
+                borderColor: '#E0E0E0'
+              chart:
+                height: 350px
+                zoom:
+                  enabled: true
+                toolbar:
+                  show: true
+                  tools:
+                    zoom: true
+                    zoomin: true
+                    zoomout: true
+                    pan: true
+                    reset: true
+                    download: false
+              tooltip:
+                enabled: true
+                followCursor: false
+                x:
+                  show: false
+                fixed:
+                  enabled: true
+              legend:
+                show: false
+            graph_span: 48h
+            span:
+              start: day
+            now:
+              show: true
+              color: E0E0E0
+            update_interval: 5min
+            yaxis:
+              - id: left
+                show: true
+                opposite: false
+                decimals: 3
+              - id: right
+                show: true
+                opposite: true
+                decimals: 3
+                min: 0
             series:
-              - entity: sensor.electricity_price_prognose_xxx
-                name: Prognose
+              - entity: sensor.electricity_price_prognose_15min_xxx
                 yaxis_id: left
+                name: Future15
                 type: line
-                float_precision: 5
                 curve: stepline
+                stroke_width: 1
+                float_precision: 5
                 unit: €/kWh
+                extend_to: false
                 show:
                   in_header: false
+                  name_in_header: false
                   extremas: true
                   legend_value: false
+                color_threshold:
+                  - value: 0
+                    color: 4DD0E1
+                  - value: 0.1
+                    color: 26A69A
+                  - value: 0.15
+                    color: 4CAF50
+                  - value: 0.2
+                    color: 7CB342
+                  - value: 0.25
+                    color: FBC02D
+                  - value: 0.3
+                    color: EF6C00
+                  - value: 0.35
+                    color: B71C1C
                 data_generator: >
                   const noon = new Date()
 
@@ -161,70 +220,111 @@ views:
                   const data = [];
 
                   for(let i = 0; i < prices.length; i++) {
-                    data.push([noon.getTime() + i * 1000 * 3600, prices[i].total])
+                    data.push([noon.getTime() + i * 1000 * 900, prices[i].total])
                   }
 
                   return data;
-              - entity: sensor.strompreis_avg_xxx
-                name: Median
+              - entity: sensor.xxx_strompreis
                 yaxis_id: left
+                name: now
                 type: line
-                float_precision: 5
                 curve: stepline
+                stroke_width: 1
+                float_precision: 5
+                unit: €/kWh
+                extend_to: now
+                show:
+                  in_header: true
+                  name_in_header: true
+                  extremas: false
+                  legend_value: false
+                color_threshold:
+                  - value: 0
+                    color: 4DD0E1
+                  - value: 0.1
+                    color: 26A69A
+                  - value: 0.15
+                    color: 4CAF50
+                  - value: 0.2
+                    color: 7CB342
+                  - value: 0.25
+                    color: FBC02D
+                  - value: 0.3
+                    color: EF6C00
+                  - value: 0.35
+                    color: B71C1C
+              - entity: sensor.strompreis_min_xxx
+                yaxis_id: left
+                name: Min
+                type: line
+                curve: stepline
+                stroke_width: 0
+                float_precision: 5
                 unit: €/kWh
                 extend_to: now
                 fill_raw: last
                 show:
                   hidden_by_default: true
+                  in_header: true
+                  name_in_header: true
+                  extremas: false
+                  legend_value: false
+              - entity: sensor.strompreis_avg_xxx
+                yaxis_id: left
+                name: Avg
+                type: line
+                curve: stepline
+                stroke_width: 0
+                float_precision: 5
+                unit: €/kWh
+                extend_to: now
+                fill_raw: last
+                show:
+                  hidden_by_default: true
+                  in_header: false
+                  name_in_header: true
+                  extremas: false
                   legend_value: false
               - entity: sensor.strompreis_max_xxx
-                name: Max Preis
                 yaxis_id: left
+                name: Max
                 type: line
-                float_precision: 5
                 curve: stepline
+                stroke_width: 0
+                float_precision: 5
                 unit: €/kWh
                 extend_to: now
                 fill_raw: last
                 show:
-                  hidden_by_default: false
-                  legend_value: false
-              - entity: sensor.strompreis_min_xxx
-                name: Min Preis
-                yaxis_id: left
-                type: line
-                float_precision: 5
-                curve: stepline
-                unit: €/kWh
-                extend_to: now
-                fill_raw: last
-                show:
-                  hidden_by_default: false
+                  hidden_by_default: true
+                  in_header: true
+                  name_in_header: true
+                  extremas: false
                   legend_value: false
               - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
-                curve: stepline
-                type: area
-                opacity: 0.3
+                yaxis_id: right
                 name: Bezug
+                type: area
+                curve: stepline
+                stroke_width: 0
+                opacity: 0.4
                 extend_to: now
                 show:
                   in_header: false
+                  name_in_header: true
+                  extremas: false
                   legend_value: false
-                yaxis_id: right
                 group_by:
                   func: delta
                   duration: 1h
                   fill: zero
-            yaxis:
-              - id: left
-                decimals: 2
-                min: 0
-              - id: right
-                opposite: true
-                decimals: 2
-                min: 0
-                max: 10
-                show: false
+          - type: tile
+            entity: sensor.strompreis_avg_xxx
+            vertical: false
+            features_position: bottom
+            grid_options:
+              columns: 12
+              rows: 1
           - type: tile
             entity: input_number.strompreis_heizung_aus
             grid_options:
@@ -242,13 +342,6 @@ views:
             grid_options:
               columns: 12
               rows: 1
-          - type: tile
-            entity: sensor.xxx_strompreis
-            grid_options:
-              columns: 12
-              rows: 1
-            name: Strompreis aktuell
-            icon: mdi:currency-eur
           - type: tile
             features_position: bottom
             vertical: false
