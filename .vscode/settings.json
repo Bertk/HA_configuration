@@ -1,5 +1,16 @@
 {
     "files.associations": {
         "*.yaml": "home-assistant"
-    }
+    },
+    "cSpell.words": [
+        "bert",
+        "fuerth",
+        "homeassistant",
+        "hvac",
+        "lovelace",
+        "mqtt",
+        "tibber",
+        "zwavejs",
+        "zwavejs2mqtt"
+    ]
 }

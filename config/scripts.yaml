@@ -17,4 +17,5 @@ update_power_price_15min:
     target:
       entity_id: input_number.power_price_15min
     data:
-      value: "{{ price_15min | default(0) | float }}"
+      value: "{{ price_15min | default(0, true) | float(0) }}"
+

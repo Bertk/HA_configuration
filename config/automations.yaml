@@ -163,11 +163,16 @@
   triggers:
   - trigger: state
     entity_id:
+    - binary_sensor.wohnzimmer_fenster_state
+    from: 'off'
+    to: 'on'
+  - trigger: state
+    entity_id:
     - binary_sensor.wohnzimmer_fenster
     from: 'off'
     to: 'on'
-  condition: []
-  action:
+  conditions: []
+  actions:
   - device_id: 6cb5174cbfcb846cf088918bc707276a
     domain: climate
     entity_id: 17dfd9c59d6a785446425f3189cea7b4
@@ -925,7 +930,7 @@
         above: 1.5
         enabled: false
       - condition: numeric_state
-        entity_id: sensor.sax_battery_a_soc
+        entity_id: sensor.sax_bms_combined_soc
         below: 95
       - condition: or
         conditions:
@@ -956,7 +961,7 @@
         data:
           value: '{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}'
         target:
-          entity_id: number.sax_cluster_max_charge
+          entity_id: number.sax_bms_max_charge
       - action: system_log.write
         metadata: {}
         data:
@@ -966,7 +971,7 @@
       - action: logbook.log
         metadata: {}
         data:
-          name: 'Set Batterie Ladeleistung '
+          name: 'Set Batterie Ladeleistung'
           message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
     - conditions:
       - condition: trigger
@@ -993,59 +998,28 @@
   description: ''
   triggers:
   - entity_id:
-    - sensor.sax_battery_a_soc
-    id: SOC_above_20
+    - sensor.sax_bms_combined_soc
+    id: SOC_above_50
+    above: 50
     for:
       hours: 0
       minutes: 5
       seconds: 0
-    above: 30
     enabled: true
     trigger: numeric_state
   - entity_id:
-    - sensor.sax_battery_a_soc
-    id: SOC_below_10
-    below: 10
+    - sensor.sax_bms_combined_soc
+    below: 50
+    id: SOC_below_50
     for:
       hours: 0
       minutes: 1
       seconds: 0
-    enabled: true
     trigger: numeric_state
   - entity_id:
-    - sensor.sax_battery_a_soc
-    id: SOC_below_8
-    below: 8
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    enabled: true
-    trigger: numeric_state
-  - entity_id:
-    - sensor.sax_battery_a_soc
-    id: SOC_below_6
-    below: 6
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    enabled: true
-    trigger: numeric_state
-  - entity_id:
-    - sensor.sax_battery_a_soc
-    id: SOC_below_4
-    below: 4
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    enabled: true
-    trigger: numeric_state
-  - entity_id:
-    - sensor.sax_battery_a_soc
-    id: SOC_below_2
-    below: 2
+    - sensor.sax_bms_combined_soc
+    id: SOC_below_min
+    below: number.sax_bms_minimum_soc
     for:
       hours: 0
       minutes: 1
@@ -1064,15 +1038,6 @@
     value_template: '{{states(''sensor.sax_battery_a_power'')|float(0) - states(''input_select.sax_a_leistungsgrenzwert_entladen'')
       |float(0) - float(10) > 0 }}'
     id: Above_Limit
-  - trigger: numeric_state
-    entity_id:
-    - sensor.sax_battery_a_soc
-    below: 50
-    id: SOC_below_50
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
@@ -1094,19 +1059,31 @@
   - trigger: time_pattern
     id: entladen_refresh
     minutes: /5
-    enabled: false
+    enabled: true
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
     id: Strompreis-No-Export
     below: input_number.strompreis_speicher_export_stop
+  - trigger: numeric_state
+    entity_id:
+    - sensor.xxx_strompreis
+    id: Strompreis-uber-Mittelwert
+    above: sensor.strompreis_avg_xxx
+  - trigger: numeric_state
+    entity_id:
+    - sensor.xxx_strompreis
+    id: Strompreis-unter-Mittelwert
+    below: sensor.strompreis_avg_xxx
   conditions: []
   actions:
   - choose:
     - conditions:
       - condition: trigger
         id:
+        - Preis_Tibber_niedrig
         - Strompreis-No-Export
+        - Strompreis-unter-Mittelwert
       sequence:
       - action: select.select_option
         metadata: {}
@@ -1117,11 +1094,11 @@
     - conditions:
       - condition: trigger
         id:
-        - SOC_below_10
-        - SOC_below_8
-        - SOC_below_6
-        - SOC_below_4
-        - SOC_below_2
+        - entladen_refresh
+        - SOC_below_min
+      - condition: numeric_state
+        entity_id: sensor.sax_bms_combined_soc
+        below: number.sax_bms_minimum_soc
       sequence:
       - action: input_select.select_option
         target:
@@ -1134,15 +1111,19 @@
         - condition: trigger
           id:
           - SOC_below_50
+          - entladen_refresh
         - condition: numeric_state
-          entity_id: sensor.sax_battery_a_soc
-          above: 20
+          entity_id: sensor.sax_bms_combined_soc
+          above: number.sax_bms_minimum_soc
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
         - condition: template
           value_template: '{{states(''sensor.solarman_total_active_power_output'')
             | float(0) == float(0)}}'
+        - condition: numeric_state
+          entity_id: sensor.strompreis_avg_xxx
+          above: input_number.strompreis_speicher_export_stop
       sequence:
       - action: input_select.select_option
         target:
@@ -1154,13 +1135,17 @@
         conditions:
         - condition: trigger
           id:
-          - SOC_above_20
+          - SOC_above_50
+          - entladen_refresh
         - condition: template
           value_template: '{{states(''sensor.solarman_total_active_power_output'')
             | float(0) > float(0.5)}}'
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
+        - condition: numeric_state
+          entity_id: sensor.strompreis_avg_xxx
+          above: input_number.strompreis_speicher_export_stop
       sequence:
       - action: input_select.select_option
         target:
@@ -1179,7 +1164,7 @@
         data:
           value: '{{states.input_select.sax_a_leistungsgrenzwert_entladen.state}}'
         target:
-          entity_id: number.sax_cluster_max_discharge
+          entity_id: number.sax_bms_max_discharge
       - action: system_log.write
         metadata: {}
         data:
@@ -1198,11 +1183,14 @@
           id:
           - Preis_Tibber_niedrig
         - condition: numeric_state
-          entity_id: sensor.sax_battery_a_soc
-          above: 15
+          entity_id: sensor.sax_bms_combined_soc
+          above: number.sax_bms_minimum_soc
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
+        - condition: numeric_state
+          entity_id: sensor.xxx_strompreis
+          below: sensor.strompreis_avg_xxx
       sequence:
       - action: input_select.select_option
         target:
@@ -1215,14 +1203,15 @@
         - condition: trigger
           id:
           - Preis_Tibber_hoch
+          - Strompreis-uber-Mittelwert
         - condition: numeric_state
-          entity_id: sensor.sax_battery_a_soc
-          above: 30
+          entity_id: sensor.sax_bms_combined_soc
+          above: number.sax_bms_minimum_soc
       sequence:
       - action: input_select.select_option
         metadata: {}
         data:
-          option: '1000'
+          option: '500'
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
   trace:
@@ -1356,6 +1345,9 @@
     - sensor.xxx_strompreis
     id: Heizen-aus
     above: sensor.strompreis_avg_xxx
+  - trigger: time_pattern
+    id: Every-hour
+    hours: '*'
   conditions:
   - condition: or
     conditions:
@@ -1377,15 +1369,15 @@
       data:
         hvac_mode: 'off'
       target:
-        device_id:
-        - bb152676baef4f3deaf39dd1346c53bf
-        - 1dd1bfa1d054a8d326849b9b4b41089f
-        - a0ce52208f34dfd2e2e6a0276e1ee5f4
-        - 4f2decb5cfdb8146f8e49911eed66dee
-        - 593a1305d233437004d185d0f76c9aa0
-        - efbb3cecd598fb7330300a427dce9a57
-        - d46a57130ab7752ec7880c6bf63f93d0
-        - 6cb5174cbfcb846cf088918bc707276a
+        entity_id:
+        - climate.wohnzimmer
+        - climate.bad
+        - climate.buro
+        - climate.flur
+        - climate.gastezimmer
+        - climate.hobbyraum
+        - climate.schlafzimmer
+        - climate.toilette
       enabled: true
     - action: select.select_option
       metadata: {}
@@ -1401,24 +1393,31 @@
         id:
         - Strom-billig
         - Heizen-ein
-      - condition: numeric_state
-        entity_id: sensor.xxx_strompreis
-        below: sensor.strompreis_avg_xxx
+        - Every-hour
+      - condition: or
+        conditions:
+        - condition: numeric_state
+          entity_id: sensor.xxx_strompreis
+          below: sensor.strompreis_avg_xxx
+        - condition: time
+          after: '21:00:00'
+          enabled: true
+        enabled: false
     then:
     - action: climate.set_hvac_mode
       metadata: {}
       data:
         hvac_mode: auto
       target:
-        device_id:
-        - bb152676baef4f3deaf39dd1346c53bf
-        - 1dd1bfa1d054a8d326849b9b4b41089f
-        - a0ce52208f34dfd2e2e6a0276e1ee5f4
-        - 4f2decb5cfdb8146f8e49911eed66dee
-        - 593a1305d233437004d185d0f76c9aa0
-        - efbb3cecd598fb7330300a427dce9a57
-        - d46a57130ab7752ec7880c6bf63f93d0
-        - 6cb5174cbfcb846cf088918bc707276a
+        entity_id:
+        - climate.wohnzimmer
+        - climate.bad
+        - climate.buro
+        - climate.flur
+        - climate.gastezimmer
+        - climate.hobbyraum
+        - climate.schlafzimmer
+        - climate.toilette
       enabled: true
     - action: select.select_option
       metadata: {}
@@ -1427,6 +1426,26 @@
       target:
         entity_id:
         - select.wh_system_systembetriebsart
+    - if:
+      - condition: state
+        entity_id: binary_sensor.bad_fenster_state
+        state: 'on'
+      then:
+      - device_id: bb152676baef4f3deaf39dd1346c53bf
+        domain: climate
+        entity_id: a1e0fc2a0aa0028215a9050417d38cb3
+        type: set_hvac_mode
+        hvac_mode: 'off'
+    - if:
+      - condition: state
+        entity_id: binary_sensor.toilette_fenster_state
+        state: 'on'
+      then:
+      - device_id: d46a57130ab7752ec7880c6bf63f93d0
+        domain: climate
+        entity_id: 3bb1b5b9e064d5bfd4e1619203e0be4d
+        type: set_hvac_mode
+        hvac_mode: 'off'
   mode: single
 - id: '1738915844292'
   alias: Radon Werte Benachrichtigung
@@ -1479,3 +1498,15 @@
         Bq/m³
       title: Radon im Hobbyraum {{ trigger.id  }}
   mode: single
+- id: '1759934922702'
+  alias: TriggerTibberPriceUpdate
+  description: ''
+  triggers:
+  - minutes: /15
+    trigger: time_pattern
+  actions:
+  - variables:
+      set tibberprices = 0:
+  - action: script.update_power_price_15min
+    data: {}
+    response_variable: tibberprices

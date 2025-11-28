@@ -85,8 +85,8 @@
         {% elif now().month in [6, 7, 8] %}
         25
         {% endif %}
-    # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur im Innenraum die absolute Luftfreuchtigkeit in Gramm pro Kubikmeter
-    # Überprüfung der Ergenisse: https://electric-junkie.de/2022/01/absolute-luftfeuchtigkeit/
+    # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur im Innenraum die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
+    # Überprüfung der Ergebnisse: https://electric-junkie.de/2022/01/absolute-luftfeuchtigkeit/
     #                            https://www.condair.de/berechnungstools/feuchterechner
     - name: "Absolute Luftfeuchtigkeit Bad"
       unique_id: "AbsoluteHumidityBad"
@@ -201,7 +201,7 @@
       state: "{{ state_attr('sensor.xxx_strompreis','avg_price') }}"
       unit_of_measurement: EUR/kWh
       icon: mdi:currency-eur
-    # sax-power energy check with intergral helper sensor.sax_battery_a_power
+    # sax-power energy check with integral helper sensor.sax_battery_a_power
     - name: sax_power_output
       unique_id: "sax_power_output"
       state_class: measurement
@@ -209,13 +209,13 @@
       unit_of_measurement: W
       device_class: power
       state: >-
-        {% if is_number(states('sensor.sax_battery_a_power')) and states('sensor.sax_battery_a_power') | float(0) > 0 %}
-            {{ (states('sensor.sax_battery_a_power') | float(0)) | round (0) }}
+        {% if is_number(states('sensor.sax_bms_ac_power_total')) and states('sensor.sax_bms_ac_power_total') | float(0) > 0 %}
+            {{ (states('sensor.sax_bms_ac_power_total') | float(0)) | round (0) }}
         {% else %}
             {{ float(0) }}
         {% endif %}
-      availability: "{{ has_value('sensor.sax_battery_a_power') }}"
-      # sax-power energy check with intergral helper sensor.sax_battery_a_power
+      availability: "{{ has_value('sensor.sax_bms_ac_power_total') }}"
+      # sax-power energy check with integral helper sensor.sax_battery_a_power
     - name: sax_power_input
       unique_id: "sax_power_input"
       state_class: measurement
@@ -223,12 +223,12 @@
       unit_of_measurement: W
       device_class: power
       state: >-
-        {% if is_number(states('sensor.sax_battery_a_power')) and states('sensor.sax_battery_a_power') | float(0) < 0 %}
-            {{ (states('sensor.sax_battery_a_power') | float(0)) *-1| round (0) }}
+        {% if is_number(states('sensor.sax_bms_ac_power_total')) and states('sensor.sax_bms_ac_power_total') | float(0) < 0 %}
+            {{ (states('sensor.sax_bms_ac_power_total') | float(0)) *-1| round (0) }}
         {% else %}
             {{ float(0) }}
         {% endif %}
-      availability: "{{ has_value('sensor.sax_battery_a_power') }}"
+      availability: "{{ has_value('sensor.sax_bms_ac_power_total') }}"
 
 - trigger:
     - trigger: time
@@ -316,22 +316,59 @@
       unique_id: sun_duration_forecast_in_6_hours
       state: "{{ stundenvorhersage['weather.fuerth_bayern'].forecast[6].sun_duration }}"
       unit_of_measurement: s
-
-# Stündliche Strompreis abfragen
+# Tägliche Strompreis Prognose Abfrage
 - trigger:
     - trigger: time
       at: "00:00:01"
   action:
     - action: tibber.get_prices
+      data: {}
       response_variable: tibberprices
   sensor:
     - name: "Strompreis in 15 Minutes"
       unique_id: power_price_15min
       unit_of_measurement: "€/kWh"
       state: >
-        {% set target_time = (now() + timedelta(minutes=15)).replace(second=0, microsecond=0).isoformat() %}
-        {% for entry in tibberprices['BertHome'] %}
-          {% if entry.start_time.startswith(target_time[:16]) %}
-            {{ entry.price }}
+        {% set target = (now() + timedelta(minutes=15)).replace(second=0, microsecond=0) %}
+        {% set found = namespace(price=None) %}
+        {% for entry in todays_prices.prices.BertHome %}
+          {% set entry_time = as_datetime(entry.start_time) %}
+          {% if entry_time == target %}
+            {% set found.price = entry.price %}
           {% endif %}
         {% endfor %}
+        {{ found.price if found.price is not none else 'unknown' }}
+    - name: "Average Morning Price (Today)"
+      unique_id: avg_morning_price_today
+      unit_of_measurement: "€/kWh"
+      state: >
+        {% set today = now().date() %}
+        {% set morning = namespace(prices=[]) %}
+        {% for p in todays_prices.prices.BertHome %}
+          {% set dt = as_datetime(p.start_time) %}
+          {% if dt.date() == today and dt.hour < 12 %}
+            {% set morning.prices = morning.prices + [p.price] %}
+          {% endif %}
+        {% endfor %}
+        {% if morning.prices | count > 0 %}
+          {{ (morning.prices | sum / (morning.prices | count)) | round(4) }}
+        {% else %}
+          unknown
+        {% endif %}
+    - name: "Average Afternoon Price (Today)"
+      unique_id: avg_afternoon_price_today
+      unit_of_measurement: "€/kWh"
+      state: >
+        {% set today = now().date() %}
+        {% set afternoon = namespace(prices=[]) %}
+        {% for p in todays_prices.prices.BertHome %}
+          {% set dt = as_datetime(p.start_time) %}
+          {% if dt.date() == today and dt.hour >= 12 %}
+            {% set afternoon.prices = afternoon.prices + [p.price] %}
+          {% endif %}
+        {% endfor %}
+        {% if afternoon.prices | count > 0 %}
+          {{ (afternoon.prices | sum / (afternoon.prices | count)) | round(4) }}
+        {% else %}
+          unknown
+        {% endif %}
