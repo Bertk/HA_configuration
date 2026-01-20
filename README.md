@@ -129,8 +129,9 @@ This dashboard provides an overview of various views for configurations and devi
 |[RESTful](https://www.home-assistant.io/integrations/rest)||
 |[Reolink](https://www.home-assistant.io/integrations/reolink)||
 |[Sonne](https://www.home-assistant.io/integrations/sun)||
-|[Tado](https://www.home-assistant.io/integrations/tado)||
+|[~~Tado~~](https://www.home-assistant.io/integrations/tado)|free users limits 100 requests/day|
 |[Tibber](https://www.home-assistant.io/integrations/tibber)||
+|[HomeKit Device](https://www.home-assistant.io/integrations/homekit_controller/)| replaced Tado|
 |[VeSync](https://www.home-assistant.io/integrations/vesync)||
 |[Zigbee Home Automation](https://www.home-assistant.io/integrations/zha)||
 

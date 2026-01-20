@@ -37,8 +37,9 @@ views:
       - type: history-graph
         entities:
           - entity: sensor.tibber_pulse_xxx_energie
-          - entity: sensor.sax_bms_ac_power_total
+          - entity: sensor.tibber_pulse_xxx_stromerzeugung
           - entity: sensor.pv_leistung_in_watt
+          - entity: sensor.sax_bms_ac_power_total
           - entity: sensor.sax_sm_total_power
         hours_to_show: 36
       - type: entities

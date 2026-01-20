@@ -1,6 +1,6 @@
 sax_a_leistungsgrenzwert_entladen:
   name: Leistungsgrenzwert Entladen
-  initial: "500"
+  initial: "0"
   options:
     - "4600"
     - "3500"

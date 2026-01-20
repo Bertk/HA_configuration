@@ -1,5 +1,6 @@
 # Loads default set of integrations. Do not remove.
 default_config:
+zeroconf:
 
 # Load frontend themes from the themes folder
 frontend:
@@ -26,8 +27,8 @@ rest:
       User-Agent: REST
     scan_interval: 300
     sensor:
-      - name: "Electricity price Prognose XXX"
-        unique_id: sensor.electricity_price_prognose_xxx
+      - name: "Electricity price Prognose Vacher Str 157d"
+        unique_id: sensor.electricity_price_prognose_vacher_str_157d
         json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
         json_attributes:
           - today
@@ -44,8 +45,8 @@ rest:
       User-Agent: REST
     scan_interval: 300
     sensor:
-      name: "Electricity price Prognose 15Min XXX"
-      unique_id: sensor.electricity_price_prognose_15min_xxx
+      name: "Electricity price Prognose 15Min Vacher Str 157d"
+      unique_id: sensor.electricity_price_prognose_15min_vacher_str_157d
       json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
       json_attributes:
         - today
@@ -57,12 +58,12 @@ logger:
   default: warning
   logs:
     custom_components.sax_battery.number: debug
-    #  custom_components.sax_battery.switch: debug
-    custom_components.sax_battery.soc_manager: debug
+    custom_components.sax_battery.soc_manager: info
     custom_components.sax_battery.power_manager: debug
-  #  custom_components.sax_battery: debug
-  #  custom_components.sax_battery.coordinator: debug
-  #  custom_components.sax_battery.modbusobject: debug
+    custom_components.sax_battery.coordinator: info
+    #  custom_components.sax_battery: debug
+    #  custom_components.sax_battery.switch: debug
+    #  custom_components.sax_battery.modbusobject: debug
   #  pymodbus: error
   #  logs:
   #    pyeasee: debug
