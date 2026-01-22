@@ -451,6 +451,7 @@ views:
                 features_position: bottom
               - type: tile
                 entity: sensor.gastezimmer_luftfeuchtigkeit
+                name: Luftfeuchtigkeit
                 icon: mdi:water-percent
                 show_entity_picture: false
                 vertical: false
@@ -472,7 +473,7 @@ views:
                 features_position: bottom
               - type: conditional
                 conditions:
-                  - condition: states
+                  - condition: state
                     entity: climate.gastezimmer_heizung
                     state: heat
                 card:
@@ -517,6 +518,7 @@ views:
                     features_position: bottom
               - type: tile
                 entity: sensor.bad_luftfeuchtigkeit
+                name: Luftfeuchtigkeit
                 icon: mdi:water-percent
                 show_entity_picture: false
                 vertical: false
@@ -694,6 +696,15 @@ views:
               - type: conditional
                 conditions:
                   - condition: state
+                    entity: climate.toilette_heizung
+                    state: heat
+                card:
+                  type: tile
+                  entity: climate.toilette_heizung
+                  name: Heizung
+              - type: conditional
+                conditions:
+                  - condition: state
                     entity: binary_sensor.toilette_fenster_state
                     state: 'on'
                 card:
@@ -707,15 +718,6 @@ views:
                           --card-mod-icon-color: red;
                        {% endif %}  
                       } 
-              - type: conditional
-                conditions:
-                  - condition: state
-                    entity: climate.toilette_heizung
-                    state: heat
-                card:
-                  type: tile
-                  entity: climate.toilette_heizung
-                  name: Heizung
       - type: grid
         cards:
           - type: heading
@@ -755,7 +757,7 @@ views:
                 features_position: bottom
               - type: conditional
                 conditions:
-                  - condition: state
+                  - condition: states
                     entity: climate.wohnzimmer_heizung
                     state: heat
                 card:
@@ -765,11 +767,11 @@ views:
               - type: conditional
                 conditions:
                   - condition: state
-                    entity: binary_sensor.wohnzimmer_fenster_state
+                    entity: binary_sensor.wohnzimmer_fenster_offnung
                     state: 'on'
                 card:
                   type: tile
-                  entity: binary_sensor.wohnzimmer_fenster_state
+                  entity: binary_sensor.wohnzimmer_fenster_offnung
                   name: Fenster offen
                   card_mod:
                     style: |
@@ -797,6 +799,7 @@ views:
                 vertical: false
               - type: tile
                 entity: sensor.hobbyraum_luftfeuchtigkeit
+                name: Luftfeuchtigkeit
                 vertical: false
                 tap_action:
                   action: navigate
@@ -815,6 +818,8 @@ views:
               - type: tile
                 entity: sensor.taupunkt_hobbyraum
                 icon: mdi:water
+                vertical: false
+                features_position: bottom
               - type: conditional
                 conditions:
                   - condition: state
@@ -2843,6 +2848,13 @@ views:
                 unit: °C
           - type: thermostat
             entity: climate.wohnzimmer_heizung
+          - type: tile
+            grid_options:
+              columns: 12
+              rows: 1
+            entity: binary_sensor.wohnzimmer_fenster_offnung
+            vertical: false
+            features_position: bottom
       - type: grid
         cards:
           - type: heading
@@ -3375,7 +3387,7 @@ views:
                     state_not: closed
                 card:
                   type: tile
-                  entity: binary_sensor.hobbyraum_fenster
+                  entity: binary_sensor.hobbyraum_fenster_state
                   name: Fenster
               - type: tile
                 features_position: bottom

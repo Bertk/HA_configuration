@@ -3,11 +3,6 @@
   description: Stop Heizung
   triggers:
   - entity_id:
-    - binary_sensor.bad_fenster
-    from: 'off'
-    to: 'on'
-    trigger: state
-  - entity_id:
     - binary_sensor.bad_fenster_state
     from: 'off'
     to: 'on'
@@ -16,29 +11,19 @@
       hours: 0
       minutes: 0
       seconds: 0
-  - trigger: state
-    entity_id:
-    - binary_sensor.bad_fenster
-    from: 'on'
-    to: 'off'
   conditions: []
   actions:
-  - device_id: bb152676baef4f3deaf39dd1346c53bf
-    domain: climate
-    entity_id: a1e0fc2a0aa0028215a9050417d38cb3
-    type: set_hvac_mode
-    hvac_mode: 'off'
+  - action: climate.set_hvac_mode
+    metadata: {}
+    target:
+      entity_id: climate.bad_heizung
+    data:
+      hvac_mode: 'off'
   mode: single
 - id: '1711901129125'
   alias: Flur Fenster offen
   description: Stop Heizung
   triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.flur_fenster
-    from: 'off'
-    to: 'on'
-    id: FlurThermostat
   - trigger: state
     entity_id:
     - binary_sensor.gastezimmer_fenster_state
@@ -59,11 +44,12 @@
         id:
         - FlurThermostat
       sequence:
-      - device_id: a0ce52208f34dfd2e2e6a0276e1ee5f4
-        domain: climate
-        entity_id: 17005c883a1b1f025d3e41bb72189ab5
-        type: set_hvac_mode
-        hvac_mode: 'off'
+      - action: climate.set_hvac_mode
+        metadata: {}
+        target:
+          entity_id: climate.flur_heizung
+        data:
+          hvac_mode: 'off'
     - conditions:
       - condition: trigger
         id:
@@ -72,11 +58,12 @@
         entity_id: binary_sensor.hobbyraum_fenster_state
         state: 'on'
       sequence:
-      - device_id: a0ce52208f34dfd2e2e6a0276e1ee5f4
-        domain: climate
-        entity_id: 17005c883a1b1f025d3e41bb72189ab5
-        type: set_hvac_mode
-        hvac_mode: 'off'
+      - action: climate.set_hvac_mode
+        metadata: {}
+        target:
+          entity_id: climate.flur_heizung
+        data:
+          hvac_mode: 'off'
     - conditions:
       - condition: trigger
         id:
@@ -85,11 +72,12 @@
         entity_id: binary_sensor.gastezimmer_fenster_state
         state: 'on'
       sequence:
-      - device_id: a0ce52208f34dfd2e2e6a0276e1ee5f4
-        domain: climate
-        entity_id: 17005c883a1b1f025d3e41bb72189ab5
-        type: set_hvac_mode
-        hvac_mode: 'off'
+      - action: climate.set_hvac_mode
+        metadata: {}
+        target:
+          entity_id: climate.flur_heizung
+        data:
+          hvac_mode: 'off'
   mode: single
 - id: '1711901186237'
   alias: Gästezimmer Fenster offen
@@ -97,21 +85,17 @@
   triggers:
   - trigger: state
     entity_id:
-    - binary_sensor.gastezimmer_fenster
-    from: 'off'
-    to: 'on'
-  - trigger: state
-    entity_id:
     - binary_sensor.gastezimmer_fenster_state
     from: 'off'
     to: 'on'
-  condition: []
-  action:
-  - device_id: 4f2decb5cfdb8146f8e49911eed66dee
-    domain: climate
-    entity_id: b9ef9d4e9160846e684c8baf2b8620ec
-    type: set_hvac_mode
-    hvac_mode: 'off'
+  conditions: []
+  actions:
+  - action: climate.set_hvac_mode
+    metadata: {}
+    target:
+      entity_id: climate.gastezimmer_heizung
+    data:
+      hvac_mode: 'off'
   mode: single
 - id: '1711901231281'
   alias: Schlafzimmer Fenster offen
@@ -119,21 +103,17 @@
   triggers:
   - trigger: state
     entity_id:
-    - binary_sensor.schlafzimmer_fenster
-    from: 'off'
-    to: 'on'
-  - trigger: state
-    entity_id:
     - binary_sensor.schlafzimmer_fenster_state
     from: 'off'
     to: 'on'
-  condition: []
-  action:
-  - device_id: efbb3cecd598fb7330300a427dce9a57
-    domain: climate
-    entity_id: 81bc86d2bb8d71366af9c3d8e1bed71a
-    type: set_hvac_mode
-    hvac_mode: 'off'
+  conditions: []
+  actions:
+  - action: climate.set_hvac_mode
+    metadata: {}
+    target:
+      entity_id: climate.schlafzimmer_heizung
+    data:
+      hvac_mode: 'off'
   mode: single
 - id: '1711901269312'
   alias: Toilette Fenster offen
@@ -144,40 +124,14 @@
     - binary_sensor.toilette_fenster_state
     from: 'off'
     to: 'on'
-  - trigger: state
-    entity_id:
-    - binary_sensor.toilette_fenster
-    from: 'off'
-    to: 'on'
-  condition: []
-  action:
-  - device_id: d46a57130ab7752ec7880c6bf63f93d0
-    domain: climate
-    entity_id: 3bb1b5b9e064d5bfd4e1619203e0be4d
-    type: set_hvac_mode
-    hvac_mode: 'off'
-  mode: single
-- id: '1711901345491'
-  alias: Wohnzimmer Fenster offen
-  description: Stop Heizung
-  triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.wohnzimmer_fenster_state
-    from: 'off'
-    to: 'on'
-  - trigger: state
-    entity_id:
-    - binary_sensor.wohnzimmer_fenster
-    from: 'off'
-    to: 'on'
   conditions: []
   actions:
-  - device_id: 6cb5174cbfcb846cf088918bc707276a
-    domain: climate
-    entity_id: 17dfd9c59d6a785446425f3189cea7b4
-    type: set_hvac_mode
-    hvac_mode: 'off'
+  - action: climate.set_hvac_mode
+    metadata: {}
+    target:
+      entity_id: climate.toilette_heizung
+    data:
+      hvac_mode: 'off'
   mode: single
 - id: '1712561287708'
   alias: Lüften Hobbyraum
@@ -330,18 +284,16 @@
     - binary_sensor.hobbyraum_fenster_state
     from: 'off'
     to: 'on'
-  - trigger: state
-    entity_id:
-    - binary_sensor.hobbyraum_fenster
-    from: 'off'
-    to: 'on'
-  condition: []
-  action:
-  - device_id: 593a1305d233437004d185d0f76c9aa0
-    domain: climate
-    entity_id: 391bd40f5517e5826ab303e9950bacca
-    type: set_hvac_mode
-    hvac_mode: 'off'
+  conditions: []
+  actions:
+  - action: climate.set_hvac_mode
+    metadata: {}
+    target:
+      device_id:
+      - adb52b9534a1e94296836238cc7f1250
+      - bffc1517bd048363a3b6335bd749ceb3
+    data:
+      hvac_mode: 'off'
   mode: single
 - id: '1713513624564'
   alias: Fenster lange offen
@@ -1340,11 +1292,13 @@
     - sensor.xxx_strompreis
     below: sensor.strompreis_avg_xxx
     id: Heizen-ein
+    enabled: true
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
     id: Heizen-aus
     above: sensor.strompreis_avg_xxx
+    enabled: true
   - trigger: time_pattern
     id: Every-hour
     hours: '*'
@@ -1363,6 +1317,12 @@
       id:
       - Heizen-aus
       - Strom-teuer
+    - condition: not
+      conditions:
+      - condition: state
+        state:
+        - Warmwasserbetrieb
+        entity_id: sensor.wh_system_betriebsanzeige
     then:
     - action: climate.set_hvac_mode
       metadata: {}
@@ -1370,15 +1330,14 @@
         hvac_mode: 'off'
       target:
         entity_id:
-        - climate.wohnzimmer
-        - climate.bad
-        - climate.buro
-        - climate.flur
-        - climate.gastezimmer
-        - climate.hobbyraum
-        - climate.schlafzimmer
-        - climate.toilette
-      enabled: true
+        - climate.bad_heizung
+        - climate.buro_heizung
+        - climate.flur_heizung
+        - climate.gastezimmer_heizung
+        - climate.hobbyraum_heizung
+        - climate.schlafzimmer_heizung
+        - climate.toilette_heizung
+      enabled: false
     - action: select.select_option
       metadata: {}
       data:
@@ -1396,13 +1355,24 @@
         - Every-hour
       - condition: or
         conditions:
+        - condition: and
+          conditions:
+          - condition: numeric_state
+            entity_id: sensor.xxx_strompreis
+            below: sensor.strompreis_avg_xxx
+          - condition: numeric_state
+            entity_id: sensor.strompreis_avg_xxx
+            below: input_number.strompreis_heizung_aus
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
-          below: sensor.strompreis_avg_xxx
+          below: input_number.strompreis_heizung_aus
         - condition: time
           after: '21:00:00'
           enabled: true
         enabled: false
+      - condition: numeric_state
+        entity_id: sensor.xxx_strompreis
+        below: input_number.strompreis_heizung_aus
     then:
     - action: climate.set_hvac_mode
       metadata: {}
@@ -1410,15 +1380,15 @@
         hvac_mode: auto
       target:
         entity_id:
-        - climate.wohnzimmer
-        - climate.bad
-        - climate.buro
-        - climate.flur
-        - climate.gastezimmer
-        - climate.hobbyraum
-        - climate.schlafzimmer
-        - climate.toilette
-      enabled: true
+        - climate.wohnzimmer_heizung
+        - climate.bad_heizung
+        - climate.buro_heizung
+        - climate.flur_heizung
+        - climate.gastezimmer_heizung
+        - climate.hobbyraum_heizung
+        - climate.schlafzimmer_heizung
+        - climate.toilette_heizung
+      enabled: false
     - action: select.select_option
       metadata: {}
       data:
@@ -1431,21 +1401,25 @@
         entity_id: binary_sensor.bad_fenster_state
         state: 'on'
       then:
-      - device_id: bb152676baef4f3deaf39dd1346c53bf
-        domain: climate
-        entity_id: a1e0fc2a0aa0028215a9050417d38cb3
-        type: set_hvac_mode
-        hvac_mode: 'off'
+      - action: climate.set_hvac_mode
+        metadata: {}
+        target:
+          device_id: df2fd9736612151b12280e017b37bda0
+        data:
+          hvac_mode: 'off'
+      enabled: false
     - if:
       - condition: state
         entity_id: binary_sensor.toilette_fenster_state
         state: 'on'
       then:
-      - device_id: d46a57130ab7752ec7880c6bf63f93d0
-        domain: climate
-        entity_id: 3bb1b5b9e064d5bfd4e1619203e0be4d
-        type: set_hvac_mode
-        hvac_mode: 'off'
+      - action: climate.set_hvac_mode
+        metadata: {}
+        target:
+          device_id: a209ed86192fc4cfbc37d23ec5803800
+        data:
+          hvac_mode: 'off'
+      enabled: false
   mode: single
 - id: '1738915844292'
   alias: Radon Werte Benachrichtigung
@@ -1510,3 +1484,26 @@
   - action: script.update_power_price_15min
     data: {}
     response_variable: tibberprices
+- id: '1768928695214'
+  alias: Wohnzimmer Fenster offen
+  description: Stop Heizung
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.wohnzimmer_fenster_offnung
+    from:
+    - 'off'
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - action: climate.set_hvac_mode
+    metadata: {}
+    data:
+      hvac_mode: 'off'
+    target:
+      entity_id:
+      - climate.tado_smart_radiator_thermostat_va3043900160
+      - climate.tado_smart_radiator_thermostat_va1852914432
+      - climate.tado_smart_radiator_thermostat_va1683908608
+  mode: single
