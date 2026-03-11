@@ -7,6 +7,7 @@ sax_a_leistungsgrenzwert_entladen:
     - "2500"
     - "1000"
     - "500"
+    - "250"
     - "0"
   icon: mdi:battery-arrow-up
 sax_a_leistungsgrenzwert_laden:

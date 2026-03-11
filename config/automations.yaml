@@ -880,7 +880,7 @@
       - condition: numeric_state
         entity_id: sensor.solarman_total_active_power_output
         above: 1.5
-        enabled: false
+        enabled: true
       - condition: numeric_state
         entity_id: sensor.sax_bms_combined_soc
         below: 95
@@ -932,6 +932,9 @@
       - condition: numeric_state
         entity_id: sensor.sonneneinstrahlung_vorhersage_in_5_stunden
         above: 1500
+      - condition: numeric_state
+        entity_id: sensor.sax_bms_combined_soc
+        above: 95
       sequence:
       - action: input_select.select_option
         metadata: {}
@@ -952,7 +955,7 @@
   - entity_id:
     - sensor.sax_bms_combined_soc
     id: SOC_above_50
-    above: 50
+    above: 80
     for:
       hours: 0
       minutes: 5
@@ -1033,9 +1036,7 @@
     - conditions:
       - condition: trigger
         id:
-        - Preis_Tibber_niedrig
         - Strompreis-No-Export
-        - Strompreis-unter-Mittelwert
       sequence:
       - action: select.select_option
         metadata: {}
@@ -1081,7 +1082,7 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '500'
+          option: '250'
     - conditions:
       - condition: and
         conditions:
@@ -1089,15 +1090,9 @@
           id:
           - SOC_above_50
           - entladen_refresh
-        - condition: template
-          value_template: '{{states(''sensor.solarman_total_active_power_output'')
-            | float(0) > float(0.5)}}'
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
-        - condition: numeric_state
-          entity_id: sensor.strompreis_avg_xxx
-          above: input_number.strompreis_speicher_export_stop
       sequence:
       - action: input_select.select_option
         target:
@@ -1131,12 +1126,12 @@
     - conditions:
       - condition: and
         conditions:
-        - condition: trigger
-          id:
-          - Preis_Tibber_niedrig
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
           above: number.sax_bms_minimum_soc
+        - condition: trigger
+          id:
+          - Preis_Tibber_niedrig
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
@@ -1148,14 +1143,13 @@
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '500'
+          option: '250'
     - conditions:
       - condition: and
         conditions:
         - condition: trigger
           id:
           - Preis_Tibber_hoch
-          - Strompreis-uber-Mittelwert
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
           above: number.sax_bms_minimum_soc
@@ -1163,7 +1157,7 @@
       - action: input_select.select_option
         metadata: {}
         data:
-          option: '500'
+          option: '250'
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
   trace:
@@ -1504,6 +1498,23 @@
     target:
       entity_id:
       - climate.tado_smart_radiator_thermostat_va3043900160
-      - climate.tado_smart_radiator_thermostat_va1852914432
+      - climate.tado_smart_radiator_thermostat_va1652046592
       - climate.tado_smart_radiator_thermostat_va1683908608
+      - climate.wohnzimmer_heizung
+  mode: single
+- id: '1771090133663'
+  alias: Tibber Reload
+  description: Reload Tibber integration if it has not received any data for 10 minutes
+  triggers:
+  - entity_id:
+    - sensor.tibber_pulse_xxx_energie
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    trigger: state
+  actions:
+  - data:
+      entry_id: 01JJ1C2QBF2NCKF9YWVZ7C2AWE
+    action: homeassistant.reload_config_entry
   mode: single

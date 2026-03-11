@@ -27,8 +27,8 @@ rest:
       User-Agent: REST
     scan_interval: 300
     sensor:
-      - name: "Electricity price Prognose Vacher Str 157d"
-        unique_id: sensor.electricity_price_prognose_vacher_str_157d
+      - name: "Electricity price Prognose XXX"
+        unique_id: sensor.electricity_price_prognose_xxx
         json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
         json_attributes:
           - today
@@ -45,8 +45,8 @@ rest:
       User-Agent: REST
     scan_interval: 300
     sensor:
-      name: "Electricity price Prognose 15Min Vacher Str 157d"
-      unique_id: sensor.electricity_price_prognose_15min_vacher_str_157d
+      name: "Electricity price Prognose 15Min XXX"
+      unique_id: sensor.electricity_price_prognose_15min_xxx
       json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
       json_attributes:
         - today
@@ -72,9 +72,10 @@ logger:
   # logs:
   #  custom_components.sax_battery: debug
   #  pymodbus: debug
+
+  #      pymodbus.logging:
+  #      - "ERROR: request ask for transaction_id=" # sax_battery transaction_id bug
   filters:
-    pymodbus.logging:
-      - "ERROR: request ask for transaction_id=" # sax_battery transaction_id bug
     custom_components.solarman.solarman:
       - "Querying .1024 - 1070. failed" # NoSocketAvailableError, Empty
       - "Querying registers .1024 - 1070. failed"
@@ -91,7 +92,6 @@ logbook:
   exclude:
     entities:
       - sensor.solarman_status_lastupdate
-      - sensor.poweropti_cloud
 
 # modbus: !include modbus.yaml
 template: !include templates.yaml
