@@ -1,257 +1,264 @@
-- id: '1711901007143'
+- id: "1711901007143"
   alias: Bad Fenster offen
   description: Stop Heizung
   triggers:
-  - entity_id:
-    - binary_sensor.bad_fenster_state
-    from: 'off'
-    to: 'on'
-    trigger: state
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 0
+    - entity_id:
+        - binary_sensor.bad_fenster_state
+      from: "off"
+      to: "on"
+      trigger: state
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 0
   conditions: []
   actions:
-  - action: climate.set_hvac_mode
-    metadata: {}
-    target:
-      entity_id: climate.bad_heizung
-    data:
-      hvac_mode: 'off'
+    - action: climate.set_hvac_mode
+      metadata: {}
+      target:
+        entity_id: climate.bad_heizung
+      data:
+        hvac_mode: "off"
   mode: single
-- id: '1711901129125'
+- id: "1711901129125"
   alias: Flur Fenster offen
   description: Stop Heizung
   triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.gastezimmer_fenster_state
-    from: 'off'
-    to: 'on'
-    id: GastzimmerFenster
-  - trigger: state
-    entity_id:
-    - binary_sensor.hobbyraum_fenster_state
-    from: 'off'
-    to: 'on'
-    id: HobbyraumFenster
+    - trigger: state
+      entity_id:
+        - binary_sensor.gastezimmer_fenster_state
+      from: "off"
+      to: "on"
+      id: GastzimmerFenster
+    - trigger: state
+      entity_id:
+        - binary_sensor.hobbyraum_fenster_state
+      from: "off"
+      to: "on"
+      id: HobbyraumFenster
   conditions: []
   actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - FlurThermostat
-      sequence:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        target:
-          entity_id: climate.flur_heizung
-        data:
-          hvac_mode: 'off'
-    - conditions:
-      - condition: trigger
-        id:
-        - GastzimmerFenster
-      - condition: state
-        entity_id: binary_sensor.hobbyraum_fenster_state
-        state: 'on'
-      sequence:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        target:
-          entity_id: climate.flur_heizung
-        data:
-          hvac_mode: 'off'
-    - conditions:
-      - condition: trigger
-        id:
-        - HobbyraumFenster
-      - condition: state
-        entity_id: binary_sensor.gastezimmer_fenster_state
-        state: 'on'
-      sequence:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        target:
-          entity_id: climate.flur_heizung
-        data:
-          hvac_mode: 'off'
+    - choose:
+        - conditions:
+            - condition: trigger
+              id:
+                - FlurThermostat
+          sequence:
+            - action: climate.set_hvac_mode
+              metadata: {}
+              target:
+                entity_id: climate.flur_heizung
+              data:
+                hvac_mode: "off"
+        - conditions:
+            - condition: trigger
+              id:
+                - GastzimmerFenster
+            - condition: state
+              entity_id: binary_sensor.hobbyraum_fenster_state
+              state: "on"
+          sequence:
+            - action: climate.set_hvac_mode
+              metadata: {}
+              target:
+                entity_id: climate.flur_heizung
+              data:
+                hvac_mode: "off"
+        - conditions:
+            - condition: trigger
+              id:
+                - HobbyraumFenster
+            - condition: state
+              entity_id: binary_sensor.gastezimmer_fenster_state
+              state: "on"
+          sequence:
+            - action: climate.set_hvac_mode
+              metadata: {}
+              target:
+                entity_id: climate.flur_heizung
+              data:
+                hvac_mode: "off"
   mode: single
-- id: '1711901186237'
+- id: "1711901186237"
   alias: Gästezimmer Fenster offen
   description: Stop Heizung
   triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.gastezimmer_fenster_state
-    from: 'off'
-    to: 'on'
+    - trigger: state
+      entity_id:
+        - binary_sensor.gastezimmer_fenster_state
+      from: "off"
+      to: "on"
   conditions: []
   actions:
-  - action: climate.set_hvac_mode
-    metadata: {}
-    target:
-      entity_id: climate.gastezimmer_heizung
-    data:
-      hvac_mode: 'off'
+    - action: climate.set_hvac_mode
+      metadata: {}
+      target:
+        entity_id: climate.gastezimmer_heizung
+      data:
+        hvac_mode: "off"
   mode: single
-- id: '1711901231281'
+- id: "1711901231281"
   alias: Schlafzimmer Fenster offen
   description: Stop Heizung
   triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.schlafzimmer_fenster_state
-    from: 'off'
-    to: 'on'
+    - trigger: state
+      entity_id:
+        - binary_sensor.schlafzimmer_fenster_state
+      from: "off"
+      to: "on"
   conditions: []
   actions:
-  - action: climate.set_hvac_mode
-    metadata: {}
-    target:
-      entity_id: climate.schlafzimmer_heizung
-    data:
-      hvac_mode: 'off'
+    - action: climate.set_hvac_mode
+      metadata: {}
+      target:
+        entity_id: climate.schlafzimmer_heizung
+      data:
+        hvac_mode: "off"
   mode: single
-- id: '1711901269312'
+- id: "1711901269312"
   alias: Toilette Fenster offen
   description: Stop Heizung
   triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.toilette_fenster_state
-    from: 'off'
-    to: 'on'
+    - trigger: state
+      entity_id:
+        - binary_sensor.toilette_fenster_state
+      from: "off"
+      to: "on"
   conditions: []
   actions:
-  - action: climate.set_hvac_mode
-    metadata: {}
-    target:
-      entity_id: climate.toilette_heizung
-    data:
-      hvac_mode: 'off'
+    - action: climate.set_hvac_mode
+      metadata: {}
+      target:
+        entity_id: climate.toilette_heizung
+      data:
+        hvac_mode: "off"
   mode: single
-- id: '1712561287708'
+- id: "1712561287708"
   alias: Lüften Hobbyraum
   description: Lüften Hobbyraum > 65%
   triggers:
-  - trigger: time
-    at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
-    - '10:00:00'
-    - '11:00:00'
+    - trigger: time
+      at:
+        - 07:00:00
+        - 08:00:00
+        - 09:00:00
+        - "10:00:00"
+        - "11:00:00"
   conditions:
-  - condition: state
-    entity_id: binary_sensor.hobbyraum_fenster_state
-    state: 'off'
-  - condition: numeric_state
-    entity_id: sensor.hobbyraum_luftfeuchtigkeit
-    above: 65
-  - condition: template
-    value_template: '{{states(''sensor.fuerth_bayern_taupunkt'') | float < float(12)}}'
-  - condition: template
-    value_template: '{{states(''sensor.hobbyraum_temperatur'') | float|round(1) -
-      4.0 > states(''sensor.fuerth_bayern_temperatur'') | float }}'
-  - condition: template
-    value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_hobbyraum'') |float
-      > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float) }}'
-  - condition: numeric_state
-    entity_id: zone.home
-    above: 0
+    - condition: state
+      entity_id: binary_sensor.hobbyraum_fenster_state
+      state: "off"
+    - condition: numeric_state
+      entity_id: sensor.hobbyraum_luftfeuchtigkeit
+      above: 65
+    - condition: template
+      value_template: "{{states('sensor.fuerth_bayern_taupunkt') | float < float(12)}}"
+    - condition: template
+      value_template:
+        "{{states('sensor.hobbyraum_temperatur') | float|round(1) -
+        4.0 > states('sensor.fuerth_bayern_temperatur') | float }}"
+    - condition: template
+      value_template:
+        "{{ (states('sensor.absolute_luftfeuchtigkeit_hobbyraum') |float
+        > states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit') |float) }}"
+    - condition: numeric_state
+      entity_id: zone.home
+      above: 0
   actions:
-  - metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften. Unterschied {{ (float(states('sensor.absolute_luftfeuchtigkeit_hobbyraum'))
-        - float(states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit'))) |round(1)  }}
-        g/m³
-      title: Hobbyraum
-    action: notify.bert_devices
-  - action: persistent_notification.create
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften. Unterschied {{ (float(states('sensor.absolute_luftfeuchtigkeit_hobbyraum'))
-        - float(states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit'))) |round(1)  }}
-        g/m³
-      title: Hobbyraum
+    - metadata: {}
+      data:
+        message:
+          Luftfeuchtigkeit ist hoch! Bitte lüften. Unterschied {{ (float(states('sensor.absolute_luftfeuchtigkeit_hobbyraum'))
+          - float(states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit'))) |round(1)  }}
+          g/m³
+        title: Hobbyraum
+      action: notify.bert_devices
+    - action: persistent_notification.create
+      metadata: {}
+      data:
+        message:
+          Luftfeuchtigkeit ist hoch! Bitte lüften. Unterschied {{ (float(states('sensor.absolute_luftfeuchtigkeit_hobbyraum'))
+          - float(states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit'))) |round(1)  }}
+          g/m³
+        title: Hobbyraum
   mode: single
-- id: '1712561366726'
+- id: "1712561366726"
   alias: Lüften Bad
   description: Lüften Bad > 65%
   triggers:
-  - at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
-    - '10:00:00'
-    - '11:00:00'
-    trigger: time
+    - at:
+        - 07:00:00
+        - 08:00:00
+        - 09:00:00
+        - "10:00:00"
+        - "11:00:00"
+      trigger: time
   conditions:
-  - condition: state
-    state: 'off'
-    entity_id: binary_sensor.bad_fenster_state
-  - condition: numeric_state
-    entity_id: sensor.bad_luftfeuchtigkeit
-    above: 65
-  - condition: template
-    value_template: '{{ states(''sensor.absolute_luftfeuchtigkeit_bad'') |float >
-      states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float }}'
-  - condition: numeric_state
-    entity_id: zone.home
-    above: 0
+    - condition: state
+      state: "off"
+      entity_id: binary_sensor.bad_fenster_state
+    - condition: numeric_state
+      entity_id: sensor.bad_luftfeuchtigkeit
+      above: 65
+    - condition: template
+      value_template:
+        "{{ states('sensor.absolute_luftfeuchtigkeit_bad') |float >
+        states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit') |float }}"
+    - condition: numeric_state
+      entity_id: zone.home
+      above: 0
   actions:
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Bad
-  - action: persistent_notification.create
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Bad
+    - action: notify.bert_devices
+      metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Bad
+    - action: persistent_notification.create
+      metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Bad
   mode: single
   max_exceeded: silent
-- id: '1712561475115'
+- id: "1712561475115"
   alias: Lüften Wohnzimmer
   description: Lüften Wohnzimmer > 65%
   triggers:
-  - at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
-    - '10:00:00'
-    - '11:00:00'
-    trigger: time
+    - at:
+        - 07:00:00
+        - 08:00:00
+        - 09:00:00
+        - "10:00:00"
+        - "11:00:00"
+      trigger: time
   conditions:
-  - condition: numeric_state
-    entity_id: sensor.wohnzimmer_luftfeuchtigkeit
-    above: 65
-  - condition: template
-    value_template: '{{states(''sensor.wohnzimmer_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
-      | float }}'
-  - condition: template
-    value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_wohnzimmer'') |float
-      > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float) }}'
-  - condition: numeric_state
-    entity_id: zone.home
-    above: 0
+    - condition: numeric_state
+      entity_id: sensor.wohnzimmer_luftfeuchtigkeit
+      above: 65
+    - condition: template
+      value_template:
+        "{{states('sensor.wohnzimmer_temperatur') | float > states('sensor.fuerth_bayern_temperatur')
+        | float }}"
+    - condition: template
+      value_template:
+        "{{ (states('sensor.absolute_luftfeuchtigkeit_wohnzimmer') |float
+        > states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit') |float) }}"
+    - condition: numeric_state
+      entity_id: zone.home
+      above: 0
   actions:
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Wohnzimmer
-  - action: persistent_notification.create
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Wohnzimmer
+    - action: notify.bert_devices
+      metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Wohnzimmer
+    - action: persistent_notification.create
+      metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Wohnzimmer
   mode: single
-- id: '1713339627572'
+- id: "1713339627572"
   alias: Flur Licht OG
   description: Licht ein/ausschalten
   use_blueprint:
@@ -263,7 +270,7 @@
       no_motion_wait: 120
       automation_blocker: binary_sensor.flur_dunkel
       automation_blocker_boolean: true
-- id: '1713340740565'
+- id: "1713340740565"
   alias: Flur Licht UG
   description: Licht ein/ausschalten
   use_blueprint:
@@ -275,490 +282,499 @@
       no_motion_wait: 120
       automation_blocker: binary_sensor.flur_dunkel_ug
       automation_blocker_boolean: true
-- id: '1713512165152'
+- id: "1713512165152"
   alias: Hobbyraum Fenster offen
   description: Stop Heizung
   triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.hobbyraum_fenster_state
-    from: 'off'
-    to: 'on'
+    - trigger: state
+      entity_id:
+        - binary_sensor.hobbyraum_fenster_state
+      from: "off"
+      to: "on"
   conditions: []
   actions:
-  - action: climate.set_hvac_mode
-    metadata: {}
-    target:
-      device_id:
-      - adb52b9534a1e94296836238cc7f1250
-      - bffc1517bd048363a3b6335bd749ceb3
-    data:
-      hvac_mode: 'off'
+    - action: climate.set_hvac_mode
+      metadata: {}
+      target:
+        device_id:
+          - adb52b9534a1e94296836238cc7f1250
+          - bffc1517bd048363a3b6335bd749ceb3
+      data:
+        hvac_mode: "off"
   mode: single
-- id: '1713513624564'
+- id: "1713513624564"
   alias: Fenster lange offen
   description: Nachricht senden
   triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.fenster_state
-    for:
-      minutes: '{{ states(''input_number.luftungsdauer'') | int }}'
+    - trigger: state
+      entity_id:
+        - binary_sensor.fenster_state
+      for:
+        minutes: "{{ states('input_number.luftungsdauer') | int }}"
   conditions: []
   actions:
-  - action: input_number.set_value
-    data_template:
-      entity_id: input_number.luftungsdauer
-      value: '{{ states(''sensor.luftungsdauer_in_minuten_fur_monat'') | int }}'
-  - condition: state
-    entity_id: binary_sensor.fenster_state
-    state: 'on'
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      title: Fenster offen
-      message: "{% set open_windows = states | selectattr('entity_id','in', state_attr('binary_sensor.fenster_state','entity_id'))
-        |selectattr('state','eq','on') | map(attribute='name') | list %}   {% if open_windows
-        | length > 0 %}    \n   Folgende Fenster sind seit {{states('input_number.luftungsdauer')
-        | int}} Minuten geöffnet {{ open_windows | join('\\n') }}\n{% endif %}\n"
+    - action: input_number.set_value
+      data_template:
+        entity_id: input_number.luftungsdauer
+        value: "{{ states('sensor.luftungsdauer_in_minuten_fur_monat') | int }}"
+    - condition: state
+      entity_id: binary_sensor.fenster_state
+      state: "on"
+    - action: notify.bert_devices
+      metadata: {}
       data:
-        persistent: true
-        tag: motion
-        push:
-          sound:
-            name: default
-            critical: 1
-            volume: 0.5
-  - action: notify.persistent_notification
-    metadata: {}
-    data:
-      title: Fenster offen
-      message: "{% set open_windows = states | selectattr('entity_id','in', state_attr('binary_sensor.fenster_state','entity_id'))
-        |selectattr('state','eq','on') | map(attribute='name') | list %}   {% if open_windows
-        | length > 0 %}    \n   Folgende Fenster sind seit {{states('input_number.luftungsdauer')
-        | int}} Minuten geöffnet {{ open_windows | join('\\n') }}\n{% endif %}\n"
+        title: Fenster offen
+        message:
+          "{% set open_windows = states | selectattr('entity_id','in', state_attr('binary_sensor.fenster_state','entity_id'))
+          |selectattr('state','eq','on') | map(attribute='name') | list %}   {% if open_windows
+          | length > 0 %}    \n   Folgende Fenster sind seit {{states('input_number.luftungsdauer')
+          | int}} Minuten geöffnet {{ open_windows | join('\\n') }}\n{% endif %}\n"
+        data:
+          persistent: true
+          tag: motion
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 0.5
+    - action: notify.persistent_notification
+      metadata: {}
+      data:
+        title: Fenster offen
+        message:
+          "{% set open_windows = states | selectattr('entity_id','in', state_attr('binary_sensor.fenster_state','entity_id'))
+          |selectattr('state','eq','on') | map(attribute='name') | list %}   {% if open_windows
+          | length > 0 %}    \n   Folgende Fenster sind seit {{states('input_number.luftungsdauer')
+          | int}} Minuten geöffnet {{ open_windows | join('\\n') }}\n{% endif %}\n"
   mode: single
-- id: '1713519551169'
+- id: "1713519551169"
   alias: Lüften Gästezimmer
   description: Lüften Gästezimmer > 65%
   triggers:
-  - trigger: time
-    at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
-    - '10:00:00'
-    - '11:00:00'
+    - trigger: time
+      at:
+        - 07:00:00
+        - 08:00:00
+        - 09:00:00
+        - "10:00:00"
+        - "11:00:00"
   conditions:
-  - condition: state
-    entity_id: binary_sensor.gastezimmer_fenster_state
-    state: 'off'
-  - condition: numeric_state
-    entity_id: sensor.gastezimmer_luftfeuchtigkeit
-    above: 65
-  - condition: template
-    value_template: '{{states(''sensor.gastezimmer_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
-      | float }}'
-  - condition: template
-    value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_gastezimmer'')
-      |float > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float)
-      }}'
-  - condition: numeric_state
-    entity_id: zone.home
-    above: 0
+    - condition: state
+      entity_id: binary_sensor.gastezimmer_fenster_state
+      state: "off"
+    - condition: numeric_state
+      entity_id: sensor.gastezimmer_luftfeuchtigkeit
+      above: 65
+    - condition: template
+      value_template:
+        "{{states('sensor.gastezimmer_temperatur') | float > states('sensor.fuerth_bayern_temperatur')
+        | float }}"
+    - condition: template
+      value_template:
+        "{{ (states('sensor.absolute_luftfeuchtigkeit_gastezimmer')
+        |float > states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit') |float)
+        }}"
+    - condition: numeric_state
+      entity_id: zone.home
+      above: 0
   actions:
-  - metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Wohnzimmer
-    action: notify.bert_devices
-  - action: persistent_notification.create
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Wohnzimmer
+    - metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Wohnzimmer
+      action: notify.bert_devices
+    - action: persistent_notification.create
+      metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Wohnzimmer
   mode: single
-- id: '1713532997039'
+- id: "1713532997039"
   alias: Lüften Toilette
   description: Lüften Toilette > 65%
   triggers:
-  - at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
-    - '10:00:00'
-    - '11:00:00'
-    trigger: time
+    - at:
+        - 07:00:00
+        - 08:00:00
+        - 09:00:00
+        - "10:00:00"
+        - "11:00:00"
+      trigger: time
   conditions:
-  - condition: state
-    entity_id: binary_sensor.toilette_fenster_state
-    state: 'off'
-  - condition: numeric_state
-    entity_id: sensor.toilette_luftfeuchtigkeit
-    above: 65
-  - condition: template
-    value_template: '{{states(''sensor.toilette_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
-      | float }}'
-  - condition: template
-    value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_toilette'') |float
-      > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float) }}'
-  - condition: numeric_state
-    entity_id: zone.home
-    above: 0
-  actions:
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Toilette
-  - action: persistent_notification.create
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Toilette
-  mode: single
-- id: '1713766668735'
-  alias: e.GO Laden Nachricht
-  description: ''
-  triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.solarman_total_active_power_output
-    above: 2.5
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-  - trigger: numeric_state
-    entity_id:
-    - sensor.tibber_pulse_xxx_stromerzeugung
-    below: -2000
-  conditions:
-  - condition: and
-    conditions:
-    - condition: template
-      value_template: '{{ this.attributes.last_triggered is none or this.attributes.last_triggered
-        < today_at() }}'
+    - condition: state
+      entity_id: binary_sensor.toilette_fenster_state
+      state: "off"
     - condition: numeric_state
-      entity_id: sensor.tibber_pulse_xxx_stromerzeugung
-      above: 1000
+      entity_id: sensor.toilette_luftfeuchtigkeit
+      above: 65
+    - condition: template
+      value_template:
+        "{{states('sensor.toilette_temperatur') | float > states('sensor.fuerth_bayern_temperatur')
+        | float }}"
+    - condition: template
+      value_template:
+        "{{ (states('sensor.absolute_luftfeuchtigkeit_toilette') |float
+        > states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit') |float) }}"
+    - condition: numeric_state
+      entity_id: zone.home
+      above: 0
   actions:
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      message: Auto laden !?!
-      title: e.GO Life First Edition
+    - action: notify.bert_devices
+      metadata: {}
       data:
-        push:
-          sound:
-            name: default
-            critical: 1
-            volume: 0.5
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Toilette
+    - action: persistent_notification.create
+      metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Toilette
   mode: single
-- id: '1713852243330'
+- id: "1713766668735"
+  alias: e.GO Laden Nachricht
+  description: ""
+  triggers:
+    - trigger: numeric_state
+      entity_id:
+        - sensor.solarman_total_active_power_output
+      above: 2.5
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+    - trigger: numeric_state
+      entity_id:
+        - sensor.tibber_pulse_xxx_stromerzeugung
+      below: -2000
+  conditions:
+    - condition: and
+      conditions:
+        - condition: template
+          value_template:
+            "{{ this.attributes.last_triggered is none or this.attributes.last_triggered
+            < today_at() }}"
+        - condition: numeric_state
+          entity_id: sensor.tibber_pulse_xxx_stromerzeugung
+          above: 1000
+  actions:
+    - action: notify.bert_devices
+      metadata: {}
+      data:
+        message: Auto laden !?!
+        title: e.GO Life First Edition
+        data:
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 0.5
+  mode: single
+- id: "1713852243330"
   alias: Waschmaschine Status
   description: Waschmaschine läuft
   triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.toilette_waschmaschine_leistung
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 30
-    above: 5
-    id: Waschmaschine an
-  - trigger: numeric_state
-    entity_id:
-    - sensor.toilette_waschmaschine_leistung
-    for:
-      hours: 0
-      minutes: 2
-      seconds: 0
-    below: 5
-    id: Waschmaschine aus
+    - trigger: numeric_state
+      entity_id:
+        - sensor.toilette_waschmaschine_leistung
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 30
+      above: 5
+      id: Waschmaschine an
+    - trigger: numeric_state
+      entity_id:
+        - sensor.toilette_waschmaschine_leistung
+      for:
+        hours: 0
+        minutes: 2
+        seconds: 0
+      below: 5
+      id: Waschmaschine aus
   conditions: []
   actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - Waschmaschine an
-      - condition: state
-        entity_id: input_boolean.waschmaschine
-        state: 'off'
-      sequence:
-      - action: input_boolean.turn_on
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_boolean.waschmaschine
-      - action: notify.bert_devices
-        metadata: {}
-        data:
-          message: Waschmaschine läuft
-          title: Waschmaschine Status
-    - conditions:
-      - condition: trigger
-        id:
-        - Waschmaschine aus
-      sequence:
-      - action: input_boolean.turn_off
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_boolean.waschmaschine
-      - action: notify.bert_devices
-        metadata: {}
-        data:
-          message: Waschmaschine fertig
-          title: Waschmaschine Status
+    - choose:
+        - conditions:
+            - condition: trigger
+              id:
+                - Waschmaschine an
+            - condition: state
+              entity_id: input_boolean.waschmaschine
+              state: "off"
+          sequence:
+            - action: input_boolean.turn_on
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_boolean.waschmaschine
+            - action: notify.bert_devices
+              metadata: {}
+              data:
+                message: Waschmaschine läuft
+                title: Waschmaschine Status
+        - conditions:
+            - condition: trigger
+              id:
+                - Waschmaschine aus
+          sequence:
+            - action: input_boolean.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_boolean.waschmaschine
+            - action: notify.bert_devices
+              metadata: {}
+              data:
+                message: Waschmaschine fertig
+                title: Waschmaschine Status
   mode: single
-- id: '1713855494568'
+- id: "1713855494568"
   alias: Toilette Wasser Leckage
-  description: ''
+  description: ""
   triggers:
-  - type: moist
-    trigger: device
-    device_id: ad1f8201079c8faf9633729293da6b4c
-    entity_id: 5cf34bef9a79879099b6347eea23850a
-    domain: binary_sensor
+    - type: moist
+      trigger: device
+      device_id: ad1f8201079c8faf9633729293da6b4c
+      entity_id: 5cf34bef9a79879099b6347eea23850a
+      domain: binary_sensor
   condition: []
   action:
-  - type: turn_off
-    device_id: 019dfe3b68d70b6e48f1c2ad934ff126
-    entity_id: b50fe97b66764b3253765a67f1c64560
-    domain: switch
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      message: Wasser Leck
-      title: 'Wasserleckage festgestellt '
+    - type: turn_off
+      device_id: 019dfe3b68d70b6e48f1c2ad934ff126
+      entity_id: b50fe97b66764b3253765a67f1c64560
+      domain: switch
+    - action: notify.bert_devices
+      metadata: {}
       data:
-        persistent: true
-        tag: motion
-        push:
-          sound:
-            name: default
-            critical: 1
-            volume: 0.5
+        message: Wasser Leck
+        title: "Wasserleckage festgestellt "
+        data:
+          persistent: true
+          tag: motion
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 0.5
   mode: single
-- id: '1714372126503'
+- id: "1714372126503"
   alias: Technikraum Wasser Leckage
   description: Wasser Leck
   triggers:
-  - type: moist
-    trigger: device
-    device_id: 752c2c01d3ba14c2a38c3b68a54022b0
-    entity_id: 4fec2986c3b06162b31f77510e236018
-    domain: binary_sensor
+    - type: moist
+      trigger: device
+      device_id: 752c2c01d3ba14c2a38c3b68a54022b0
+      entity_id: 4fec2986c3b06162b31f77510e236018
+      domain: binary_sensor
   condition: []
   action:
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      message: Wasser Leck Technikraum
-      title: 'Wasserleckage festgestellt '
+    - action: notify.bert_devices
+      metadata: {}
       data:
-        persistent: true
-        tag: motion
-        push:
-          sound:
-            name: default
-            critical: 1
-            volume: 0.5
+        message: Wasser Leck Technikraum
+        title: "Wasserleckage festgestellt "
+        data:
+          persistent: true
+          tag: motion
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 0.5
   mode: single
-- id: '1715071673625'
+- id: "1715071673625"
   alias: Bett Licht ein/aus
-  description: ''
+  description: ""
   triggers:
-  - device_id: d30cf3900233038b324a8e9a87fc6261
-    domain: zha
-    trigger: device
-    type: remote_button_short_press
-    subtype: turn_on
-    id: Bett Licht ein
-  - device_id: d30cf3900233038b324a8e9a87fc6261
-    domain: zha
-    trigger: device
-    type: remote_button_short_press
-    subtype: turn_off
-    id: Bett Licht aus
+    - device_id: d30cf3900233038b324a8e9a87fc6261
+      domain: zha
+      trigger: device
+      type: remote_button_short_press
+      subtype: turn_on
+      id: Bett Licht ein
+    - device_id: d30cf3900233038b324a8e9a87fc6261
+      domain: zha
+      trigger: device
+      type: remote_button_short_press
+      subtype: turn_off
+      id: Bett Licht aus
   condition: []
   action:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - Bett Licht ein
-      sequence:
-      - type: turn_on
-        device_id: 16d81b2670e9fccfa5a3a706f1c26917
-        entity_id: 016924e4a5513beae5220ea1c29c24fa
-        domain: light
-    - conditions:
-      - condition: trigger
-        id:
-        - Bett Licht aus
-      sequence:
-      - type: turn_off
-        device_id: 16d81b2670e9fccfa5a3a706f1c26917
-        entity_id: 016924e4a5513beae5220ea1c29c24fa
-        domain: light
+    - choose:
+        - conditions:
+            - condition: trigger
+              id:
+                - Bett Licht ein
+          sequence:
+            - type: turn_on
+              device_id: 16d81b2670e9fccfa5a3a706f1c26917
+              entity_id: 016924e4a5513beae5220ea1c29c24fa
+              domain: light
+        - conditions:
+            - condition: trigger
+              id:
+                - Bett Licht aus
+          sequence:
+            - type: turn_off
+              device_id: 16d81b2670e9fccfa5a3a706f1c26917
+              entity_id: 016924e4a5513beae5220ea1c29c24fa
+              domain: light
   mode: single
-- id: '1715085766286'
+- id: "1715085766286"
   alias: Licht Flur ausschalten
   description: nach 20 Minuten
   triggers:
-  - trigger: device
-    type: turned_on
-    device_id: 99b158356ef95228ad68e878aa576fde
-    entity_id: d3732c89608512db741b9ada4d873ba4
-    domain: light
-    for:
-      hours: 0
-      minutes: 20
-      seconds: 0
-    id: Licht UG an
-  - trigger: device
-    type: turned_on
-    device_id: f776144912599f6d0f58e11861765835
-    entity_id: 8fb2e61e8a3eaec6480526d4a4736328
-    domain: light
-    for:
-      hours: 0
-      minutes: 20
-      seconds: 0
-    id: Licht OG an
+    - trigger: device
+      type: turned_on
+      device_id: 99b158356ef95228ad68e878aa576fde
+      entity_id: d3732c89608512db741b9ada4d873ba4
+      domain: light
+      for:
+        hours: 0
+        minutes: 20
+        seconds: 0
+      id: Licht UG an
+    - trigger: device
+      type: turned_on
+      device_id: f776144912599f6d0f58e11861765835
+      entity_id: 8fb2e61e8a3eaec6480526d4a4736328
+      domain: light
+      for:
+        hours: 0
+        minutes: 20
+        seconds: 0
+      id: Licht OG an
   condition: []
   action:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - Licht UG an
-      - type: is_not_open
-        condition: device
-        device_id: e089be452405c8a221cbe7e1ae8f1f27
-        entity_id: efd1af6e5f0cb8f764501a62a8d5ad0d
-        domain: binary_sensor
-      sequence:
-      - type: turn_off
-        device_id: 99b158356ef95228ad68e878aa576fde
-        entity_id: d3732c89608512db741b9ada4d873ba4
-        domain: light
-    - conditions:
-      - condition: trigger
-        id:
-        - Licht OG an
-      - type: is_not_open
-        condition: device
-        device_id: 9f5dd622cefa8700849a2285f6d964ad
-        entity_id: 0f254de320e297b8f8660b47b1f01d85
-        domain: binary_sensor
-      sequence:
-      - type: turn_off
-        device_id: f776144912599f6d0f58e11861765835
-        entity_id: 8fb2e61e8a3eaec6480526d4a4736328
-        domain: light
+    - choose:
+        - conditions:
+            - condition: trigger
+              id:
+                - Licht UG an
+            - type: is_not_open
+              condition: device
+              device_id: e089be452405c8a221cbe7e1ae8f1f27
+              entity_id: efd1af6e5f0cb8f764501a62a8d5ad0d
+              domain: binary_sensor
+          sequence:
+            - type: turn_off
+              device_id: 99b158356ef95228ad68e878aa576fde
+              entity_id: d3732c89608512db741b9ada4d873ba4
+              domain: light
+        - conditions:
+            - condition: trigger
+              id:
+                - Licht OG an
+            - type: is_not_open
+              condition: device
+              device_id: 9f5dd622cefa8700849a2285f6d964ad
+              entity_id: 0f254de320e297b8f8660b47b1f01d85
+              domain: binary_sensor
+          sequence:
+            - type: turn_off
+              device_id: f776144912599f6d0f58e11861765835
+              entity_id: 8fb2e61e8a3eaec6480526d4a4736328
+              domain: light
   mode: single
-- id: '1715438854367'
+- id: "1715438854367"
   alias: Spülmaschine Status
   description: Spülmaschine läuft
   triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.kuche_spulmaschine_leistung
-    for:
-      hours: 0
-      minutes: 2
-      seconds: 0
-    above: 5
-    id: Spülmaschine an
-  - trigger: numeric_state
-    entity_id:
-    - sensor.kuche_spulmaschine_leistung
-    for:
-      hours: 0
-      minutes: 20
-      seconds: 0
-    below: 5
-    id: Spülmaschine aus
+    - trigger: numeric_state
+      entity_id:
+        - sensor.kuche_spulmaschine_leistung
+      for:
+        hours: 0
+        minutes: 2
+        seconds: 0
+      above: 5
+      id: Spülmaschine an
+    - trigger: numeric_state
+      entity_id:
+        - sensor.kuche_spulmaschine_leistung
+      for:
+        hours: 0
+        minutes: 20
+        seconds: 0
+      below: 5
+      id: Spülmaschine aus
   condition: []
   action:
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: input_boolean.spulmaschine
-        state: 'off'
-      sequence:
-      - action: input_boolean.turn_on
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_boolean.spulmaschine
-      - action: notify.bert_devices
-        metadata: {}
-        data:
-          message: Spülmaschine läuft
-          title: Spülmschine Status
-    - conditions:
-      - condition: trigger
-        id:
-        - Spülmaschine aus
-      sequence:
-      - action: input_boolean.turn_off
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_boolean.spulmaschine
-      - action: notify.bert_devices
-        metadata: {}
-        data:
-          message: Spülmaschine fertig
-          title: Spülmaschine Status
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.spulmaschine
+              state: "off"
+          sequence:
+            - action: input_boolean.turn_on
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_boolean.spulmaschine
+            - action: notify.bert_devices
+              metadata: {}
+              data:
+                message: Spülmaschine läuft
+                title: Spülmschine Status
+        - conditions:
+            - condition: trigger
+              id:
+                - Spülmaschine aus
+          sequence:
+            - action: input_boolean.turn_off
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_boolean.spulmaschine
+            - action: notify.bert_devices
+              metadata: {}
+              data:
+                message: Spülmaschine fertig
+                title: Spülmaschine Status
   mode: single
-- id: '1715934447464'
+- id: "1715934447464"
   alias: Lüften Schlafzimmer
   description: Schlafzimmer  > 65%
   triggers:
-  - trigger: time
-    at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
-    - '10:00:00'
-    - '11:00:00'
+    - trigger: time
+      at:
+        - 07:00:00
+        - 08:00:00
+        - 09:00:00
+        - "10:00:00"
+        - "11:00:00"
   conditions:
-  - condition: state
-    entity_id: binary_sensor.schlafzimmer_fenster_state
-    state: 'off'
-  - condition: numeric_state
-    entity_id: sensor.schlafzimmer_luftfeuchtigkeit
-    above: 65
-  - condition: template
-    value_template: '{{(states(''sensor.schlafzimmer_temperatur'') | float) > (states(''sensor.fuerth_bayern_temperatur'')
-      | float) }}'
-  - condition: template
-    value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_schlafzimmer'')
-      |float > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float)
-      }}'
-  - condition: numeric_state
-    entity_id: zone.home
-    above: 0
+    - condition: state
+      entity_id: binary_sensor.schlafzimmer_fenster_state
+      state: "off"
+    - condition: numeric_state
+      entity_id: sensor.schlafzimmer_luftfeuchtigkeit
+      above: 65
+    - condition: template
+      value_template:
+        "{{(states('sensor.schlafzimmer_temperatur') | float) > (states('sensor.fuerth_bayern_temperatur')
+        | float) }}"
+    - condition: template
+      value_template:
+        "{{ (states('sensor.absolute_luftfeuchtigkeit_schlafzimmer')
+        |float > states('sensor.fuerth_bayern_absolute_luftfeuchtigkeit') |float)
+        }}"
+    - condition: numeric_state
+      entity_id: zone.home
+      above: 0
   actions:
-  - metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Schlafzimmer
-    action: notify.bert_devices
-  - action: persistent_notification.create
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Schlafzimmer
+    - metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Schlafzimmer
+      action: notify.bert_devices
+    - action: persistent_notification.create
+      metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Schlafzimmer
   mode: single
-- id: '1716959860934'
+- id: "1716959860934"
   alias: Gästezimmer Lichtschalter
   description: Styrbar Lichtschalter
   use_blueprint:
@@ -771,750 +787,754 @@
         entity_id: light.gastezimmer_licht_licht
       hold_time: 1
       button_left_short:
-      - service: light.turn_on
-        target:
-          entity_id: light.gastezimmer_licht_licht
-        data:
-          transition: 1
-          kelvin: 2241
+        - service: light.turn_on
+          target:
+            entity_id: light.gastezimmer_licht_licht
+          data:
+            transition: 1
+            kelvin: 2241
       button_right_short:
-      - service: light.turn_on
-        metadata: {}
-        data:
-          kelvin: 6500
-          transition: 1
-        target:
-          entity_id: light.gastezimmer_licht_licht
-- id: '1717487651377'
+        - service: light.turn_on
+          metadata: {}
+          data:
+            kelvin: 6500
+            transition: 1
+          target:
+            entity_id: light.gastezimmer_licht_licht
+- id: "1717487651377"
   alias: Infrarotheizung schalten
   description: Mit Solar-Strom heizen
   triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.tibber_pulse_xxx_stromerzeugung
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-    below: -1000
-    id: Starten
-  - trigger: numeric_state
-    entity_id:
-    - sensor.tibber_pulse_xxx_stromerzeugung
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 30
-    above: 0
-    id: Stoppen
+    - trigger: numeric_state
+      entity_id:
+        - sensor.tibber_pulse_xxx_stromerzeugung
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+      below: -1000
+      id: Starten
+    - trigger: numeric_state
+      entity_id:
+        - sensor.tibber_pulse_xxx_stromerzeugung
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 30
+      above: 0
+      id: Stoppen
   conditions: []
   actions:
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: input_boolean.infrarotheizung_aktivieren
-        state: 'on'
-      - condition: trigger
-        id:
-        - Starten
-      - condition: state
-        entity_id: binary_sensor.hobbyraum_fenster
-        state: 'off'
-      sequence:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        data:
-          hvac_mode: heat
-        target:
-          entity_id: climate.infrarotheizung_hobbyraum
-    - conditions:
-      - condition: trigger
-        id:
-        - Stoppen
-      sequence:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        data:
-          hvac_mode: 'off'
-        target:
-          entity_id: climate.infrarotheizung_hobbyraum
-    - conditions:
-      - condition: trigger
-        id:
-        - Abschalten
-      sequence:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        data:
-          hvac_mode: 'off'
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.infrarotheizung_aktivieren
+              state: "on"
+            - condition: trigger
+              id:
+                - Starten
+            - condition: state
+              entity_id: binary_sensor.hobbyraum_fenster
+              state: "off"
+          sequence:
+            - action: climate.set_hvac_mode
+              metadata: {}
+              data:
+                hvac_mode: heat
+              target:
+                entity_id: climate.infrarotheizung_hobbyraum
+        - conditions:
+            - condition: trigger
+              id:
+                - Stoppen
+          sequence:
+            - action: climate.set_hvac_mode
+              metadata: {}
+              data:
+                hvac_mode: "off"
+              target:
+                entity_id: climate.infrarotheizung_hobbyraum
+        - conditions:
+            - condition: trigger
+              id:
+                - Abschalten
+          sequence:
+            - action: climate.set_hvac_mode
+              metadata: {}
+              data:
+                hvac_mode: "off"
   mode: single
-- id: '1728047559032'
+- id: "1728047559032"
   alias: Sax_a monitor Ladeleistung
-  description: ''
+  description: ""
   triggers:
-  - trigger: state
-    entity_id:
-    - input_select.sax_a_leistungsgrenzwert_laden
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 5
-    id: New-charge-limit
-  - trigger: sun
-    event: sunrise
-    offset: 0
-    id: Sonnenaufgang
-  - trigger: time_pattern
-    minutes: /15
-    id: Charging-condition
-    enabled: false
+    - trigger: state
+      entity_id:
+        - input_select.sax_a_leistungsgrenzwert_laden
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 5
+      id: New-charge-limit
+    - trigger: sun
+      event: sunrise
+      offset: 0
+      id: Sonnenaufgang
+    - trigger: time_pattern
+      minutes: /15
+      id: Charging-condition
+      enabled: false
   conditions: []
   actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - Charging-condition
-      - condition: time
-        after: '12:30:00'
-      - condition: numeric_state
-        entity_id: sensor.solarman_total_active_power_output
-        above: 1.5
-        enabled: true
-      - condition: numeric_state
-        entity_id: sensor.sax_bms_combined_soc
-        below: 95
-      - condition: or
-        conditions:
-        - condition: numeric_state
-          entity_id: sensor.sax_battery_a_power
-          below: 1
-        - condition: state
-          entity_id: input_select.sax_a_leistungsgrenzwert_laden
-          state: '0'
-          for:
-            hours: 0
-            minutes: 0
-            seconds: 0
-      sequence:
-      - action: input_select.select_option
-        metadata: {}
-        data:
-          option: '3500'
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_laden
-    - conditions:
-      - condition: trigger
-        id:
-        - New-charge-limit
-      sequence:
-      - action: number.set_value
-        metadata: {}
-        data:
-          value: '{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}'
-        target:
-          entity_id: number.sax_bms_max_charge
-      - action: system_log.write
-        metadata: {}
-        data:
-          level: info
-          logger: homeassistant.components.automation.set_sax_a_ladeleistung
-          message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
-      - action: logbook.log
-        metadata: {}
-        data:
-          name: 'Set Batterie Ladeleistung'
-          message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
-    - conditions:
-      - condition: trigger
-        id:
-        - Sonnenaufgang
-      - condition: numeric_state
-        entity_id: sensor.sonneneinstrahlung_vorhersage_in_5_stunden
-        above: 1500
-      - condition: numeric_state
-        entity_id: sensor.sax_bms_combined_soc
-        above: 95
-      sequence:
-      - action: input_select.select_option
-        metadata: {}
-        data:
-          option: '0'
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_laden
-      - action: logbook.log
-        metadata: {}
-        data:
-          name: 'Set Batterie Ladeleistung '
-          message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
+    - choose:
+        - conditions:
+            - condition: trigger
+              id:
+                - Charging-condition
+            - condition: time
+              after: "12:30:00"
+            - condition: numeric_state
+              entity_id: sensor.solarman_total_active_power_output
+              above: 1.5
+              enabled: true
+            - condition: numeric_state
+              entity_id: sensor.sax_bms_combined_soc
+              below: 95
+            - condition: or
+              conditions:
+                - condition: numeric_state
+                  entity_id: sensor.sax_battery_a_power
+                  below: 1
+                - condition: state
+                  entity_id: input_select.sax_a_leistungsgrenzwert_laden
+                  state: "0"
+                  for:
+                    hours: 0
+                    minutes: 0
+                    seconds: 0
+          sequence:
+            - action: input_select.select_option
+              metadata: {}
+              data:
+                option: "3500"
+              target:
+                entity_id: input_select.sax_a_leistungsgrenzwert_laden
+        - conditions:
+            - condition: trigger
+              id:
+                - New-charge-limit
+          sequence:
+            - action: number.set_value
+              metadata: {}
+              data:
+                value: "{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}"
+              target:
+                entity_id: number.sax_bms_max_charge
+            - action: system_log.write
+              metadata: {}
+              data:
+                level: info
+                logger: homeassistant.components.automation.set_sax_a_ladeleistung
+                message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
+            - action: logbook.log
+              metadata: {}
+              data:
+                name: "Set Batterie Ladeleistung "
+                message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
+        - conditions:
+            - condition: trigger
+              id:
+                - Sonnenaufgang
+            - condition: numeric_state
+              entity_id: sensor.sonneneinstrahlung_vorhersage_in_5_stunden
+              above: 1500
+            - condition: numeric_state
+              entity_id: sensor.sax_bms_combined_soc
+              above: 95
+          sequence:
+            - action: input_select.select_option
+              metadata: {}
+              data:
+                option: "0"
+              target:
+                entity_id: input_select.sax_a_leistungsgrenzwert_laden
+            - action: logbook.log
+              metadata: {}
+              data:
+                name: "Set Batterie Ladeleistung "
+                message: P(Laden) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_laden.state|int}}W
   mode: single
-- id: '1728049706106'
+- id: "1728049706106"
   alias: Sax_a monitor Entladeleistung
-  description: ''
+  description: ""
   triggers:
-  - entity_id:
-    - sensor.sax_bms_combined_soc
-    id: SOC_above_50
-    above: 80
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-    enabled: true
-    trigger: numeric_state
-  - entity_id:
-    - sensor.sax_bms_combined_soc
-    below: 50
-    id: SOC_below_50
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    trigger: numeric_state
-  - entity_id:
-    - sensor.sax_bms_combined_soc
-    id: SOC_below_min
-    below: number.sax_bms_minimum_soc
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    enabled: true
-    trigger: numeric_state
-  - trigger: state
-    entity_id:
-    - input_select.sax_a_leistungsgrenzwert_entladen
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 5
-    id: New-discharge-limit
-  - trigger: template
-    value_template: '{{states(''sensor.sax_battery_a_power'')|float(0) - states(''input_select.sax_a_leistungsgrenzwert_entladen'')
-      |float(0) - float(10) > 0 }}'
-    id: Above_Limit
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Preis_Tibber_hoch
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    above: input_number.strompreis_speicher_export
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    below: input_number.strompreis_speicher_export
-    id: Preis_Tibber_niedrig
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-  - trigger: time_pattern
-    id: entladen_refresh
-    minutes: /5
-    enabled: true
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Strompreis-No-Export
-    below: input_number.strompreis_speicher_export_stop
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Strompreis-uber-Mittelwert
-    above: sensor.strompreis_avg_xxx
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Strompreis-unter-Mittelwert
-    below: sensor.strompreis_avg_xxx
+    - entity_id:
+        - sensor.sax_bms_combined_soc
+      id: SOC_above_50
+      above: 80
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+      enabled: true
+      trigger: numeric_state
+    - entity_id:
+        - sensor.sax_bms_combined_soc
+      below: 50
+      id: SOC_below_50
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 0
+      trigger: numeric_state
+    - entity_id:
+        - sensor.sax_bms_combined_soc
+      id: SOC_below_min
+      below: number.sax_bms_minimum_soc
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 0
+      enabled: true
+      trigger: numeric_state
+    - trigger: state
+      entity_id:
+        - input_select.sax_a_leistungsgrenzwert_entladen
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 5
+      id: New-discharge-limit
+    - trigger: template
+      value_template:
+        "{{states('sensor.sax_battery_a_power')|float(0) - states('input_select.sax_a_leistungsgrenzwert_entladen')
+        |float(0) - float(10) > 0 }}"
+      id: Above_Limit
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      id: Preis_Tibber_hoch
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 0
+      above: input_number.strompreis_speicher_export
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      below: input_number.strompreis_speicher_export
+      id: Preis_Tibber_niedrig
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 0
+    - trigger: time_pattern
+      id: entladen_refresh
+      minutes: /5
+      enabled: true
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      id: Strompreis-No-Export
+      below: input_number.strompreis_speicher_export_stop
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      id: Strompreis-uber-Mittelwert
+      above: sensor.strompreis_avg_xxx
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      id: Strompreis-unter-Mittelwert
+      below: sensor.strompreis_avg_xxx
   conditions: []
   actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - Strompreis-No-Export
-      sequence:
-      - action: select.select_option
-        metadata: {}
-        data:
-          option: '0'
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
-    - conditions:
-      - condition: trigger
-        id:
-        - entladen_refresh
-        - SOC_below_min
-      - condition: numeric_state
-        entity_id: sensor.sax_bms_combined_soc
-        below: number.sax_bms_minimum_soc
-      sequence:
-      - action: input_select.select_option
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
-        data:
-          option: '0'
-    - conditions:
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - SOC_below_50
-          - entladen_refresh
-        - condition: numeric_state
-          entity_id: sensor.sax_bms_combined_soc
-          above: number.sax_bms_minimum_soc
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          above: input_number.strompreis_speicher_export
-        - condition: template
-          value_template: '{{states(''sensor.solarman_total_active_power_output'')
-            | float(0) == float(0)}}'
-        - condition: numeric_state
-          entity_id: sensor.strompreis_avg_xxx
-          above: input_number.strompreis_speicher_export_stop
-      sequence:
-      - action: input_select.select_option
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
-        data:
-          option: '250'
-    - conditions:
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - SOC_above_50
-          - entladen_refresh
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          above: input_number.strompreis_speicher_export
-      sequence:
-      - action: input_select.select_option
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
-        data:
-          option: '1000'
-    - conditions:
-      - condition: trigger
-        id:
-        - New-discharge-limit
-        - entladen_refresh
-        - Above_Limit
-      sequence:
-      - action: number.set_value
-        metadata: {}
-        data:
-          value: '{{states.input_select.sax_a_leistungsgrenzwert_entladen.state}}'
-        target:
-          entity_id: number.sax_bms_max_discharge
-      - action: system_log.write
-        metadata: {}
-        data:
-          level: info
-          logger: homeassistant.components.automation.sax_a_monitor_soc
-          message: P(Entladen) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_entladen.state|int}}W"
-      - action: logbook.log
-        metadata: {}
-        data:
-          name: 'Set Batterie Entladeleistung '
-          message: P(Entladen) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_entladen.state|int}}W
-    - conditions:
-      - condition: and
-        conditions:
-        - condition: numeric_state
-          entity_id: sensor.sax_bms_combined_soc
-          above: number.sax_bms_minimum_soc
-        - condition: trigger
-          id:
-          - Preis_Tibber_niedrig
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          above: input_number.strompreis_speicher_export
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          below: sensor.strompreis_avg_xxx
-      sequence:
-      - action: input_select.select_option
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
-        data:
-          option: '250'
-    - conditions:
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - Preis_Tibber_hoch
-        - condition: numeric_state
-          entity_id: sensor.sax_bms_combined_soc
-          above: number.sax_bms_minimum_soc
-      sequence:
-      - action: input_select.select_option
-        metadata: {}
-        data:
-          option: '250'
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+    - choose:
+        - conditions:
+            - condition: trigger
+              id:
+                - Strompreis-No-Export
+          sequence:
+            - action: select.select_option
+              metadata: {}
+              data:
+                option: "0"
+              target:
+                entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+        - conditions:
+            - condition: trigger
+              id:
+                - entladen_refresh
+                - SOC_below_min
+            - condition: numeric_state
+              entity_id: sensor.sax_bms_combined_soc
+              below: number.sax_bms_minimum_soc
+          sequence:
+            - action: input_select.select_option
+              target:
+                entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+              data:
+                option: "0"
+        - conditions:
+            - condition: and
+              conditions:
+                - condition: trigger
+                  id:
+                    - SOC_below_50
+                    - entladen_refresh
+                - condition: numeric_state
+                  entity_id: sensor.sax_bms_combined_soc
+                  above: number.sax_bms_minimum_soc
+                - condition: numeric_state
+                  entity_id: sensor.xxx_strompreis
+                  above: input_number.strompreis_speicher_export
+                - condition: template
+                  value_template:
+                    "{{states('sensor.solarman_total_active_power_output')
+                    | float(0) == float(0)}}"
+                - condition: numeric_state
+                  entity_id: sensor.strompreis_avg_xxx
+                  above: input_number.strompreis_speicher_export_stop
+          sequence:
+            - action: input_select.select_option
+              target:
+                entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+              data:
+                option: "250"
+        - conditions:
+            - condition: and
+              conditions:
+                - condition: trigger
+                  id:
+                    - SOC_above_50
+                    - entladen_refresh
+                - condition: numeric_state
+                  entity_id: sensor.xxx_strompreis
+                  above: input_number.strompreis_speicher_export
+          sequence:
+            - action: input_select.select_option
+              target:
+                entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+              data:
+                option: "1000"
+        - conditions:
+            - condition: trigger
+              id:
+                - New-discharge-limit
+                - entladen_refresh
+                - Above_Limit
+          sequence:
+            - action: number.set_value
+              metadata: {}
+              data:
+                value: "{{states.input_select.sax_a_leistungsgrenzwert_entladen.state}}"
+              target:
+                entity_id: number.sax_bms_max_discharge
+            - action: system_log.write
+              metadata: {}
+              data:
+                level: info
+                logger: homeassistant.components.automation.sax_a_monitor_soc
+                message: P(Entladen) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_entladen.state|int}}W"
+            - action: logbook.log
+              metadata: {}
+              data:
+                name: "Set Batterie Entladeleistung"
+                message: P(Entladen) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_entladen.state|int}}W
+        - conditions:
+            - condition: and
+              conditions:
+                - condition: numeric_state
+                  entity_id: sensor.sax_bms_combined_soc
+                  above: number.sax_bms_minimum_soc
+                - condition: trigger
+                  id:
+                    - Preis_Tibber_niedrig
+                - condition: numeric_state
+                  entity_id: sensor.xxx_strompreis
+                  above: input_number.strompreis_speicher_export
+                - condition: numeric_state
+                  entity_id: sensor.xxx_strompreis
+                  below: sensor.strompreis_avg_xxx
+          sequence:
+            - action: input_select.select_option
+              target:
+                entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+              data:
+                option: "250"
+        - conditions:
+            - condition: and
+              conditions:
+                - condition: trigger
+                  id:
+                    - Preis_Tibber_hoch
+                - condition: numeric_state
+                  entity_id: sensor.sax_bms_combined_soc
+                  above: number.sax_bms_minimum_soc
+          sequence:
+            - action: input_select.select_option
+              metadata: {}
+              data:
+                option: "250"
+              target:
+                entity_id: input_select.sax_a_leistungsgrenzwert_entladen
   trace:
-    stored_traces: '100'
+    stored_traces: "100"
   mode: single
-- id: '1732179668111'
+- id: "1732179668111"
   alias: Update Schaltspiele
   description: Inkrementiere  wpp_schaltspiele_gesamt für Standzeit Leistungsanforderung
   triggers:
-  - trigger: state
-    entity_id:
-    - sensor.wh_system_betriebsanzeige
-    to: system_operationmode_heating
-    from: system_operationmode_standbytime
-    id: wpp-standzeit
-  - trigger: state
-    entity_id:
-    - sensor.wh_system_betriebsanzeige
-    from:
-    to: system_operationmode_defrost
-    id: wpp-abtauen
-  - trigger: state
-    entity_id:
-    - sensor.wh_system_betriebsanzeige
-    to: system_operationmode_hotwater
-    id: wpp-warmwasser
-    from: system_operationmode_standbytime
-  - trigger: state
-    entity_id:
-    - sensor.wh_system_betriebsanzeige
-    from: system_operationmode_defrost
-    to: system_operationmode_heating
-    id: wpp-nach-abtauen
+    - trigger: state
+      entity_id:
+        - sensor.wh_system_betriebsanzeige
+      to: system_operationmode_heating
+      from: system_operationmode_standbytime
+      id: wpp-standzeit
+    - trigger: state
+      entity_id:
+        - sensor.wh_system_betriebsanzeige
+      from:
+      to: system_operationmode_defrost
+      id: wpp-abtauen
+    - trigger: state
+      entity_id:
+        - sensor.wh_system_betriebsanzeige
+      to: system_operationmode_hotwater
+      id: wpp-warmwasser
+      from: system_operationmode_standbytime
+    - trigger: state
+      entity_id:
+        - sensor.wh_system_betriebsanzeige
+      from: system_operationmode_defrost
+      to: system_operationmode_heating
+      id: wpp-nach-abtauen
   conditions: []
   actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - wpp-standzeit
-      sequence:
-      - action: input_number.increment
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_number.wpp_schaltspiele_gesamt
-    - conditions:
-      - condition: trigger
-        id:
-        - wpp-abtauen
-      sequence:
-      - action: input_number.increment
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_number.wpp_schaltspiele_abtauen
-      - action: input_number.increment
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_number.wpp_schaltspiele_gesamt
-    - conditions:
-      - condition: trigger
-        id:
-        - wpp-warmwasser
-      sequence:
-      - action: input_number.increment
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_number.wpp_schaltspiele_gesamt
-    - conditions:
-      - condition: trigger
-        id:
-        - wpp-nach-abtauen
-      sequence:
-      - action: input_number.increment
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_number.wpp_schaltspiele_gesamt
+    - choose:
+        - conditions:
+            - condition: trigger
+              id:
+                - wpp-standzeit
+          sequence:
+            - action: input_number.increment
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_number.wpp_schaltspiele_gesamt
+        - conditions:
+            - condition: trigger
+              id:
+                - wpp-abtauen
+          sequence:
+            - action: input_number.increment
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_number.wpp_schaltspiele_abtauen
+            - action: input_number.increment
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_number.wpp_schaltspiele_gesamt
+        - conditions:
+            - condition: trigger
+              id:
+                - wpp-warmwasser
+          sequence:
+            - action: input_number.increment
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_number.wpp_schaltspiele_gesamt
+        - conditions:
+            - condition: trigger
+              id:
+                - wpp-nach-abtauen
+          sequence:
+            - action: input_number.increment
+              metadata: {}
+              data: {}
+              target:
+                entity_id: input_number.wpp_schaltspiele_gesamt
   mode: single
-- id: '1737277092539'
+- id: "1737277092539"
   alias: Gargentor Offen
   description: Tor seit 15 Minuten offen
   triggers:
-  - trigger: state
-    entity_id:
-    - cover.smart_wi_fi_garage_door_opener_msg100_main_channel
-    for:
-      hours: 0
-      minutes: 15
-      seconds: 0
-    to: open
-    from: closed
+    - trigger: state
+      entity_id:
+        - cover.smart_wi_fi_garage_door_opener_msg100_main_channel
+      for:
+        hours: 0
+        minutes: 15
+        seconds: 0
+      to: open
+      from: closed
   conditions: []
   actions:
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      message: Tor ist seit 15 Minuten offen!
-      title: Garage
-  - action: persistent_notification.create
-    metadata: {}
-    data:
-      message: Luftfeuchtigkeit ist hoch! Bitte lüften.
-      title: Bad
+    - action: notify.bert_devices
+      metadata: {}
+      data:
+        message: Tor ist seit 15 Minuten offen!
+        title: Garage
+    - action: persistent_notification.create
+      metadata: {}
+      data:
+        message: Luftfeuchtigkeit ist hoch! Bitte lüften.
+        title: Bad
   mode: single
   max_exceeded: silent
-- id: '1738834207494'
+- id: "1738834207494"
   alias: Wärmepumpe Heizen/Standby abhängig vom Preis
-  description: ''
+  description: ""
   triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    above: input_number.strompreis_heizung_aus
-    id: Strom-teuer
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    below: input_number.strompreis_heizung_aus
-    id: Strom-billig
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    below: sensor.strompreis_avg_xxx
-    id: Heizen-ein
-    enabled: true
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Heizen-aus
-    above: sensor.strompreis_avg_xxx
-    enabled: true
-  - trigger: time_pattern
-    id: Every-hour
-    hours: '*'
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      above: input_number.strompreis_heizung_aus
+      id: Strom-teuer
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      below: input_number.strompreis_heizung_aus
+      id: Strom-billig
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      below: sensor.strompreis_avg_xxx
+      id: Heizen-ein
+      enabled: true
+    - trigger: numeric_state
+      entity_id:
+        - sensor.xxx_strompreis
+      id: Heizen-aus
+      above: sensor.strompreis_avg_xxx
+      enabled: true
+    - trigger: time_pattern
+      id: Every-hour
+      hours: "*"
   conditions:
-  - condition: or
-    conditions:
-    - condition: state
-      entity_id: select.wh_system_systembetriebsart
-      state: sys_operationmode_heating
-    - condition: state
-      entity_id: select.wh_system_systembetriebsart
-      state: sys_operationmode_standby
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: select.wh_system_systembetriebsart
+          state: sys_operationmode_heating
+        - condition: state
+          entity_id: select.wh_system_systembetriebsart
+          state: sys_operationmode_standby
   actions:
-  - if:
-    - condition: trigger
-      id:
-      - Heizen-aus
-      - Strom-teuer
-    - condition: not
-      conditions:
-      - condition: state
-        state:
-        - Warmwasserbetrieb
-        entity_id: sensor.wh_system_betriebsanzeige
-    then:
-    - action: climate.set_hvac_mode
-      metadata: {}
-      data:
-        hvac_mode: 'off'
-      target:
-        entity_id:
-        - climate.bad_heizung
-        - climate.buro_heizung
-        - climate.flur_heizung
-        - climate.gastezimmer_heizung
-        - climate.hobbyraum_heizung
-        - climate.schlafzimmer_heizung
-        - climate.toilette_heizung
-      enabled: false
-    - action: select.select_option
-      metadata: {}
-      data:
-        option: sys_operationmode_standby
-      target:
-        entity_id:
-        - select.wh_system_systembetriebsart
-  - if:
-    - condition: and
-      conditions:
-      - condition: trigger
-        id:
-        - Strom-billig
-        - Heizen-ein
-        - Every-hour
-      - condition: or
-        conditions:
+    - if:
+        - condition: trigger
+          id:
+            - Heizen-aus
+            - Strom-teuer
+        - condition: not
+          conditions:
+            - condition: state
+              state:
+                - Warmwasserbetrieb
+              entity_id: sensor.wh_system_betriebsanzeige
+      then:
+        - action: climate.set_hvac_mode
+          metadata: {}
+          data:
+            hvac_mode: "off"
+          target:
+            entity_id:
+              - climate.bad_heizung
+              - climate.buro_heizung
+              - climate.flur_heizung
+              - climate.gastezimmer_heizung
+              - climate.hobbyraum_heizung
+              - climate.schlafzimmer_heizung
+              - climate.toilette_heizung
+          enabled: false
+        - action: select.select_option
+          metadata: {}
+          data:
+            option: sys_operationmode_standby
+          target:
+            entity_id:
+              - select.wh_system_systembetriebsart
+    - if:
         - condition: and
           conditions:
-          - condition: numeric_state
-            entity_id: sensor.xxx_strompreis
-            below: sensor.strompreis_avg_xxx
-          - condition: numeric_state
-            entity_id: sensor.strompreis_avg_xxx
-            below: input_number.strompreis_heizung_aus
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          below: input_number.strompreis_heizung_aus
-        - condition: time
-          after: '21:00:00'
-          enabled: true
-        enabled: false
-      - condition: numeric_state
-        entity_id: sensor.xxx_strompreis
-        below: input_number.strompreis_heizung_aus
-    then:
-    - action: climate.set_hvac_mode
-      metadata: {}
-      data:
-        hvac_mode: auto
-      target:
-        entity_id:
-        - climate.wohnzimmer_heizung
-        - climate.bad_heizung
-        - climate.buro_heizung
-        - climate.flur_heizung
-        - climate.gastezimmer_heizung
-        - climate.hobbyraum_heizung
-        - climate.schlafzimmer_heizung
-        - climate.toilette_heizung
-      enabled: false
-    - action: select.select_option
-      metadata: {}
-      data:
-        option: sys_operationmode_heating
-      target:
-        entity_id:
-        - select.wh_system_systembetriebsart
-    - if:
-      - condition: state
-        entity_id: binary_sensor.bad_fenster_state
-        state: 'on'
+            - condition: trigger
+              id:
+                - Strom-billig
+                - Heizen-ein
+                - Every-hour
+            - condition: or
+              conditions:
+                - condition: and
+                  conditions:
+                    - condition: numeric_state
+                      entity_id: sensor.xxx_strompreis
+                      below: sensor.strompreis_avg_xxx
+                    - condition: numeric_state
+                      entity_id: sensor.strompreis_avg_xxx
+                      below: input_number.strompreis_heizung_aus
+                - condition: numeric_state
+                  entity_id: sensor.xxx_strompreis
+                  below: input_number.strompreis_heizung_aus
+                - condition: time
+                  after: "21:00:00"
+                  enabled: true
+              enabled: false
+            - condition: numeric_state
+              entity_id: sensor.xxx_strompreis
+              below: input_number.strompreis_heizung_aus
       then:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        target:
-          device_id: df2fd9736612151b12280e017b37bda0
-        data:
-          hvac_mode: 'off'
-      enabled: false
-    - if:
-      - condition: state
-        entity_id: binary_sensor.toilette_fenster_state
-        state: 'on'
-      then:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        target:
-          device_id: a209ed86192fc4cfbc37d23ec5803800
-        data:
-          hvac_mode: 'off'
-      enabled: false
+        - action: climate.set_hvac_mode
+          metadata: {}
+          data:
+            hvac_mode: auto
+          target:
+            entity_id:
+              - climate.wohnzimmer_heizung
+              - climate.bad_heizung
+              - climate.buro_heizung
+              - climate.flur_heizung
+              - climate.gastezimmer_heizung
+              - climate.hobbyraum_heizung
+              - climate.schlafzimmer_heizung
+              - climate.toilette_heizung
+          enabled: false
+        - action: select.select_option
+          metadata: {}
+          data:
+            option: sys_operationmode_heating
+          target:
+            entity_id:
+              - select.wh_system_systembetriebsart
+        - if:
+            - condition: state
+              entity_id: binary_sensor.bad_fenster_state
+              state: "on"
+          then:
+            - action: climate.set_hvac_mode
+              metadata: {}
+              target:
+                device_id: df2fd9736612151b12280e017b37bda0
+              data:
+                hvac_mode: "off"
+          enabled: false
+        - if:
+            - condition: state
+              entity_id: binary_sensor.toilette_fenster_state
+              state: "on"
+          then:
+            - action: climate.set_hvac_mode
+              metadata: {}
+              target:
+                device_id: a209ed86192fc4cfbc37d23ec5803800
+              data:
+                hvac_mode: "off"
+          enabled: false
   mode: single
-- id: '1738915844292'
+- id: "1738915844292"
   alias: Radon Werte Benachrichtigung
-  description: ''
+  description: ""
   triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.fr_hj10re001190_radon
-    above: 100
-    id: Über_100
-    for:
-      hours: 1
-      minutes: 0
-      seconds: 0
-    below: 150
-  - trigger: numeric_state
-    entity_id:
-    - sensor.fr_hj10re001190_radon
-    above: 150
-    id: Über_150
-    for:
-      hours: 1
-      minutes: 0
-      seconds: 0
-    below: 200
-  - trigger: numeric_state
-    entity_id:
-    - sensor.fr_hj10re001190_radon
-    above: 200
-    id: Über_200
-    for:
-      hours: 1
-      minutes: 0
-      seconds: 0
+    - trigger: numeric_state
+      entity_id:
+        - sensor.fr_hj10re001190_radon
+      above: 100
+      id: Über_100
+      for:
+        hours: 1
+        minutes: 0
+        seconds: 0
+      below: 150
+    - trigger: numeric_state
+      entity_id:
+        - sensor.fr_hj10re001190_radon
+      above: 150
+      id: Über_150
+      for:
+        hours: 1
+        minutes: 0
+        seconds: 0
+      below: 200
+    - trigger: numeric_state
+      entity_id:
+        - sensor.fr_hj10re001190_radon
+      above: 200
+      id: Über_200
+      for:
+        hours: 1
+        minutes: 0
+        seconds: 0
   conditions:
-  - condition: numeric_state
-    entity_id: zone.home
-    above: 0
+    - condition: numeric_state
+      entity_id: zone.home
+      above: 0
   actions:
-  - action: notify.persistent_notification
-    metadata: {}
-    data:
-      title: Radon im Hobbyraum {{ trigger.id  }}
-      message: 'Radon Meßwert zu hoch: {{ states(''sensor.fr_hj10re001190_radon'')  }}
-        Bq/m³'
-  - action: notify.bert_devices
-    metadata: {}
-    data:
-      message: Radon Meßwert zu hoch {{ states('sensor.fr_hj10re001190_radon') }}
-        Bq/m³
-      title: Radon im Hobbyraum {{ trigger.id  }}
+    - action: notify.persistent_notification
+      metadata: {}
+      data:
+        title: Radon im Hobbyraum {{ trigger.id  }}
+        message:
+          "Radon Meßwert zu hoch: {{ states('sensor.fr_hj10re001190_radon')  }}
+          Bq/m³"
+    - action: notify.bert_devices
+      metadata: {}
+      data:
+        message:
+          Radon Meßwert zu hoch {{ states('sensor.fr_hj10re001190_radon') }}
+          Bq/m³
+        title: Radon im Hobbyraum {{ trigger.id  }}
   mode: single
-- id: '1759934922702'
+- id: "1759934922702"
   alias: TriggerTibberPriceUpdate
-  description: ''
+  description: ""
   triggers:
-  - minutes: /15
-    trigger: time_pattern
+    - minutes: /15
+      trigger: time_pattern
   actions:
-  - variables:
-      set tibberprices = 0:
-  - action: script.update_power_price_15min
-    data: {}
-    response_variable: tibberprices
-- id: '1768928695214'
+    - variables:
+        set tibberprices = 0:
+    - action: script.update_power_price_15min
+      data: {}
+      response_variable: tibberprices
+- id: "1768928695214"
   alias: Wohnzimmer Fenster offen
   description: Stop Heizung
   triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.wohnzimmer_fenster_offnung
-    from:
-    - 'off'
-    to:
-    - 'on'
+    - trigger: state
+      entity_id:
+        - binary_sensor.wohnzimmer_fenster_offnung
+      from:
+        - "off"
+      to:
+        - "on"
   conditions: []
   actions:
-  - action: climate.set_hvac_mode
-    metadata: {}
-    data:
-      hvac_mode: 'off'
-    target:
-      entity_id:
-      - climate.tado_smart_radiator_thermostat_va3043900160
-      - climate.tado_smart_radiator_thermostat_va1652046592
-      - climate.tado_smart_radiator_thermostat_va1683908608
-      - climate.wohnzimmer_heizung
+    - action: climate.set_hvac_mode
+      metadata: {}
+      data:
+        hvac_mode: "off"
+      target:
+        entity_id:
+          - climate.tado_smart_radiator_thermostat_va3043900160
+          - climate.tado_smart_radiator_thermostat_va1652046592
+          - climate.tado_smart_radiator_thermostat_va1683908608
+          - climate.wohnzimmer_heizung
   mode: single
-- id: '1771090133663'
+- id: "1771090133663"
   alias: Tibber Reload
   description: Reload Tibber integration if it has not received any data for 10 minutes
   triggers:
-  - entity_id:
-    - sensor.tibber_pulse_xxx_energie
-    for:
-      hours: 0
-      minutes: 10
-      seconds: 0
-    trigger: state
+    - entity_id:
+        - sensor.tibber_pulse_xxx_energie
+      for:
+        hours: 0
+        minutes: 10
+        seconds: 0
+      trigger: state
   actions:
-  - data:
-      entry_id: 01JJ1C2QBF2NCKF9YWVZ7C2AWE
-    action: homeassistant.reload_config_entry
+    - data:
+        entry_id: 01JJ1C2QBF2NCKF9YWVZ7C2AWE
+      action: homeassistant.reload_config_entry
   mode: single

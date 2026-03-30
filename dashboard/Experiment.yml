@@ -115,6 +115,17 @@ views:
                         --card-mod-icon-color: red;
                       {% endif %}
                     } 
+          - type: custom:dwd-pollenprognos-card
+            region: 123
+            allergens:
+              - ambrosia
+              - beifuss
+              - birke
+              - erle
+              - hasel
+              - esche
+              - roggen
+              - graeser
       - type: grid
         cards:
           - type: heading
@@ -441,7 +452,7 @@ views:
           - type: vertical-stack
             cards:
               - type: tile
-                entity: sensor.gastezimmer_luftfeuchtigkeit
+                entity: sensor.gastezimmer_temperatur
                 name: Temperatur
                 show_entity_picture: false
                 vertical: false

@@ -99,6 +99,7 @@ This dashboard provides an overview of various views for configurations and devi
 |integration/cards name| comment|
 |---|:---:|
 |[Deutscher Wetterdienst](https://github.com/FL550/dwd_weather)||
+|[DWD Pollenflug](https://github.com/mampfes/hacs_dwd_pollenflug)||
 |[Solarman](https://github.com/StephanJoubert/home_assistant_solarman)||
 |[HACS](https://github.com/hacs/integration)||
 |[SAX Power Home battery management](https://github.com/matfroh/sax_battery_ha)||
@@ -119,6 +120,7 @@ This dashboard provides an overview of various views for configurations and devi
 |[Easee Wallbox](https://github.com/nordicopen/easee_hass)||
 |[Home Assistant iOS](https://www.home-assistant.io/integrations/ios)||
 |[Home Connect](https://www.home-assistant.io/integrations/home_connect)||
+|[HomeKit Device](https://www.home-assistant.io/integrations/homekit_controller/)| replaced Tado|
 |[Meross LAN](https://github.com/krahabb/meross_lan)||
 |[Meteorologisk institutt (Met.no)](https://www.home-assistant.io/integrations/met)||
 |[Mobile-App](https://www.home-assistant.io/integrations/mobile_app)||
@@ -131,7 +133,6 @@ This dashboard provides an overview of various views for configurations and devi
 |[Sonne](https://www.home-assistant.io/integrations/sun)||
 |[~~Tado~~](https://www.home-assistant.io/integrations/tado)|free users limits 100 requests/day|
 |[Tibber](https://www.home-assistant.io/integrations/tibber)||
-|[HomeKit Device](https://www.home-assistant.io/integrations/homekit_controller/)| replaced Tado|
 |[VeSync](https://www.home-assistant.io/integrations/vesync)||
 |[Zigbee Home Automation](https://www.home-assistant.io/integrations/zha)||
 
