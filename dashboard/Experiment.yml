@@ -133,209 +133,195 @@ views:
             heading_style: title
             icon: mdi:currency-eur
           - type: custom:apexcharts-card
+            update_interval: 5m
             header:
               show: true
-              title: Strompreisprognose 15min (€/kWh)
-              show_states: true
-              colorize_states: true
-              standard_format: false
-            experimental:
-              hidden_by_default: true
-              color_threshold: true
-            brush:
-              selection_span: 40h
-              apex_config:
-                enable: true
-                autoScaleYaxis: false
+              title: Preisphasen Tagesverlauf - Heute
+              show_states: false
             apex_config:
-              grid:
-                show: true
-                borderColor: '#E0E0E0'
               chart:
-                height: 350px
-                zoom:
-                  enabled: true
+                animations:
+                  enabled: false
                 toolbar:
                   show: true
                   tools:
                     zoom: true
-                    zoomin: true
-                    zoomout: true
                     pan: true
-                    reset: true
-                    download: false
-              tooltip:
-                enabled: true
-                followCursor: false
-                x:
-                  show: false
-                fixed:
+                zoom:
                   enabled: true
+              stroke:
+                curve: stepline
+              fill:
+                type: gradient
+                opacity: 0.45
+                gradient:
+                  shade: light
+                  type: vertical
+                  shadeIntensity: 0.2
+                  opacityFrom:
+                    - 0.5
+                    - 0.7
+                    - 0.7
+                    - 0.7
+                    - 0.7
+                    - 0.7
+                  opacityTo: 0.25
+                  stops:
+                    - 50
+                    - 100
+              dataLabels:
+                enabled: false
               legend:
                 show: false
-            graph_span: 48h
-            span:
-              start: day
+                position: bottom
+                horizontalAlign: center
+              grid:
+                show: true
+                borderColor: rgba(144, 164, 174, 0.35)
+                strokeDashArray: 0
+                xaxis:
+                  lines:
+                    show: false
+                yaxis:
+                  lines:
+                    show: true
+              markers:
+                size: 0
+                hover:
+                  size: 3
+                colors: '#ff0000'
+                fillOpacity: 0.5
+                strokeWidth: 5
+                strokeColors: '#ff0000'
+                strokeOpacity: 0.15
+                showNullDataPoints: false
+              tooltip:
+                enabled: true
+                shared: true
+                enabledOnSeries:
+                  - 1
+                  - 2
+                  - 3
+                marker:
+                  show: false
+                x:
+                  show: false
+            yaxis:
+              - id: price
+                apex_config:
+                  title:
+                    text: ct/kWh
+              - id: highlight
+                min: 0
+                max: 1
+                show: false
+                opposite: true
+                apex_config:
+                  forceNiceScale: true
+                  tickAmount: 4
             now:
               show: true
-              color: E0E0E0
-            update_interval: 5min
-            yaxis:
-              - id: left
-                show: true
-                opposite: false
-                decimals: 3
-              - id: right
-                show: true
-                opposite: true
-                decimals: 3
-                min: 0
+              color: '#8e24aa'
+              label: 🕒 LIVE
+            all_series_config:
+              float_precision: 2
             series:
-              - entity: sensor.electricity_price_prognose_15min_xxx
-                yaxis_id: left
-                name: Future15
-                type: line
-                curve: stepline
-                stroke_width: 1
-                float_precision: 5
-                unit: €/kWh
-                extend_to: false
-                show:
-                  in_header: false
-                  name_in_header: false
-                  extremas: true
-                  legend_value: false
-                color_threshold:
-                  - value: 0
-                    color: 4DD0E1
-                  - value: 0.1
-                    color: 26A69A
-                  - value: 0.15
-                    color: 4CAF50
-                  - value: 0.2
-                    color: 7CB342
-                  - value: 0.25
-                    color: FBC02D
-                  - value: 0.3
-                    color: EF6C00
-                  - value: 0.35
-                    color: B71C1C
-                data_generator: >
-                  const noon = new Date()
-
-                  noon.setHours(0, 0, 0, 0)
-
-                  const prices =
-                  entity.attributes.today.concat(entity.attributes.tomorrow);
-
-                  const data = [];
-
-                  for(let i = 0; i < prices.length; i++) {
-                    data.push([noon.getTime() + i * 1000 * 900, prices[i].total])
-                  }
-
-                  return data;
-              - entity: sensor.xxx_strompreis
-                yaxis_id: left
-                name: now
-                type: line
-                curve: stepline
-                stroke_width: 1
-                float_precision: 5
-                unit: €/kWh
-                extend_to: now
-                show:
-                  in_header: true
-                  name_in_header: true
-                  extremas: false
-                  legend_value: false
-                color_threshold:
-                  - value: 0
-                    color: 4DD0E1
-                  - value: 0.1
-                    color: 26A69A
-                  - value: 0.15
-                    color: 4CAF50
-                  - value: 0.2
-                    color: 7CB342
-                  - value: 0.25
-                    color: FBC02D
-                  - value: 0.3
-                    color: EF6C00
-                  - value: 0.35
-                    color: B71C1C
-              - entity: sensor.strompreis_min_xxx
-                yaxis_id: left
-                name: Min
-                type: line
-                curve: stepline
-                stroke_width: 0
-                float_precision: 5
-                unit: €/kWh
-                extend_to: now
-                fill_raw: last
-                show:
-                  hidden_by_default: true
-                  in_header: true
-                  name_in_header: true
-                  extremas: false
-                  legend_value: false
-              - entity: sensor.strompreis_avg_xxx
-                yaxis_id: left
-                name: Avg
-                type: line
-                curve: stepline
-                stroke_width: 0
-                float_precision: 5
-                unit: €/kWh
-                extend_to: now
-                fill_raw: last
-                show:
-                  hidden_by_default: true
-                  in_header: false
-                  name_in_header: true
-                  extremas: false
-                  legend_value: false
-              - entity: sensor.strompreis_max_xxx
-                yaxis_id: left
-                name: Max
-                type: line
-                curve: stepline
-                stroke_width: 0
-                float_precision: 5
-                unit: €/kWh
-                extend_to: now
-                fill_raw: last
-                show:
-                  hidden_by_default: true
-                  in_header: true
-                  name_in_header: true
-                  extremas: false
-                  legend_value: false
-              - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
-                yaxis_id: right
-                name: Bezug
+              - entity: sensor.berthome_mindestpreis_heute
+                name: ▼ Bestpreis-Zeitraum
                 type: area
-                curve: stepline
-                stroke_width: 0
-                opacity: 0.4
-                extend_to: now
+                color: rgba(46, 204, 113, 0.05)
+                yaxis_id: highlight
                 show:
-                  in_header: false
-                  name_in_header: true
-                  extremas: false
                   legend_value: false
-                group_by:
-                  func: delta
-                  duration: 1h
-                  fill: zero
+                  in_header: false
+                  in_legend: false
+                data_generator: >-
+                  const response = await hass.callWS({ type: 'call_service',
+                  domain: 'tibber_prices', service: 'get_chartdata',
+                  return_response: true, service_data: { entry_id:
+                  '01KPJ8R984EMBKPCRCWSNEKY8V', day: ['today'], period_filter:
+                  'best_price', resolution: 'interval', output_format:
+                  'array_of_arrays', insert_nulls: 'segments', subunit_currency:
+                  true } }); const originalData = response.response.data; return
+                  originalData.map((point, i) => { const result = [point[0],
+                  point[1] === null ? null : 1]; result.originalPrice =
+                  point[1]; return result; });
+                stroke_width: 0
+              - entity: sensor.berthome_mindestpreis_heute
+                name: Niedrig
+                type: area
+                color: '#2ecc71'
+                yaxis_id: price
+                show:
+                  legend_value: false
+                  in_header: raw
+                  in_legend: false
+                data_generator: >-
+                  const response = await hass.callWS({ type: 'call_service',
+                  domain: 'tibber_prices', service: 'get_chartdata',
+                  return_response: true, service_data: { entry_id:
+                  '01KPJ8R984EMBKPCRCWSNEKY8V', day: ['today'],
+                  rating_level_filter: ['LOW'], resolution: 'interval',
+                  output_format: 'array_of_arrays', insert_nulls: 'segments',
+                  subunit_currency: true, connect_segments: true } }); return
+                  response.response.data;
+                stroke_width: 1.5
+              - entity: sensor.berthome_preis_heute
+                name: Normal
+                type: area
+                color: '#f1c40f'
+                yaxis_id: price
+                show:
+                  legend_value: false
+                  in_header: false
+                  in_legend: false
+                data_generator: >-
+                  const response = await hass.callWS({ type: 'call_service',
+                  domain: 'tibber_prices', service: 'get_chartdata',
+                  return_response: true, service_data: { entry_id:
+                  '01KPJ8R984EMBKPCRCWSNEKY8V', day: ['today'],
+                  rating_level_filter: ['NORMAL'], resolution: 'interval',
+                  output_format: 'array_of_arrays', insert_nulls: 'segments',
+                  subunit_currency: true, connect_segments: true } }); return
+                  response.response.data;
+                stroke_width: 1.5
+              - entity: sensor.berthome_hochstpreis_heute
+                name: Hoch
+                type: area
+                color: '#e74c3c'
+                yaxis_id: price
+                show:
+                  legend_value: false
+                  in_header: raw
+                  in_legend: false
+                data_generator: >-
+                  const response = await hass.callWS({ type: 'call_service',
+                  domain: 'tibber_prices', service: 'get_chartdata',
+                  return_response: true, service_data: { entry_id:
+                  '01KPJ8R984EMBKPCRCWSNEKY8V', day: ['today'],
+                  rating_level_filter: ['HIGH'], resolution: 'interval',
+                  output_format: 'array_of_arrays', insert_nulls: 'segments',
+                  subunit_currency: true, connect_segments: true } }); return
+                  response.response.data;
+                stroke_width: 1.5
+            span:
+              start: day
           - type: tile
-            entity: sensor.strompreis_avg_xxx
-            vertical: false
-            features_position: bottom
             grid_options:
               columns: 12
               rows: 1
+            entity: sensor.xxx_strompreis
+            name: Strompreis aktuell
+            vertical: false
+            features_position: bottom
+          - type: tile
+            grid_options:
+              columns: 12
+              rows: 1
+            entity: sensor.strompreis_avg_xxx
+            name: Strompreis Durchschnitt
+            vertical: false
+            features_position: bottom
           - type: tile
             entity: input_number.strompreis_heizung_aus
             grid_options:

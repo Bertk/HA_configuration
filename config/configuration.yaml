@@ -17,43 +17,6 @@ input_select: !include input_select.yaml
 recorder:
   purge_keep_days: 14
 
-rest:
-  - resource: https://api.tibber.com/v1-beta/gql
-    method: POST
-    payload: '{ "query": "{ viewer { homes { currentSubscription { status priceInfo { current { total } today { total } tomorrow { total } } } } } }" }'
-    headers:
-      Authorization: !secret tibber_api_key
-      Content-Type: application/json
-      User-Agent: REST
-    scan_interval: 300
-    sensor:
-      - name: "Electricity price Prognose XXX"
-        unique_id: sensor.electricity_price_prognose_xxx
-        json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
-        json_attributes:
-          - today
-          - tomorrow
-        value_template: "{{ value_json.data.viewer.homes[0].currentSubscription.priceInfo.current.total | float }}"
-        unit_of_measurement: EUR/kWh
-  # Tibber API QUARTER_HOURLY
-  - resource: https://api.tibber.com/v1-beta/gql
-    method: POST
-    payload: '{ "query": "{ viewer { homes { currentSubscription { status priceInfo (resolution: QUARTER_HOURLY) { current { total } today { total } tomorrow { total } } } } } }" }'
-    headers:
-      Authorization: !secret tibber_api_key
-      Content-Type: application/json
-      User-Agent: REST
-    scan_interval: 300
-    sensor:
-      name: "Electricity price Prognose 15Min XXX"
-      unique_id: sensor.electricity_price_prognose_15min_xxx
-      json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
-      json_attributes:
-        - today
-        - tomorrow
-      value_template: "{{ value_json.data.viewer.homes[0].currentSubscription.priceInfo.current.total | float }}"
-      unit_of_measurement: EUR/kWh
-
 logger:
   default: warning
   logs:

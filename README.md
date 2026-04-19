@@ -103,8 +103,9 @@ This dashboard provides an overview of various views for configurations and devi
 |[Solarman](https://github.com/StephanJoubert/home_assistant_solarman)||
 |[HACS](https://github.com/hacs/integration)||
 |[SAX Power Home battery management](https://github.com/matfroh/sax_battery_ha)||
+|[Tibber Prices custom integration for Home Assistant](https://github.com/jpawlowski/hass.tibber_prices)||
 |[Weishaupt Wärmepumpe](https://github.com/OStrama/weishaupt_modbus)||
-|[Weishaupt WEM Portal](https://github.com/erikkastelec/hass-WEM-Portal)| better energy value precision|
+|[Weishaupt WEM Portal](https://github.com/erikkastelec/hass-WEM-Portal)|better energy value precision|
 |[Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot)||
 |[Weather Chart Card](https://github.com/mlamberts78/weather-chart-card)||
 |[mini-graph-card](https://github.com/kalkih/mini-graph-card)||
