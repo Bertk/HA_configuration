@@ -954,8 +954,17 @@
   triggers:
   - entity_id:
     - sensor.sax_bms_combined_soc
+    below: 50
+    id: SOC_below_50
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    trigger: numeric_state
+  - entity_id:
+    - sensor.sax_bms_combined_soc
     id: SOC_above_50
-    above: 80
+    above: 50
     for:
       hours: 0
       minutes: 5
@@ -964,12 +973,13 @@
     trigger: numeric_state
   - entity_id:
     - sensor.sax_bms_combined_soc
-    below: 50
-    id: SOC_below_50
+    id: SOC_above_70
+    above: 70
     for:
       hours: 0
-      minutes: 1
+      minutes: 5
       seconds: 0
+    enabled: true
     trigger: numeric_state
   - entity_id:
     - sensor.sax_bms_combined_soc
@@ -1064,19 +1074,18 @@
         - condition: trigger
           id:
           - SOC_below_50
-          - entladen_refresh
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
           above: number.sax_bms_minimum_soc
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
-        - condition: template
-          value_template: '{{states(''sensor.solarman_total_active_power_output'')
-            | float(0) == float(0)}}'
         - condition: numeric_state
           entity_id: sensor.strompreis_avg_xxx
           above: input_number.strompreis_speicher_export_stop
+        - condition: template
+          value_template: '{{states(''sensor.solarman_total_active_power_output'')
+            | float(0) == float(0)}}'
       sequence:
       - action: input_select.select_option
         target:
@@ -1091,6 +1100,9 @@
           - SOC_above_50
           - entladen_refresh
         - condition: numeric_state
+          entity_id: sensor.sax_bms_combined_soc
+          below: 70
+        - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
       sequence:
@@ -1099,6 +1111,22 @@
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '1000'
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - SOC_above_70
+          - entladen_refresh
+        - condition: numeric_state
+          entity_id: sensor.xxx_strompreis
+          above: input_number.strompreis_speicher_export
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+        data:
+          option: '2500'
     - conditions:
       - condition: trigger
         id:
@@ -1126,12 +1154,12 @@
     - conditions:
       - condition: and
         conditions:
-        - condition: numeric_state
-          entity_id: sensor.sax_bms_combined_soc
-          above: number.sax_bms_minimum_soc
         - condition: trigger
           id:
           - Preis_Tibber_niedrig
+        - condition: numeric_state
+          entity_id: sensor.sax_bms_combined_soc
+          above: number.sax_bms_minimum_soc
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
@@ -1517,4 +1545,17 @@
   - data:
       entry_id: 01JJ1C2QBF2NCKF9YWVZ7C2AWE
     action: homeassistant.reload_config_entry
+  mode: single
+- id: '1779004310986'
+  alias: Increment SAX Resets
+  description: Increment SAX Resets Counter
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.indoor_bewegung
+  conditions: []
+  actions:
+  - target:
+      entity_id: counter.sax_resets
+    action: counter.increment
   mode: single

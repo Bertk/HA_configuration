@@ -310,7 +310,7 @@ views:
             grid_options:
               columns: 12
               rows: 1
-            entity: sensor.xxx_strompreis
+            entity: sensor.berthome_aktueller_strompreis_energie_dashboard
             name: Strompreis aktuell
             vertical: false
             features_position: bottom
@@ -318,7 +318,7 @@ views:
             grid_options:
               columns: 12
               rows: 1
-            entity: sensor.strompreis_avg_xxx
+            entity: sensor.berthome_preis_heute
             name: Strompreis Durchschnitt
             vertical: false
             features_position: bottom
@@ -1142,16 +1142,16 @@ views:
                 - 189
                 - 189
             use_new_flow_rate_model: true
-            w_decimals: 0
             min_flow_rate: 0.75
             max_flow_rate: 6
             max_expected_power: 2000
             min_expected_power: 0.01
-            watt_threshold: 1000
             transparency_zero_lines: 0
             dashboard_link: /energy
             dashboard_link_label: Energiedashboard
-            kw_decimals: 2
+            kilo_threshold: 1000
+            base_decimals: 0
+            kilo_decimals: 2
       - type: vertical-stack
         title: Bilanz
         cards:
@@ -1174,11 +1174,13 @@ views:
             features_position: bottom
             vertical: false
           - type: tile
-            name: Leistung
+            entity: sensor.tibber_pulse_xxx_energie
+            name: Netz Leistung
+            vertical: false
             tap_action:
               action: navigate
               navigation_path: /dashboard-experiment/live-strom
-            entity: sensor.tibber_pulse_xxx_energie
+            features_position: bottom
           - type: tile
             name: Tibber Strompreis
             tap_action:
@@ -3064,12 +3066,6 @@ views:
             grid_options:
               columns: full
           - type: tile
-            entity: switch.roborock_vacuum_a147_internet_access
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: full
-          - type: tile
             entity: select.saros_10_wisch_intensitat
             features_position: bottom
             vertical: false
@@ -3169,13 +3165,6 @@ views:
               columns: 12
               rows: 1
           - type: tile
-            entity: device_tracker.roborock_vacuum_a147
-            features_position: bottom
-            vertical: false
-            grid_options:
-              columns: 12
-              rows: 1
-          - type: tile
             entity: sensor.saros_10_status
             features_position: bottom
             vertical: false
@@ -3227,36 +3216,6 @@ views:
               columns: 12
               rows: 1
         column_span: 2
-      - type: grid
-        cards:
-          - type: heading
-            heading_style: title
-            heading: Mi Air Purifier Pro H
-            icon: mdi:air-filter
-          - type: entities
-            entities:
-              - entity: fan.zhimi_vb2_d53d_air_purifier
-                name: Air Purifier
-              - entity: switch.zhimi_vb2_d53d_switch_status
-                name: Air Purifier Switch Status
-              - entity: switch.zhimi_vb2_d53d_alarm
-                name: Alarm
-              - entity: light.zhimi_vb2_d53d_indicator_light
-                name: Indicator Light
-              - entity: number.zhimi_vb2_d53d_favorite_level
-                name: Motor-speed favorite-level
-          - type: entities
-            entities:
-              - entity: sensor.zhimi_vb2_d53d_pm25_density
-                name: Environment PM2.5 Density
-              - entity: sensor.zhimi_vb2_d53d_relative_humidity
-                name: Environment Relative Humidity
-              - entity: sensor.zhimi_vb2_d53d_temperature
-                name: Environment Temperature
-              - entity: sensor.zhimi_vb2_d53d_filter_life_level
-                name: Filter Life Level
-              - entity: sensor.zhimi_vb2_d53d_filter_used_time
-                name: Filter Used Time
       - type: grid
         cards:
           - type: heading

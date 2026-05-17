@@ -12,6 +12,7 @@
   round: 2
   max_sub_interval:
     minutes: 1
+
 - platform: integration
   name: sax_energy_output
   unique_id: sax_energy_output
@@ -20,3 +21,24 @@
   round: 2
   max_sub_interval:
     minutes: 1
+
+- platform: history_stats
+  name: SAX Resets Counter
+  unique_id: sax_resets_counter
+  state_class: total_increasing
+  entity_id: binary_sensor.indoor_bewegung
+  state: "on"
+  type: count
+  start: "{{ now().replace(minute=0, second=0, microsecond=0) }}"
+  end: "{{ now() }}"
+
+- platform: history_stats
+  name: SAX Resets per Hour
+  unique_id: sax_resets_counter_hourly
+  state_class: total_increasing
+  entity_id: binary_sensor.indoor_bewegung
+  state: "on"
+  type: count
+  end: "{{ now() }}"
+  duration:
+    hours: 1

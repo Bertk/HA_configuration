@@ -24,6 +24,7 @@ logger:
     custom_components.sax_battery.soc_manager: info
     custom_components.sax_battery.power_manager: debug
     custom_components.sax_battery.coordinator: info
+    tibber.realtime: info
     #  custom_components.sax_battery: debug
     #  custom_components.sax_battery.switch: debug
     #  custom_components.sax_battery.modbusobject: debug
@@ -91,3 +92,9 @@ notify:
     services:
       - service: mobile_app_berts_iphone
       - service: mobile_app_berts_ipad
+
+counter:
+  sax_resets:
+    name: SAX Resets
+    initial: 0
+    step: 1
