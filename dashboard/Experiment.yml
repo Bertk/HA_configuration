@@ -1229,10 +1229,10 @@ views:
               - entity: sensor.sax_bess_a_temperature
               - entity: input_select.sax_a_leistungsgrenzwert_entladen
               - entity: input_select.sax_a_leistungsgrenzwert_laden
-              - entity: sensor.sax_bms_cumulative_energy_consumed
-                name: Energy Consumed
-              - entity: sensor.sax_bms_cumulative_energy_produced
-                name: Energy Produced
+              - entity: sensor.sax_bms_cumulative_energy_discharged
+                name: Energy Discharged
+              - entity: sensor.sax_bms_cumulative_energy_charged
+                name: Energy Charged
           - type: entities
             entities:
               - entity: binary_sensor.technikraum_wasser_feuchtigkeit
@@ -3357,6 +3357,8 @@ views:
                   - 'off'
                   - auto
                   - heat
+          - type: thermostat
+            entity: climate.tado_smart_radiator_thermostat_va1852914432
       - type: grid
         cards:
           - type: heading
@@ -3415,7 +3417,7 @@ views:
           - type: entities
             entities:
               - switch.radio_keller_internet_access
-            title: Connect 120
+            title: Radio Connect 120
           - type: entities
             entities:
               - entity: binary_sensor.hobbyraum_fenster_state

@@ -23,19 +23,9 @@
     minutes: 1
 
 - platform: history_stats
-  name: SAX Resets Counter
-  unique_id: sax_resets_counter
-  state_class: total_increasing
-  entity_id: binary_sensor.indoor_bewegung
-  state: "on"
-  type: count
-  start: "{{ now().replace(minute=0, second=0, microsecond=0) }}"
-  end: "{{ now() }}"
-
-- platform: history_stats
   name: SAX Resets per Hour
   unique_id: sax_resets_counter_hourly
-  state_class: total_increasing
+  state_class: measurement
   entity_id: binary_sensor.indoor_bewegung
   state: "on"
   type: count

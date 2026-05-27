@@ -101,3 +101,54 @@ views:
           - entity: sensor.solarman_total_active_power_output
             name: Total Active Power Output
         title: Solarman
+      - title: Verlauf
+        type: history-graph
+        hours_to_show: 81
+        entities:
+          - entity: sensor.sax_bms_ac_power_total
+          - entity: sensor.sax_bess_a_power_smartmeter
+      - chart_type: line
+        period: 5minute
+        type: statistics-graph
+        entities:
+          - sensor.sax_bms_bms_unavailability_rate
+          - sensor.sax_bms_coordinator_error_rate
+          - sensor.sax_bms_coordinator_cycle_time
+          - sensor.sax_bms_transaction_id_error_rate
+          - sensor.sax_reset_counter
+        title: SAX Firmware Bug Correlation
+        stat_types:
+          - max
+        days_to_show: 5
+        expand_legend: false
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: SAX-Power Battery Error Correlation
+          show_states: false
+          colorize_states: true
+        graph_span: 120h
+        span:
+          end: hour
+        all_series_config:
+          stroke_width: 2
+        series:
+          - entity: sensor.sax_bms_transaction_id_error_rate
+          - entity: sensor.sax_bms_coordinator_error_rate
+          - entity: sensor.sax_reset_counter
+          - entity: sensor.sax_bms_bms_unavailability_rate
+        apex_config:
+          dataLabels:
+            enabled: true
+          stroke:
+            curve: stepline
+          grid:
+            show: true
+            xaxis:
+              lines:
+                show: true
+            yaxis:
+              lines:
+                show: true
+          tooltip:
+            enabled: true

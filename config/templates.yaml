@@ -56,16 +56,6 @@
       device_class: power
       state: "{{ states('sensor.solarman_total_active_power_output')|float(0) * 1000 }}"
       availability: "{{ has_value('sensor.solarman_total_active_power_output') }}"
-    # Tägliche PV Einspeisung kWh
-    - name: PV Einspeisung täglich
-      unique_id: "sensor.pv_einspeisung_taglich"
-      state_class: total_increasing
-      icon: mdi:solar-panel
-      unit_of_measurement: kWh
-      device_class: energy
-      state: >
-        {{(states('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile') |float - states('sensor.solar_einspeisung_energy_end_of_day') |float) | round (3) }}
-      availability: "{{ has_value('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile') and (states('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile') |round(0) > float(0)) }}"
     # Lüftungsdauer für Monat
     - name: Lüftungsdauer in Minuten für Monat
       unique_id: "sensor.lueftungsdauer"
@@ -229,19 +219,19 @@
             {{ float(0) }}
         {% endif %}
       availability: "{{ has_value('sensor.sax_bms_ac_power_total') }}"
+      # sax battery reset counter (blank display)
+    - name: SAX Reset Counter
+      unique_id: "sax_reset_counter"
+      state_class: measurement
+      unit_of_measurement: "errors/hr"
+      icon: mdi:counter
+      state: "{{ states('sensor.sax_resets_per_hour') | int(0) }}"
+      availability: "{{ has_value('sensor.sax_resets_per_hour') }}"
 
 - trigger:
     - trigger: time
       at: "00:01:00"
   sensor:
-    - name: "Solar Einspeisung Energy - End of Day"
-      unique_id: "solar_einspeisung_energy_end_of_day"
-      state_class: total_increasing
-      unit_of_measurement: kWh
-      device_class: energy
-      icon: mdi:transmission-tower-export
-      state: "{{ states('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile')| float }}"
-      availability: "{{ has_value('sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile') }}"
     - name: "WPP Schaltspiele Verdichter - End of Day"
       unique_id: "wpp_schaltspiele_verdichter_end_of_day"
       state_class: total_increasing
