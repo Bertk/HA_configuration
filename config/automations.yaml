@@ -960,8 +960,8 @@
   triggers:
   - entity_id:
     - sensor.sax_bms_combined_soc
-    below: 50
-    id: SOC_below_50
+    below: 40
+    id: SOC_below_40
     for:
       hours: 0
       minutes: 1
@@ -969,8 +969,8 @@
     trigger: numeric_state
   - entity_id:
     - sensor.sax_bms_combined_soc
-    id: SOC_above_50
-    above: 50
+    id: SOC_above_40
+    above: 40
     for:
       hours: 0
       minutes: 5
@@ -979,8 +979,8 @@
     trigger: numeric_state
   - entity_id:
     - sensor.sax_bms_combined_soc
-    id: SOC_above_70
-    above: 70
+    id: SOC_above_60
+    above: 60
     for:
       hours: 0
       minutes: 5
@@ -1079,7 +1079,7 @@
         conditions:
         - condition: trigger
           id:
-          - SOC_below_50
+          - SOC_below_40
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
           above: number.sax_bms_minimum_soc
@@ -1103,11 +1103,11 @@
         conditions:
         - condition: trigger
           id:
-          - SOC_above_50
+          - SOC_above_40
           - entladen_refresh
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
-          below: 70
+          below: 60
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
@@ -1122,7 +1122,7 @@
         conditions:
         - condition: trigger
           id:
-          - SOC_above_70
+          - SOC_above_60
           - entladen_refresh
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis

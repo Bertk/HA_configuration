@@ -30,9 +30,9 @@ views:
           labels: true
           fill: true
         state_map:
-          - value: "off"
+          - value: 'off'
             label: Day
-          - value: "on"
+          - value: 'on'
             label: Night
       - type: history-graph
         entities:

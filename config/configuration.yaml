@@ -79,13 +79,6 @@ binary_sensor:
     after: sunset
     before: sunrise
 
-http:
-  use_x_forwarded_for: true
-  trusted_proxies:
-    - 172.30.33.0/24
-  ip_ban_enabled: true
-  login_attempts_threshold: 5
-
 notify:
   - name: BERT_DEVICES
     platform: group

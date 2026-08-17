@@ -39,18 +39,18 @@ views:
             forecast:
               precipitation_type: rainfall
               show_probability: false
-              labels_font_size: "11"
-              precip_bar_size: "100"
+              labels_font_size: '11'
+              precip_bar_size: '100'
               style: style2
               show_wind_forecast: true
               condition_icons: true
               round_temp: false
               type: hourly
-              number_of_forecasts: "0"
+              number_of_forecasts: '0'
               disable_animation: false
             units:
-              speed: ""
-            title: ""
+              speed: ''
+            title: ''
           - type: custom:horizon-card
         column_span: 1
       - type: grid
@@ -189,10 +189,10 @@ views:
                 size: 0
                 hover:
                   size: 3
-                colors: "#ff0000"
+                colors: '#ff0000'
                 fillOpacity: 0.5
                 strokeWidth: 5
-                strokeColors: "#ff0000"
+                strokeColors: '#ff0000'
                 strokeOpacity: 0.15
                 showNullDataPoints: false
               tooltip:
@@ -221,7 +221,7 @@ views:
                   tickAmount: 4
             now:
               show: true
-              color: "#8e24aa"
+              color: '#8e24aa'
               label: 🕒 LIVE
             all_series_config:
               float_precision: 2
@@ -250,7 +250,7 @@ views:
               - entity: sensor.berthome_mindestpreis_heute
                 name: Niedrig
                 type: area
-                color: "#2ecc71"
+                color: '#2ecc71'
                 yaxis_id: price
                 show:
                   legend_value: false
@@ -269,7 +269,7 @@ views:
               - entity: sensor.berthome_preis_heute
                 name: Normal
                 type: area
-                color: "#f1c40f"
+                color: '#f1c40f'
                 yaxis_id: price
                 show:
                   legend_value: false
@@ -288,7 +288,7 @@ views:
               - entity: sensor.berthome_hochstpreis_heute
                 name: Hoch
                 type: area
-                color: "#e74c3c"
+                color: '#e74c3c'
                 yaxis_id: price
                 show:
                   legend_value: false
@@ -417,7 +417,7 @@ views:
                 conditions:
                   - condition: state
                     entity: binary_sensor.schlafzimmer_fenster_state
-                    state: "on"
+                    state: 'on'
                 card:
                   type: tile
                   entity: binary_sensor.schlafzimmer_fenster_state
@@ -483,7 +483,7 @@ views:
                 conditions:
                   - condition: state
                     entity: binary_sensor.gastezimmer_fenster_state
-                    state: "on"
+                    state: 'on'
                 card:
                   type: tile
                   entity: binary_sensor.gastezimmer_fenster_state
@@ -548,7 +548,7 @@ views:
                 conditions:
                   - condition: state
                     entity: binary_sensor.bad_fenster_state
-                    state: "on"
+                    state: 'on'
                 card:
                   type: tile
                   entity: binary_sensor.bad_fenster_state
@@ -570,7 +570,7 @@ views:
             cards:
               - type: tile
                 entity: sensor.buro_temperatur
-                name: "Temperatur "
+                name: Temperatur
                 show_entity_picture: false
                 vertical: false
                 tap_action:
@@ -579,7 +579,7 @@ views:
                 features_position: bottom
               - type: tile
                 entity: sensor.buro_luftfeuchtigkeit
-                name: "Luftfeuchtigkeit "
+                name: Luftfeuchtigkeit
                 show_entity_picture: false
                 vertical: false
                 tap_action:
@@ -703,7 +703,7 @@ views:
                 conditions:
                   - condition: state
                     entity: binary_sensor.toilette_fenster_state
-                    state: "on"
+                    state: 'on'
                 card:
                   type: tile
                   entity: binary_sensor.toilette_fenster_state
@@ -765,7 +765,7 @@ views:
                 conditions:
                   - condition: state
                     entity: binary_sensor.wohnzimmer_fenster_offnung
-                    state: "on"
+                    state: 'on'
                 card:
                   type: tile
                   entity: binary_sensor.wohnzimmer_fenster_offnung
@@ -857,7 +857,7 @@ views:
                 conditions:
                   - condition: state
                     entity: binary_sensor.hobbyraum_fenster_state
-                    state: "on"
+                    state: 'on'
                 card:
                   type: tile
                   entity: binary_sensor.hobbyraum_fenster_state
@@ -887,7 +887,7 @@ views:
                 tap_action:
                   action: navigate
                   navigation_path: /dashboard-experiment/werkstatt
-                name: "Luftfeuchtigkeit "
+                name: Luftfeuchtigkeit
                 entity: sensor.werkstatt_klima_luftfeuchtigkeit
                 card_mod:
                   style: |
@@ -1069,49 +1069,49 @@ views:
                 display_state: two_way
                 secondary_info: {}
                 entity:
-                  "0": s
-                  "1": e
-                  "2": "n"
-                  "3": s
-                  "4": o
-                  "5": r
-                  "6": .
-                  "7": t
-                  "8": i
-                  "9": b
-                  "10": b
-                  "11": e
-                  "12": r
-                  "13": _
-                  "14": p
-                  "15": u
-                  "16": l
-                  "17": s
-                  "18": e
-                  "19": _
-                  "20": v
-                  "21": a
-                  "22": c
-                  "23": h
-                  "24": e
-                  "25": r
-                  "26": _
-                  "27": s
-                  "28": t
-                  "29": r
-                  "30": _
-                  "31": "1"
-                  "32": "5"
-                  "33": "7"
-                  "34": d
-                  "35": _
-                  "36": e
-                  "37": "n"
-                  "38": e
-                  "39": r
-                  "40": g
-                  "41": i
-                  "42": e
+                  '0': s
+                  '1': e
+                  '2': 'n'
+                  '3': s
+                  '4': o
+                  '5': r
+                  '6': .
+                  '7': t
+                  '8': i
+                  '9': b
+                  '10': b
+                  '11': e
+                  '12': r
+                  '13': _
+                  '14': p
+                  '15': u
+                  '16': l
+                  '17': s
+                  '18': e
+                  '19': _
+                  '20': v
+                  '21': a
+                  '22': c
+                  '23': h
+                  '24': e
+                  '25': r
+                  '26': _
+                  '27': s
+                  '28': t
+                  '29': r
+                  '30': _
+                  '31': '1'
+                  '32': '5'
+                  '33': '7'
+                  '34': d
+                  '35': _
+                  '36': e
+                  '37': 'n'
+                  '38': e
+                  '39': r
+                  '40': g
+                  '41': i
+                  '42': e
                   consumption: sensor.tibber_pulse_xxx_energie
                   production: sensor.tibber_pulse_xxx_stromerzeugung
               solar:
@@ -1228,9 +1228,6 @@ views:
               - entity: switch.sax_bms_on_off
               - entity: sensor.sax_bms_ac_power_total
               - entity: sensor.sax_bms_combined_soc
-              - entity: sensor.sax_bess_a_cycles
-              - entity: sensor.sax_bess_a_capacity
-              - entity: sensor.sax_bess_a_temperature
               - entity: input_select.sax_a_leistungsgrenzwert_entladen
               - entity: input_select.sax_a_leistungsgrenzwert_laden
               - entity: sensor.sax_bms_cumulative_energy_discharged
@@ -1546,7 +1543,7 @@ views:
           state_color: false
         filter:
           include:
-            - state: ">= 0"
+            - state: '>= 0'
               attributes:
                 device_class: energy
               options:
@@ -1673,7 +1670,7 @@ views:
           state_color: false
         filter:
           include:
-            - state: ">= 0"
+            - state: '>= 0'
               attributes:
                 device_class: power
               options:
@@ -2057,11 +2054,11 @@ views:
                   action: navigate
                   navigation_path: /dashboard-experiment/garten-pumpe
                 name: Bewässerungscomputer Hauptschalter
-                icon: ""
+                icon: ''
       - type: conditional
         conditions:
           - condition: screen
-            media_query: "(min-width: 0px)"
+            media_query: '(min-width: 0px)'
         card:
           type: vertical-stack
           title: Garage
@@ -2079,7 +2076,7 @@ views:
         features:
           - type: climate-hvac-modes
             hvac_modes:
-              - "off"
+              - 'off'
               - auto
               - heat
   - title: Bewässerung
@@ -2429,6 +2426,14 @@ views:
                     name: Temperatur
                   - entity: sensor.bad_luftfeuchtigkeit
                     name: Luftfeuchte
+              - type: glance
+                entities:
+                  - entity: sensor.lumi_bad_druck
+                    name: Luftdruck (Aqara)
+                  - entity: sensor.lumi_bad_temperatur
+                    name: Temperatur (Aqara)
+                  - entity: sensor.lumi_bad_luftfeuchtigkeit
+                    name: Luftfeuchte (Aqara)
               - chart_type: line
                 period: 5minute
                 type: statistics-graph
@@ -2439,7 +2444,7 @@ views:
                 stat_types:
                   - mean
                 hide_legend: false
-                unit: "%"
+                unit: '%'
       - type: grid
         cards:
           - type: heading
@@ -2498,7 +2503,7 @@ views:
                 stat_types:
                   - mean
                 hide_legend: false
-                unit: "%"
+                unit: '%'
           - type: thermostat
             entity: climate.flur_heizung
       - type: grid
@@ -2756,6 +2761,14 @@ views:
                     name: Temperatur
                   - entity: sensor.toilette_luftfeuchtigkeit
                     name: Luftfeuchte
+              - type: glance
+                entities:
+                  - entity: sensor.lumi_toilette_druck
+                    name: Luftdruck (Aqara)
+                  - entity: sensor.lumi_toilette_temperatur
+                    name: Temperatur (Aqara)
+                  - entity: sensor.lumi_toilette_luftfeuchtigkeit
+                    name: Luftfeuchte (Aqara)
               - chart_type: line
                 period: 5minute
                 type: statistics-graph
@@ -2826,6 +2839,14 @@ views:
                     name: Temperatur
                   - entity: sensor.wohnzimmer_luftfeuchtigkeit
                     name: Luftfeuchte
+              - type: glance
+                entities:
+                  - entity: sensor.lumi_wohnzimmer_druck
+                    name: Luftdruck (Aqara)
+                  - entity: sensor.lumi_wohnzimmer_temperatur
+                    name: Temperatur (Aqara)
+                  - entity: sensor.lumi_wohnzimmer_luftfeuchtigkeit
+                    name: Luftfeuchte (Aqara)
               - chart_type: line
                 period: 5minute
                 type: statistics-graph
@@ -3318,6 +3339,14 @@ views:
                     name: Temperatur
                   - entity: sensor.hobbyraum_luftfeuchtigkeit
                     name: Luftfeuchte
+              - type: glance
+                entities:
+                  - entity: sensor.lumi_hobbyraum_druck
+                    name: Luftdruck (Aqara)
+                  - entity: sensor.lumi_hobbyraum_temperatur
+                    name: Temperatur (Aqara)
+                  - entity: sensor.lumi_hobbyraum_luftfeuchtigkeit
+                    name: Luftfeuchte (Aqara)
               - chart_type: line
                 period: 5minute
                 type: statistics-graph
@@ -3346,7 +3375,7 @@ views:
             features:
               - type: climate-hvac-modes
                 hvac_modes:
-                  - "off"
+                  - 'off'
                   - auto
                   - heat
           - type: thermostat
@@ -3354,7 +3383,7 @@ views:
       - type: grid
         cards:
           - type: heading
-            heading: "FR:HJ10RE001190 "
+            heading: 'FR:HJ10RE001190 '
           - chart_type: line
             period: 5minute
             type: statistics-graph
