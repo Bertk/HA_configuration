@@ -83,13 +83,13 @@
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
-        {{(float(states('sensor.bad_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.bad_temperatur'))*17.67)/(float(states('sensor.bad_temperatur'))+243.5))/(float(states('sensor.bad_temperatur'))+273.15))|round(2)}}
+        {{(float(states('sensor.lumi_bad_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.lumi_bad_temperatur'))*17.67)/(float(states('sensor.lumi_bad_temperatur'))+243.5))/(float(states('sensor.lumi_bad_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Hobbyraum"
       unique_id: "AbsoluteHumidityHR"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
-        {{(float(states('sensor.hobbyraum_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.hobbyraum_temperatur'))*17.67)/(float(states('sensor.hobbyraum_temperatur'))+243.5))/(float(states('sensor.hobbyraum_temperatur'))+273.15))|round(2)}}
+        {{(float(states('sensor.lumi_hobbyraum_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.lumi_hobbyraum_temperatur'))*17.67)/(float(states('sensor.lumi_hobbyraum_temperatur'))+243.5))/(float(states('sensor.lumi_hobbyraum_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Schlafzimmer"
       unique_id: "AbsoluteHumiditySZ"
       unit_of_measurement: "g/m³"
@@ -101,7 +101,7 @@
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
-        {{(float(states('sensor.wohnzimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.wohnzimmer_temperatur'))*17.67)/(float(states('sensor.wohnzimmer_temperatur'))+243.5))/(float(states('sensor.wohnzimmer_temperatur'))+273.15))|round(2)}}
+        {{(float(states('sensor.lumi_wohnzimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.lumi_wohnzimmer_temperatur'))*17.67)/(float(states('sensor.lumi_wohnzimmer_temperatur'))+243.5))/(float(states('sensor.lumi_wohnzimmer_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Flur"
       unique_id: "AbsoluteHumidityFlur"
       unit_of_measurement: "g/m³"
@@ -125,7 +125,7 @@
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
-        {{(float(states('sensor.toilette_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.toilette_temperatur'))*17.67)/(float(states('sensor.toilette_temperatur'))+243.5))/(float(states('sensor.toilette_temperatur'))+273.15))|round(2)}}
+        {{(float(states('sensor.lumi_toilette_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.lumi_toilette_temperatur'))*17.67)/(float(states('sensor.lumi_toilette_temperatur'))+243.5))/(float(states('sensor.lumi_toilette_temperatur'))+273.15))|round(2)}}
     - name: "Absolute Luftfeuchtigkeit Werkstatt"
       unique_id: "AbsoluteHumidityWerkstatt"
       unit_of_measurement: "g/m³"
@@ -157,7 +157,7 @@
     - name: "Taupunkt Hobbyraum"
       unit_of_measurement: "°C"
       state: >
-        {{ (float(243.12) * ((float(17.62)*float(states('sensor.hobbyraum_temperatur')))/(float(243.12)+float(states('sensor.hobbyraum_temperatur'))) + log(float(states('sensor.hobbyraum_luftfeuchtigkeit'))/100)) / ((float(17.62)*float(243.12))/(float(243.12)+float(states('sensor.hobbyraum_temperatur'))) - log(float(states('sensor.hobbyraum_luftfeuchtigkeit'))/100)))  | round(1) }}
+        {{ (float(243.12) * ((float(17.62)*float(states('sensor.lumi_hobbyraum_temperatur')))/(float(243.12)+float(states('sensor.lumi_hobbyraum_temperatur'))) + log(float(states('sensor.lumi_hobbyraum_luftfeuchtigkeit'))/100)) / ((float(17.62)*float(243.12))/(float(243.12)+float(states('sensor.lumi_hobbyraum_temperatur'))) - log(float(states('sensor.lumi_hobbyraum_luftfeuchtigkeit'))/100)))  | round(1) }}
 
     # Wärmepumpe Schaltspiele Verdichter heute
     - name: "WPP Schaltspiele Verdichter heute"

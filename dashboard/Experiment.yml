@@ -506,7 +506,7 @@ views:
               - type: horizontal-stack
                 cards:
                   - type: tile
-                    entity: sensor.bad_temperatur
+                    entity: sensor.lumi_bad_temperatur
                     name: Temperatur
                     vertical: false
                     tap_action:
@@ -514,7 +514,7 @@ views:
                       navigation_path: /dashboard-experiment/bad
                     features_position: bottom
               - type: tile
-                entity: sensor.bad_luftfeuchtigkeit
+                entity: sensor.lumi_bad_luftfeuchtigkeit
                 name: Luftfeuchtigkeit
                 icon: mdi:water-percent
                 show_entity_picture: false
@@ -663,7 +663,7 @@ views:
           - type: vertical-stack
             cards:
               - type: tile
-                entity: sensor.toilette_temperatur
+                entity: sensor.lumi_toilette_temperatur
                 name: Temperatur
                 vertical: false
                 tap_action:
@@ -671,7 +671,7 @@ views:
                   navigation_path: /dashboard-experiment/toilette
                 features_position: bottom
               - type: tile
-                entity: sensor.toilette_luftfeuchtigkeit
+                entity: sensor.lumi_toilette_luftfeuchtigkeit
                 name: Luftfeuchtigkeit
                 vertical: false
                 tap_action:
@@ -724,16 +724,16 @@ views:
           - type: vertical-stack
             cards:
               - type: tile
-                entity: sensor.wohnzimmer_temperatur
+                entity: sensor.lumi_wohnzimmer_temperatur
+                name: Temperatur
                 show_entity_picture: false
+                vertical: false
                 tap_action:
                   action: navigate
                   navigation_path: /dashboard-experiment/wohnzimmer
-                name: Temperatur
                 features_position: bottom
-                vertical: false
               - type: tile
-                entity: sensor.wohnzimmer_luftfeuchtigkeit
+                entity: sensor.lumi_wohnzimmer_luftfeuchtigkeit
                 name: Luftfeuchtigkeit
                 vertical: false
                 tap_action:
@@ -786,16 +786,16 @@ views:
           - type: vertical-stack
             cards:
               - type: tile
-                entity: sensor.hobbyraum_temperatur
+                entity: sensor.lumi_hobbyraum_temperatur
+                name: Temperatur
+                show_entity_picture: true
+                vertical: false
                 tap_action:
                   action: navigate
                   navigation_path: /dashboard-experiment/hobbyraum
-                name: Temperatur
-                show_entity_picture: true
                 features_position: bottom
-                vertical: false
               - type: tile
-                entity: sensor.hobbyraum_luftfeuchtigkeit
+                entity: sensor.lumi_hobbyraum_luftfeuchtigkeit
                 name: Luftfeuchtigkeit
                 vertical: false
                 tap_action:
@@ -1164,8 +1164,7 @@ views:
             tap_action:
               action: navigate
               navigation_path: /dashboard-experiment/live-strom
-            entity: >-
-              sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+            entity: sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
             features_position: bottom
             vertical: false
           - type: tile
@@ -1173,8 +1172,7 @@ views:
             tap_action:
               action: navigate
               navigation_path: /dashboard-experiment/live-strom
-            entity: >-
-              sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
+            entity: sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
             features_position: bottom
             vertical: false
           - type: tile
@@ -1356,8 +1354,7 @@ views:
               - entity: sensor.wh_warmepumpe_stormeldung
               - entity: sensor.wh_warmepumpe_verdichtersauggastemp
               - entity: sensor.wh_warmepumpe_vorlaufsolltemperatur
-              - entity: >-
-                  sensor.wh_warmepumpe_vorlauftemperatur_prazise_summenvorlauf_b7
+              - entity: sensor.wh_warmepumpe_vorlauftemperatur_prazise_summenvorlauf_b7
               - entity: sensor.wh_warmepumpe_warmeleistung
             title: WH Wärmepumpe
       - type: grid
@@ -1773,20 +1770,17 @@ views:
             name: Durchschnittliche Leistung
           - entity: sensor.tibber_pulse_xxx_energie
             name: Energie
-          - entity: >-
-              sensor.tibber_pulse_xxx_geschatzter_verbrauch_aktuelle_stunde
+          - entity: sensor.tibber_pulse_xxx_geschatzter_verbrauch_aktuelle_stunde
             name: Geschätzter Verbrauch aktuelle Stunde
           - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
             name: Kumulierte Kosten
           - entity: sensor.tibber_pulse_xxx_kumulierte_produktion
             name: Kumulierte Produktion
-          - entity: >-
-              sensor.tibber_pulse_xxx_kumulierte_produktion_laufende_stunde
+          - entity: sensor.tibber_pulse_xxx_kumulierte_produktion_laufende_stunde
             name: Kumulierte Produktion laufende Stunde
           - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
             name: Kumulierter Verbrauch
-          - entity: >-
-              sensor.tibber_pulse_xxx_kumulierter_verbrauch_aktuelle_stunde
+          - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch_aktuelle_stunde
             name: Kumulierter Verbrauch aktuelle Stunde
           - entity: sensor.tibber_pulse_xxx_maximale_leistung
             name: Maximale Leistung
@@ -1798,15 +1792,13 @@ views:
             name: Monatlicher Nettoverbrauch
           - entity: sensor.xxx_monatlicher_spitzenstundenverbrauch
             name: Monatlicher Spitzenstundenverbrauch
-          - entity: >-
-              sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
+          - entity: sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
             name: Produktion auf der letzten Meile
           - entity: sensor.tibber_pulse_xxx_stromerzeugung
             name: Stromerzeugung
           - entity: sensor.xxx_strompreis
             name: Strompreis
-          - entity: >-
-              sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+          - entity: sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
             name: Verbrauch auf der letzten Meile
           - entity: sensor.xxx_zeitpunkt_des_maximalen_stundenverbrauchs
             name: Zeitpunkt des maximalen Stundenverbrauchs
@@ -1902,8 +1894,7 @@ views:
                     icon: mdi:currency-eur
                     name: Täglich
                   - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
-                  - entity: >-
-                      sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+                  - entity: sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
                     name: Gesamt
                   - entity: sensor.tibber_pulse_xxx_stromerzeugung
                     name: Einspeisung
@@ -2994,8 +2985,7 @@ views:
               columns: 12
               rows: 1
           - type: tile
-            entity: >-
-              sensor.smart_switch_23011241132999510d0148e1e9b70773_config_overtemp_type
+            entity: sensor.smart_switch_23011241132999510d0148e1e9b70773_config_overtemp_type
             features_position: bottom
             vertical: false
             grid_options:
@@ -3241,12 +3231,12 @@ views:
               columns: 12
               rows: 1
           - type: tile
-            entity: binary_sensor.saros_10_dock_mopp_trocknung
-            features_position: bottom
-            vertical: false
             grid_options:
               columns: 12
               rows: 1
+            entity: switch.wohnzimmer_saros_10_dock_mopp_trocknung
+            vertical: false
+            features_position: bottom
           - type: tile
             entity: sensor.saros_10_dock_verbleibende_zeit_zum_trocknen_des_mopps
             features_position: bottom

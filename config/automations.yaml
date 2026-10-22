@@ -149,13 +149,13 @@
     entity_id: binary_sensor.hobbyraum_fenster_state
     state: 'off'
   - condition: numeric_state
-    entity_id: sensor.hobbyraum_luftfeuchtigkeit
+    entity_id: sensor.lumi_hobbyraum_luftfeuchtigkeit
     above: 65
   - condition: template
     value_template: '{{states(''sensor.fuerth_bayern_taupunkt'') | float < float(12)}}'
   - condition: template
-    value_template: '{{states(''sensor.hobbyraum_temperatur'') | float|round(1) -
-      4.0 > states(''sensor.fuerth_bayern_temperatur'') | float }}'
+    value_template: '{{states(''sensor.lumi_hobbyraum_temperatur'') | float|round(1)
+      - 4.0 > states(''sensor.fuerth_bayern_temperatur'') | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_hobbyraum'') |float
       > states(''sensor.fuerth_bayern_absolute_luftfeuchtigkeit'') |float) }}'
@@ -194,7 +194,7 @@
     state: 'off'
     entity_id: binary_sensor.bad_fenster_state
   - condition: numeric_state
-    entity_id: sensor.bad_luftfeuchtigkeit
+    entity_id: sensor.lumi_bad_luftfeuchtigkeit
     above: 65
   - condition: template
     value_template: '{{ states(''sensor.absolute_luftfeuchtigkeit_bad'') |float >
@@ -228,10 +228,10 @@
     trigger: time
   conditions:
   - condition: numeric_state
-    entity_id: sensor.wohnzimmer_luftfeuchtigkeit
+    entity_id: sensor.lumi_wohnzimmer_luftfeuchtigkeit
     above: 65
   - condition: template
-    value_template: '{{states(''sensor.wohnzimmer_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
+    value_template: '{{states(''sensor.lumi_wohnzimmer_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
       | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_wohnzimmer'') |float
@@ -394,10 +394,10 @@
     entity_id: binary_sensor.toilette_fenster_state
     state: 'off'
   - condition: numeric_state
-    entity_id: sensor.toilette_luftfeuchtigkeit
+    entity_id: sensor.lumi_toilette_luftfeuchtigkeit
     above: 65
   - condition: template
-    value_template: '{{states(''sensor.toilette_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
+    value_template: '{{states(''lumi_sensor.toilette_temperatur'') | float > states(''sensor.fuerth_bayern_temperatur'')
       | float }}'
   - condition: template
     value_template: '{{ (states(''sensor.absolute_luftfeuchtigkeit_toilette'') |float
@@ -807,11 +807,19 @@
       seconds: 0
     below: 200
     id: Stoppen
-  conditions:
-  - condition: state
-    entity_id: input_boolean.infrarotheizung_aktivieren
-    state:
+  - trigger: state
+    entity_id:
+    - input_boolean.infrarotheizung_aktivieren
+    from:
     - 'on'
+    to:
+    - 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    id: Deaktivieren
+  conditions: []
   actions:
   - choose:
     - conditions:
@@ -821,14 +829,18 @@
           id:
           - Starten
         - condition: state
-          entity_id: climate.infrarotheizung_hobbyraum
-          state:
-          - 'off'
-        - condition: state
           entity_id: binary_sensor.hobbyraum_fenster_state
           state:
           - 'off'
           enabled: true
+        - condition: state
+          entity_id: input_boolean.infrarotheizung_aktivieren
+          state:
+          - 'on'
+        - condition: state
+          entity_id: climate.infrarotheizung_hobbyraum
+          state:
+          - 'off'
       sequence:
       - action: climate.set_hvac_mode
         metadata: {}
@@ -842,6 +854,7 @@
         - condition: trigger
           id:
           - Stoppen
+          - Deaktivieren
         - condition: state
           entity_id: climate.infrarotheizung_hobbyraum
           state:
@@ -873,7 +886,7 @@
   - trigger: time_pattern
     minutes: /15
     id: Charging-condition
-    enabled: false
+    enabled: true
   conditions: []
   actions:
   - choose:
@@ -889,7 +902,7 @@
         enabled: true
       - condition: numeric_state
         entity_id: sensor.sax_bms_combined_soc
-        below: 95
+        below: 90
       - condition: or
         conditions:
         - condition: numeric_state
@@ -914,12 +927,12 @@
         id:
         - New-charge-limit
       sequence:
-      - action: number.set_value
+      - action: input_select.select_option
         metadata: {}
         data:
-          value: '{{states.input_select.sax_a_leistungsgrenzwert_laden.state}}'
+          option: '3500'
         target:
-          entity_id: number.sax_bms_max_charge
+          entity_id: input_select.sax_a_leistungsgrenzwert_laden
       - action: system_log.write
         metadata: {}
         data:
@@ -937,10 +950,10 @@
         - Sonnenaufgang
       - condition: numeric_state
         entity_id: sensor.sonneneinstrahlung_vorhersage_in_5_stunden
-        above: 1500
+        above: 400
       - condition: numeric_state
         entity_id: sensor.sax_bms_combined_soc
-        above: 95
+        above: 90
       sequence:
       - action: input_select.select_option
         metadata: {}
@@ -967,6 +980,7 @@
       minutes: 1
       seconds: 0
     trigger: numeric_state
+    alias: SOC 40% unterschritten
   - entity_id:
     - sensor.sax_bms_combined_soc
     id: SOC_above_40
@@ -977,6 +991,7 @@
       seconds: 0
     enabled: true
     trigger: numeric_state
+    alias: SOC 40% überschritten
   - entity_id:
     - sensor.sax_bms_combined_soc
     id: SOC_above_60
@@ -987,6 +1002,28 @@
       seconds: 0
     enabled: true
     trigger: numeric_state
+    alias: SOC 60% unterschritten
+  - trigger: numeric_state
+    id: SOC_below_75
+    entity_id:
+    - sensor.sax_bms_combined_soc
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    alias: SOC 75% unterschritten
+    below: 75
+  - entity_id:
+    - sensor.sax_bms_combined_soc
+    id: SOC_above_75
+    above: 75
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    enabled: true
+    trigger: numeric_state
+    alias: SOC 75% überschritten
   - entity_id:
     - sensor.sax_bms_combined_soc
     id: SOC_below_min
@@ -997,6 +1034,7 @@
       seconds: 0
     enabled: true
     trigger: numeric_state
+    alias: min. SOC unterschritten
   - trigger: state
     entity_id:
     - input_select.sax_a_leistungsgrenzwert_entladen
@@ -1005,10 +1043,17 @@
       minutes: 0
       seconds: 5
     id: New-discharge-limit
+    alias: Leistungsgrenzwert (Select) geändert
   - trigger: template
     value_template: '{{states(''sensor.sax_battery_a_power'')|float(0) - states(''input_select.sax_a_leistungsgrenzwert_entladen'')
       |float(0) - float(10) > 0 }}'
     id: Above_Limit
+  - trigger: numeric_state
+    entity_id:
+    - sensor.xxx_strompreis
+    id: Strompreis-No-Export
+    below: input_number.strompreis_speicher_export_stop
+    alias: Strompreis billig
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
@@ -1018,6 +1063,7 @@
       minutes: 1
       seconds: 0
     above: input_number.strompreis_speicher_export
+    alias: Strompreis teuer
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
@@ -1027,25 +1073,21 @@
       hours: 0
       minutes: 1
       seconds: 0
+    alias: Strompreis update
+  - trigger: state
+    entity_id:
+    - number.sax_bms_max_discharge
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    note: SAX battery discharge value
+    alias: SAX battery discharge updated
+    id: SAX-discharge-updated
   - trigger: time_pattern
     id: entladen_refresh
-    minutes: /5
+    minutes: /1
     enabled: true
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Strompreis-No-Export
-    below: input_number.strompreis_speicher_export_stop
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Strompreis-uber-Mittelwert
-    above: sensor.strompreis_avg_xxx
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Strompreis-unter-Mittelwert
-    below: sensor.strompreis_avg_xxx
   conditions: []
   actions:
   - choose:
@@ -1098,6 +1140,7 @@
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '250'
+      alias: SOC < 40% => 250W
     - conditions:
       - condition: and
         conditions:
@@ -1107,7 +1150,7 @@
           - entladen_refresh
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
-          below: 60
+          below: 50
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
@@ -1117,6 +1160,7 @@
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '1000'
+      alias: SOC > 40% =>1000W
     - conditions:
       - condition: and
         conditions:
@@ -1127,12 +1171,33 @@
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
+        - condition: numeric_state
+          entity_id: sensor.sax_bms_combined_soc
+          below: 75
       sequence:
       - action: input_select.select_option
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '2500'
+      alias: SOC < 60% => 2500W
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - entladen_refresh
+          - SOC_above_75
+        - condition: numeric_state
+          entity_id: sensor.xxx_strompreis
+          above: input_number.strompreis_speicher_export
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+        data:
+          option: '3500'
+      alias: SOC > 75% > 3500W
     - conditions:
       - condition: trigger
         id:
@@ -1157,43 +1222,43 @@
         data:
           name: Set Batterie Entladeleistung
           message: P(Entladen) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_entladen.state|int}}W
+      alias: Setze Wert SAX Entladeleistung
     - conditions:
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - Preis_Tibber_niedrig
-        - condition: numeric_state
-          entity_id: sensor.sax_bms_combined_soc
-          above: number.sax_bms_minimum_soc
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          above: input_number.strompreis_speicher_export
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          below: sensor.strompreis_avg_xxx
+      - condition: trigger
+        id:
+        - Preis_Tibber_hoch
+        - Preis_Tibber_niedrig
+      - condition: numeric_state
+        entity_id: sensor.sax_bms_combined_soc
+        above: number.sax_bms_minimum_soc
+      - condition: numeric_state
+        entity_id: sensor.sax_bms_combined_soc
+        below: 40
       sequence:
       - action: input_select.select_option
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '250'
+          option: "{{ '1000'\n   if states('sensor.xxx_strompreis') |
+            float(0)\n      > states('input_number.strompreis_speicher_export') |
+            float(0)\n   else '250' }}"
+      alias: Reduziere Entladeleistung anhängig vom Preis
     - conditions:
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - Preis_Tibber_hoch
-        - condition: numeric_state
-          entity_id: sensor.sax_bms_combined_soc
-          above: number.sax_bms_minimum_soc
+      - condition: trigger
+        id: SAX-discharge-updated
+      - condition: template
+        value_template: "{% set value = states('number.sax_bms_max_discharge') | float(none)
+          %} {% set option = value | int | string\n  if value is not none and value
+          == (value | int)\n  else '' %}\n{{ option in ['4600', '3500', '2500', '1000',
+          '500', '250', '0']\n   and option != states('input_select.sax_a_leistungsgrenzwert_entladen')
+          }}"
       sequence:
       - action: input_select.select_option
-        metadata: {}
-        data:
-          option: '250'
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+        data:
+          option: '{{ states(''number.sax_bms_max_discharge'') | int | string }}'
+      alias: sync input_select mit SAX discharge
   trace:
     stored_traces: '100'
   mode: single
@@ -1315,18 +1380,6 @@
     - sensor.xxx_strompreis
     below: input_number.strompreis_heizung_aus
     id: Strom-billig
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    below: sensor.strompreis_avg_xxx
-    id: Heizen-ein
-    enabled: true
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    id: Heizen-aus
-    above: sensor.strompreis_avg_xxx
-    enabled: true
   - trigger: time_pattern
     id: Every-hour
     hours: '*'
@@ -1343,80 +1396,48 @@
   - if:
     - condition: trigger
       id:
-      - Heizen-aus
       - Strom-teuer
+      - Every-hour
     - condition: not
       conditions:
-      - condition: state
-        state:
-        - Warmwasserbetrieb
-        entity_id: sensor.wh_system_betriebsanzeige
+      - condition: or
+        conditions:
+        - condition: numeric_state
+          entity_id: sensor.solarman_total_active_power_output
+          above: 1700
+        - condition: state
+          entity_id: sensor.wh_system_betriebsanzeige
+          state: Warmwasserbetrieb
     then:
-    - action: climate.set_hvac_mode
-      metadata: {}
-      data:
-        hvac_mode: 'off'
-      target:
-        entity_id:
-        - climate.bad_heizung
-        - climate.buro_heizung
-        - climate.flur_heizung
-        - climate.gastezimmer_heizung
-        - climate.hobbyraum_heizung
-        - climate.schlafzimmer_heizung
-        - climate.toilette_heizung
-      enabled: false
     - action: select.select_option
-      metadata: {}
       data:
         option: sys_operationmode_standby
       target:
-        entity_id:
-        - select.wh_system_systembetriebsart
+        entity_id: select.wh_system_systembetriebsart
+      alias: Heizen ausschalten
   - if:
     - condition: and
       conditions:
       - condition: trigger
         id:
-        - Strom-billig
-        - Heizen-ein
         - Every-hour
+        - Strom-billig
       - condition: or
         conditions:
-        - condition: and
+        - condition: or
           conditions:
+          - condition: time
+            after: '21:00:00'
+            enabled: true
+          - condition: time
+            after: 00:00:00
+            enabled: true
+            before: 04:00:00
           - condition: numeric_state
             entity_id: sensor.xxx_strompreis
-            below: sensor.strompreis_avg_xxx
-          - condition: numeric_state
-            entity_id: sensor.strompreis_avg_xxx
             below: input_number.strompreis_heizung_aus
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          below: input_number.strompreis_heizung_aus
-        - condition: time
-          after: '21:00:00'
-          enabled: true
-        enabled: false
-      - condition: numeric_state
-        entity_id: sensor.xxx_strompreis
-        below: input_number.strompreis_heizung_aus
+        enabled: true
     then:
-    - action: climate.set_hvac_mode
-      metadata: {}
-      data:
-        hvac_mode: auto
-      target:
-        entity_id:
-        - climate.wohnzimmer_heizung
-        - climate.bad_heizung
-        - climate.buro_heizung
-        - climate.flur_heizung
-        - climate.gastezimmer_heizung
-        - climate.hobbyraum_heizung
-        - climate.schlafzimmer_heizung
-        - climate.toilette_heizung
-      enabled: false
     - action: select.select_option
       metadata: {}
       data:
@@ -1424,30 +1445,7 @@
       target:
         entity_id:
         - select.wh_system_systembetriebsart
-    - if:
-      - condition: state
-        entity_id: binary_sensor.bad_fenster_state
-        state: 'on'
-      then:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        target:
-          device_id: df2fd9736612151b12280e017b37bda0
-        data:
-          hvac_mode: 'off'
-      enabled: false
-    - if:
-      - condition: state
-        entity_id: binary_sensor.toilette_fenster_state
-        state: 'on'
-      then:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        target:
-          device_id: a209ed86192fc4cfbc37d23ec5803800
-        data:
-          hvac_mode: 'off'
-      enabled: false
+      alias: Heizen einschalten
   mode: single
 - id: '1738915844292'
   alias: Radon Werte Benachrichtigung

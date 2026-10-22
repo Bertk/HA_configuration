@@ -8,6 +8,7 @@
         "homeassistant",
         "hvac",
         "lovelace",
+        "lumi",
         "mqtt",
         "tibber",
         "zwavejs",
