@@ -306,6 +306,12 @@ views:
                 stroke_width: 1.5
             span:
               start: day
+          - type: custom:tibber-prices-now-card
+            device_id: 23b8cdd2c830ec69cb7ad78c583465e9
+            style: clock
+            grid_options:
+              columns: 12
+              rows: 1
           - type: tile
             grid_options:
               columns: 12
@@ -1024,6 +1030,19 @@ views:
                 camera_view: auto
                 type: picture-entity
                 entity: camera.gartenhaus_camera_fliessend
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Strompreis Planung
+          - type: custom:tibber-prices-forecast-card
+            device_id: 23b8cdd2c830ec69cb7ad78c583465e9
+            show:
+              - now
+              - hours
+              - day_parts
+              - days
+        column_span: 2
       - type: grid
         cards:
           - type: heading

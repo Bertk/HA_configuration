@@ -30,33 +30,47 @@
     from: 'off'
     to: 'on'
     id: GastzimmerFenster
+    alias: Fenster offen Gast
   - trigger: state
     entity_id:
     - binary_sensor.hobbyraum_fenster_state
     from: 'off'
     to: 'on'
     id: HobbyraumFenster
+    alias: Fenster offen Hobby
+  - trigger: state
+    entity_id:
+    - binary_sensor.schlafzimmer_fenster_state
+    from:
+    - 'off'
+    to:
+    - 'on'
+    id: SchlafzimmerFenster
+    alias: Fenster offen Schlafen
+  - trigger: state
+    entity_id:
+    - binary_sensor.bad_fenster_state
+    from:
+    - 'off'
+    to:
+    - 'on'
+    id: BadFenster
+    alias: Fenster offen Bad
   conditions: []
   actions:
   - choose:
     - conditions:
       - condition: trigger
         id:
-        - FlurThermostat
-      sequence:
-      - action: climate.set_hvac_mode
-        metadata: {}
-        target:
-          entity_id: climate.flur_heizung
-        data:
-          hvac_mode: 'off'
-    - conditions:
-      - condition: trigger
-        id:
         - GastzimmerFenster
+        - HobbyraumFenster
       - condition: state
         entity_id: binary_sensor.hobbyraum_fenster_state
         state: 'on'
+      - condition: state
+        entity_id: binary_sensor.gastezimmer_fenster_state
+        state:
+        - 'on'
       sequence:
       - action: climate.set_hvac_mode
         metadata: {}
@@ -67,10 +81,16 @@
     - conditions:
       - condition: trigger
         id:
-        - HobbyraumFenster
+        - SchlafzimmerFenster
+        - BadFenster
       - condition: state
-        entity_id: binary_sensor.gastezimmer_fenster_state
-        state: 'on'
+        entity_id: binary_sensor.bad_fenster_state
+        state:
+        - 'on'
+      - condition: state
+        entity_id: binary_sensor.schlafzimmer_fenster_state
+        state:
+        - 'on'
       sequence:
       - action: climate.set_hvac_mode
         metadata: {}
@@ -994,8 +1014,7 @@
     alias: SOC 40% überschritten
   - entity_id:
     - sensor.sax_bms_combined_soc
-    id: SOC_above_60
-    above: 60
+    id: SOC_below_60
     for:
       hours: 0
       minutes: 5
@@ -1003,6 +1022,18 @@
     enabled: true
     trigger: numeric_state
     alias: SOC 60% unterschritten
+    below: 60
+  - entity_id:
+    - sensor.sax_bms_combined_soc
+    id: SOC_above_60
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    enabled: true
+    trigger: numeric_state
+    alias: SOC 60% überschritten
+    above: 60
   - trigger: numeric_state
     id: SOC_below_75
     entity_id:
@@ -1044,10 +1075,6 @@
       seconds: 5
     id: New-discharge-limit
     alias: Leistungsgrenzwert (Select) geändert
-  - trigger: template
-    value_template: '{{states(''sensor.sax_battery_a_power'')|float(0) - states(''input_select.sax_a_leistungsgrenzwert_entladen'')
-      |float(0) - float(10) > 0 }}'
-    id: Above_Limit
   - trigger: numeric_state
     entity_id:
     - sensor.xxx_strompreis
@@ -1079,7 +1106,7 @@
     - number.sax_bms_max_discharge
     for:
       hours: 0
-      minutes: 5
+      minutes: 1
       seconds: 0
     note: SAX battery discharge value
     alias: SAX battery discharge updated
@@ -1088,6 +1115,26 @@
     id: entladen_refresh
     minutes: /1
     enabled: true
+  - trigger: state
+    entity_id:
+    - sensor.berthome_aktuelles_preisniveau
+    to:
+    - very_cheap
+    - cheap
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+    alias: Preisniveau günstig
+    id: generated-YLPL
+  - trigger: state
+    entity_id:
+    - sensor.berthome_aktuelles_preisniveau
+    to:
+    - expensive
+    - very_expensive
+    alias: Preisniveau teuer
+    id: generated-jdLv
   conditions: []
   actions:
   - choose:
@@ -1095,6 +1142,12 @@
       - condition: trigger
         id:
         - Strompreis-No-Export
+        - generated-YLPL
+      - condition: state
+        entity_id: sensor.berthome_aktuelles_preisniveau
+        state:
+        - very_cheap
+        - cheap
       sequence:
       - action: select.select_option
         metadata: {}
@@ -1102,6 +1155,7 @@
           option: '0'
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+      alias: Strompreis billig => 0W
     - conditions:
       - condition: trigger
         id:
@@ -1116,44 +1170,52 @@
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '0'
+      alias: Min SOC unterschritten => 0W
     - conditions:
+      - condition: trigger
+        id:
+        - SOC_below_40
+        - generated-jdLv
+        - entladen_refresh
       - condition: and
         conditions:
-        - condition: trigger
-          id:
-          - SOC_below_40
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
           above: number.sax_bms_minimum_soc
+          below: 40
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
-        - condition: numeric_state
-          entity_id: sensor.strompreis_avg_xxx
-          above: input_number.strompreis_speicher_export_stop
-        - condition: template
-          value_template: '{{states(''sensor.solarman_total_active_power_output'')
-            | float(0) == float(0)}}'
+          enabled: true
       sequence:
       - action: input_select.select_option
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
-          option: '250'
-      alias: SOC < 40% => 250W
+          option: "{% if is_state('sensor.berthome_aktuelles_preisniveau','expensive')
+            or  is_state('sensor.berthome_aktuelles_preisniveau','very_expensive')
+            %}\n1000\n {% else %}\n250\n{% endif %}"
+      alias: SOC < 40% => 250W (Strom teuer => 1000W)
     - conditions:
+      - condition: trigger
+        id:
+        - SOC_above_40
+        - entladen_refresh
       - condition: and
         conditions:
-        - condition: trigger
-          id:
-          - SOC_above_40
-          - entladen_refresh
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
-          below: 50
+          below: 60
+          above: 40
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
+        - condition: state
+          entity_id: sensor.berthome_aktuelles_preisniveau
+          state:
+          - expensive
+          - very_expensive
+          alias: Strompreis teuer oder sehr teuer
       sequence:
       - action: input_select.select_option
         target:
@@ -1162,32 +1224,36 @@
           option: '1000'
       alias: SOC > 40% =>1000W
     - conditions:
+      - condition: trigger
+        id:
+        - SOC_above_60
+        - entladen_refresh
       - condition: and
         conditions:
-        - condition: trigger
-          id:
-          - SOC_above_60
-          - entladen_refresh
-        - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          above: input_number.strompreis_speicher_export
         - condition: numeric_state
           entity_id: sensor.sax_bms_combined_soc
           below: 75
+          above: 60
+        - condition: numeric_state
+          entity_id: sensor.xxx_strompreis
+          above: input_number.strompreis_speicher_export
       sequence:
       - action: input_select.select_option
         target:
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '2500'
-      alias: SOC < 60% => 2500W
+      alias: SOC > 60% => 2500W
     - conditions:
+      - condition: trigger
+        id:
+        - entladen_refresh
+        - SOC_above_75
       - condition: and
         conditions:
-        - condition: trigger
-          id:
-          - entladen_refresh
-          - SOC_above_75
+        - condition: numeric_state
+          entity_id: sensor.sax_bms_combined_soc
+          above: 75
         - condition: numeric_state
           entity_id: sensor.xxx_strompreis
           above: input_number.strompreis_speicher_export
@@ -1197,13 +1263,15 @@
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '3500'
-      alias: SOC > 75% > 3500W
+      alias: SOC > 75% => 3500W
     - conditions:
       - condition: trigger
         id:
         - New-discharge-limit
         - entladen_refresh
-        - Above_Limit
+      - condition: template
+        value_template: '{{ states(''number.sax_bms_max_charge'') != states(''input_select.sax_a_leistungsgrenzwert_entladen'')
+          }}'
       sequence:
       - action: number.set_value
         metadata: {}
@@ -1223,26 +1291,6 @@
           name: Set Batterie Entladeleistung
           message: P(Entladen) aktualisiert auf {{states.input_select.sax_a_leistungsgrenzwert_entladen.state|int}}W
       alias: Setze Wert SAX Entladeleistung
-    - conditions:
-      - condition: trigger
-        id:
-        - Preis_Tibber_hoch
-        - Preis_Tibber_niedrig
-      - condition: numeric_state
-        entity_id: sensor.sax_bms_combined_soc
-        above: number.sax_bms_minimum_soc
-      - condition: numeric_state
-        entity_id: sensor.sax_bms_combined_soc
-        below: 40
-      sequence:
-      - action: input_select.select_option
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
-        data:
-          option: "{{ '1000'\n   if states('sensor.xxx_strompreis') |
-            float(0)\n      > states('input_number.strompreis_speicher_export') |
-            float(0)\n   else '250' }}"
-      alias: Reduziere Entladeleistung anhängig vom Preis
     - conditions:
       - condition: trigger
         id: SAX-discharge-updated
@@ -1370,82 +1418,80 @@
   alias: Wärmepumpe Heizen/Standby abhängig vom Preis
   description: ''
   triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    above: input_number.strompreis_heizung_aus
-    id: Strom-teuer
-  - trigger: numeric_state
-    entity_id:
-    - sensor.xxx_strompreis
-    below: input_number.strompreis_heizung_aus
-    id: Strom-billig
   - trigger: time_pattern
-    id: Every-hour
-    hours: '*'
-  conditions:
-  - condition: or
-    conditions:
-    - condition: state
-      entity_id: select.wh_system_systembetriebsart
-      state: sys_operationmode_heating
-    - condition: state
-      entity_id: select.wh_system_systembetriebsart
-      state: sys_operationmode_standby
+    id: Every-5-minutes
+    minutes: /15
+  conditions: []
   actions:
-  - if:
-    - condition: trigger
-      id:
-      - Strom-teuer
-      - Every-hour
-    - condition: not
-      conditions:
-      - condition: or
-        conditions:
-        - condition: numeric_state
-          entity_id: sensor.solarman_total_active_power_output
-          above: 1700
-        - condition: state
-          entity_id: sensor.wh_system_betriebsanzeige
-          state: Warmwasserbetrieb
-    then:
-    - action: select.select_option
-      data:
-        option: sys_operationmode_standby
-      target:
-        entity_id: select.wh_system_systembetriebsart
-      alias: Heizen ausschalten
-  - if:
-    - condition: and
+  - choose:
+    - alias: Standby aktivieren
       conditions:
       - condition: trigger
         id:
-        - Every-hour
-        - Strom-billig
-      - condition: or
+        - Every-5-minutes
+      - condition: state
+        entity_id: select.wh_system_systembetriebsart
+        state:
+        - sys_operationmode_heating
+      - condition: not
         conditions:
         - condition: or
           conditions:
-          - condition: time
-            after: '21:00:00'
-            enabled: true
-          - condition: time
-            after: 00:00:00
-            enabled: true
-            before: 04:00:00
+          - condition: numeric_state
+            entity_id: sensor.solarman_total_active_power_output
+            above: 1700
+          - condition: state
+            entity_id: sensor.berthome_aktuelles_preisniveau
+            state:
+            - very_cheap
+            - cheap
           - condition: numeric_state
             entity_id: sensor.xxx_strompreis
             below: input_number.strompreis_heizung_aus
+          - condition: numeric_state
+            entity_id: sensor.xxx_strompreis
+            below: sensor.strompreis_avg_xxx
+          enabled: true
         enabled: true
-    then:
-    - action: select.select_option
-      metadata: {}
-      data:
-        option: sys_operationmode_heating
-      target:
-        entity_id:
-        - select.wh_system_systembetriebsart
-      alias: Heizen einschalten
+      sequence:
+      - action: select.select_option
+        data:
+          option: sys_operationmode_standby
+        target:
+          entity_id: select.wh_system_systembetriebsart
+        alias: Standby aktivieren
+    - alias: Heizen aktivieren
+      conditions:
+      - condition: trigger
+        id:
+        - Every-5-minutes
+      - condition: state
+        entity_id: select.wh_system_systembetriebsart
+        state:
+        - sys_operationmode_standby
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: sensor.berthome_aktuelles_preisniveau
+          state:
+          - cheap
+          - very_cheap
+        - condition: numeric_state
+          entity_id: sensor.xxx_strompreis
+          below: input_number.strompreis_heizung_aus
+        - condition: numeric_state
+          entity_id: sensor.xxx_strompreis
+          below: sensor.strompreis_avg_xxx
+      sequence:
+      - action: select.select_option
+        metadata: {}
+        data:
+          option: sys_operationmode_heating
+        target:
+          entity_id:
+          - select.wh_system_systembetriebsart
+  trace:
+    stored_traces: '100'
   mode: single
 - id: '1738915844292'
   alias: Radon Werte Benachrichtigung

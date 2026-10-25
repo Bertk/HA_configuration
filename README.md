@@ -52,7 +52,7 @@ Experiment
 
 ## Integrations
 
-- Modbus: SAX battery control and monitoring
+- Modbus: SAX battery control and monitoring (experimental branch:  [support-sun-spec](https://github.com/Bertk/sax_battery_ha/tree/support-sun-spec))
 - REST: Tibber electricity price API
 - Generic Thermostat: Infrared heating automation
 - Binary Sensors: Night mode, leak detection
@@ -96,17 +96,22 @@ This dashboard provides an overview of various views for configurations and devi
 
 ### Custom integration installed using HACS
 
-|integration/cards name| comment|
+|integration|comment|
 |---|:---:|
+|[Cowboy](https://github.com/elsbrock/cowboy-ha)|e-bike|
 |[Deutscher Wetterdienst](https://github.com/FL550/dwd_weather)||
 |[DWD Pollenflug](https://github.com/mampfes/hacs_dwd_pollenflug)||
-|[Solarman](https://github.com/StephanJoubert/home_assistant_solarman)||
+|[Easee EV charger](https://github.com/nordicopen/easee_hass)||
 |[HACS](https://github.com/hacs/integration)||
+|[Meross LAN](https://github.com/krahabb/meross_lan)||
+|[RadonEye RD200](https://github.com/jdeath/rd200v2)||
 |[SAX Power Home battery management](https://github.com/matfroh/sax_battery_ha)||
+|[Solarman](https://github.com/StephanJoubert/home_assistant_solarman)||
 |[Tibber Prices custom integration for Home Assistant](https://github.com/jpawlowski/hass.tibber_prices)||
 |[Weishaupt Wärmepumpe](https://github.com/OStrama/weishaupt_modbus)||
-|[Weishaupt WEM Portal](https://github.com/erikkastelec/hass-WEM-Portal)|better energy value precision|
-|[Xiaomi Miot Auto](https://github.com/al-one/hass-xiaomi-miot)||
+
+|cards name|comment|
+|---|:---:|
 |[Weather Chart Card](https://github.com/mlamberts78/weather-chart-card)||
 |[mini-graph-card](https://github.com/kalkih/mini-graph-card)||
 |[card-mod 3](https://github.com/thomasloven/lovelace-card-mod)||
@@ -122,19 +127,14 @@ This dashboard provides an overview of various views for configurations and devi
 |[Home Assistant iOS](https://www.home-assistant.io/integrations/ios)||
 |[Home Connect](https://www.home-assistant.io/integrations/home_connect)||
 |[HomeKit Device](https://www.home-assistant.io/integrations/homekit_controller/)| replaced Tado|
-|[Meross LAN](https://github.com/krahabb/meross_lan)||
-|[Meteorologisk institutt (Met.no)](https://www.home-assistant.io/integrations/met)||
 |[Mobile-App](https://www.home-assistant.io/integrations/mobile_app)||
-|[Modbus](https://www.home-assistant.io/integrations/modbus)||
 |[MusicCast](https://www.home-assistant.io/integrations/yamaha_musiccast)||
 |[Oral-B](https://www.home-assistant.io/integrations/oralb)||
-|[RadonEye RD200 BLE](https://github.com/jdeath/rd200v2)||
-|[RESTful](https://www.home-assistant.io/integrations/rest)||
 |[Reolink](https://www.home-assistant.io/integrations/reolink)||
+|[Roborock](https://www.home-assistant.io/integrations/roborock/)||
 |[Sonne](https://www.home-assistant.io/integrations/sun)||
 |[~~Tado~~](https://www.home-assistant.io/integrations/tado)|free users limits 100 requests/day|
 |[Tibber](https://www.home-assistant.io/integrations/tibber)||
-|[VeSync](https://www.home-assistant.io/integrations/vesync)||
 |[Zigbee Home Automation](https://www.home-assistant.io/integrations/zha)||
 
 > [!NOTE]  
