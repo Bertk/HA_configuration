@@ -316,7 +316,7 @@ views:
             grid_options:
               columns: 12
               rows: 1
-            entity: sensor.berthome_aktueller_strompreis_energie_dashboard
+            entity: sensor.berthome_aktueller_strompreis
             name: Strompreis aktuell
             vertical: false
             features_position: bottom

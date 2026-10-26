@@ -157,13 +157,13 @@
   alias: Lüften Hobbyraum
   description: Lüften Hobbyraum > 65%
   triggers:
-  - trigger: time
-    at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
+  - at:
+    - '07:00:00'
+    - '08:00:00'
+    - '09:00:00'
     - '10:00:00'
     - '11:00:00'
+    trigger: time
   conditions:
   - condition: state
     entity_id: binary_sensor.hobbyraum_fenster_state
@@ -203,9 +203,9 @@
   description: Lüften Bad > 65%
   triggers:
   - at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
+    - '07:00:00'
+    - '08:00:00'
+    - '09:00:00'
     - '10:00:00'
     - '11:00:00'
     trigger: time
@@ -240,9 +240,9 @@
   description: Lüften Wohnzimmer > 65%
   triggers:
   - at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
+    - '07:00:00'
+    - '08:00:00'
+    - '09:00:00'
     - '10:00:00'
     - '11:00:00'
     trigger: time
@@ -362,13 +362,13 @@
   alias: Lüften Gästezimmer
   description: Lüften Gästezimmer > 65%
   triggers:
-  - trigger: time
-    at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
+  - at:
+    - '07:00:00'
+    - '08:00:00'
+    - '09:00:00'
     - '10:00:00'
     - '11:00:00'
+    trigger: time
   conditions:
   - condition: state
     entity_id: binary_sensor.gastezimmer_fenster_state
@@ -403,9 +403,9 @@
   description: Lüften Toilette > 65%
   triggers:
   - at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
+    - '07:00:00'
+    - '08:00:00'
+    - '09:00:00'
     - '10:00:00'
     - '11:00:00'
     trigger: time
@@ -742,13 +742,13 @@
   alias: Lüften Schlafzimmer
   description: Schlafzimmer  > 65%
   triggers:
-  - trigger: time
-    at:
-    - 07:00:00
-    - 08:00:00
-    - 09:00:00
+  - at:
+    - '07:00:00'
+    - '08:00:00'
+    - '09:00:00'
     - '10:00:00'
     - '11:00:00'
+    trigger: time
   conditions:
   - condition: state
     entity_id: binary_sensor.schlafzimmer_fenster_state
@@ -1135,7 +1135,19 @@
     - very_expensive
     alias: Preisniveau teuer
     id: generated-jdLv
-  conditions: []
+  conditions:
+  - condition: switch.is_off
+    target:
+      entity_id: switch.sax_bms_grid_charging_switch
+    options:
+      behavior: any
+      for: 00:00:00
+  - condition: switch.is_off
+    target:
+      entity_id: switch.sax_bms_pv_charging_switch
+    options:
+      behavior: any
+      for: 00:00:00
   actions:
   - choose:
     - conditions:
@@ -1308,7 +1320,7 @@
           option: '{{ states(''number.sax_bms_max_discharge'') | int | string }}'
       alias: sync input_select mit SAX discharge
   trace:
-    stored_traces: '100'
+    stored_traces: 100
   mode: single
 - id: '1732179668111'
   alias: Update Schaltspiele
@@ -1446,11 +1458,11 @@
             - very_cheap
             - cheap
           - condition: numeric_state
-            entity_id: sensor.xxx_strompreis
+            entity_id: sensor.berthome_aktueller_strompreis
             below: input_number.strompreis_heizung_aus
           - condition: numeric_state
-            entity_id: sensor.xxx_strompreis
-            below: sensor.strompreis_avg_xxx
+            entity_id: sensor.berthome_aktueller_strompreis
+            below: sensor.berthome_preis_heute
           enabled: true
         enabled: true
       sequence:
@@ -1477,11 +1489,11 @@
           - cheap
           - very_cheap
         - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
+          entity_id: sensor.berthome_aktueller_strompreis
           below: input_number.strompreis_heizung_aus
         - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
-          below: sensor.strompreis_avg_xxx
+          entity_id: sensor.berthome_aktueller_strompreis
+          below: sensor.berthome_preis_heute
       sequence:
       - action: select.select_option
         metadata: {}
@@ -1491,7 +1503,7 @@
           entity_id:
           - select.wh_system_systembetriebsart
   trace:
-    stored_traces: '100'
+    stored_traces: 100
   mode: single
 - id: '1738915844292'
   alias: Radon Werte Benachrichtigung

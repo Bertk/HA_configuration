@@ -32,7 +32,7 @@
       unique_id: "sensor.garagensolar_vorteil_in_euro"
       unit_of_measurement: EUR/h
       state: >
-        {{ states('sensor.solar_eigenverbrauch_watt_v2')|float(0) * states('input_number.aktueller_strompreis')|float(0)/1000 }}
+        {{ states('sensor.solar_eigenverbrauch_watt_v2')|float(0) * states('sensor.berthome_aktueller_strompreis')|float(0)/100000 }}
     # Berechnet anhand des Stromzählers und der Solarerzeugung in Watt den Einspeisung
     - name: Solar Einspeisung (Watt)
       unique_id: "sensor.solar_einspeisung_watt"
