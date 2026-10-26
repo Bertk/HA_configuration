@@ -1196,7 +1196,7 @@
           above: number.sax_bms_minimum_soc
           below: 40
         - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
+          entity_id: sensor.berthome_aktueller_strompreis
           above: input_number.strompreis_speicher_export
           enabled: true
       sequence:
@@ -1220,7 +1220,7 @@
           below: 60
           above: 40
         - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
+          entity_id: sensor.berthome_aktueller_strompreis
           above: input_number.strompreis_speicher_export
         - condition: state
           entity_id: sensor.berthome_aktuelles_preisniveau
@@ -1267,7 +1267,7 @@
           entity_id: sensor.sax_bms_combined_soc
           above: 75
         - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
+          entity_id: sensor.berthome_aktueller_strompreis
           above: input_number.strompreis_speicher_export
       sequence:
       - action: input_select.select_option

@@ -1075,6 +1075,10 @@ views:
             grid_options:
               columns: 12
               rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading: Neuer Abschnitt
   - title: Live-Energie
     icon: mdi:lightning-bolt
     badges: []
@@ -1179,21 +1183,21 @@ views:
         title: Bilanz
         cards:
           - type: tile
-            name: Verbrauch
-            tap_action:
-              action: navigate
-              navigation_path: /dashboard-experiment/live-strom
-            entity: sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
-            features_position: bottom
-            vertical: false
-          - type: tile
-            name: Einspeisung
-            tap_action:
-              action: navigate
-              navigation_path: /dashboard-experiment/live-strom
             entity: sensor.tibber_pulse_xxx_produktion_auf_der_letzten_meile
-            features_position: bottom
+            name: Zähler Einspeisung
             vertical: false
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-experiment/live-strom
+            features_position: bottom
+          - type: tile
+            entity: sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+            name: Zähler Verbrauch
+            vertical: false
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-experiment/live-strom
+            features_position: bottom
           - type: tile
             entity: sensor.tibber_pulse_xxx_energie
             name: Netz Leistung
@@ -1424,85 +1428,6 @@ views:
             title: WH Statistik
     max_columns: 4
     path: technikraum
-  - title: Gästezimmer
-    path: gaestezimmer
-    icon: mdi:bed-double-outline
-    subview: true
-    cards: []
-    type: sections
-    sections:
-      - type: grid
-        cards:
-          - type: heading
-            heading_style: title
-            icon: mdi:bed-double-outline
-            heading: Klima
-          - type: vertical-stack
-            cards:
-              - type: glance
-                entities:
-                  - entity: sensor.gastezimmer_temperatur
-                    name: Temperatur
-                  - entity: sensor.gastezimmer_luftfeuchtigkeit
-                    name: Luftfeuchte
-              - chart_type: line
-                period: 5minute
-                type: statistics-graph
-                entities:
-                  - entity: sensor.gastezimmer_luftfeuchtigkeit
-                    name: Luftfeuchtigkeit
-                  - entity: sensor.gastezimmer_temperatur
-                    name: Temperatur
-                days_to_show: 1
-                stat_types:
-                  - mean
-                hide_legend: false
-              - card: null
-                type: tile
-                entity: binary_sensor.gastezimmer_fenster_state
-                name: Fenster
-      - type: grid
-        cards:
-          - type: heading
-            heading_style: title
-            icon: mdi:bed-double-outline
-            heading: Heizung
-          - type: thermostat
-            entity: climate.gastezimmer_heizung
-      - type: grid
-        cards:
-          - type: heading
-            heading_style: title
-            icon: mdi:bed-double-outline
-            heading: Licht
-          - type: entities
-            entities:
-              - entity: light.gastezimmer_licht_licht
-                name: Licht
-          - type: entities
-            entities:
-              - entity: number.gastezimmer_licht_einschalthelligkeit
-                name: Einschalthelligkeit
-              - entity: number.gastezimmer_licht_einschaltstrompegel
-                name: Einschaltstrompegel
-              - entity: update.gastezimmer_licht_firmware
-                name: Firmware
-              - entity: number.gastezimmer_licht_start_farbtemperatur
-                name: Start-Farbtemperatur
-              - entity: select.gastezimmer_licht_startverhalten
-                name: Startverhalten
-      - type: grid
-        cards:
-          - type: heading
-            heading_style: title
-            icon: mdi:bed-double-outline
-            heading: Fenster
-          - type: entities
-            entities:
-              - entity: binary_sensor.gastezimmer_fenster_state
-                name: Öffnung
-              - entity: sensor.gastezimmer_fenster_batterie_3
-    max_columns: 4
   - title: Testing
     icon: mdi:alert
     path: testing
@@ -1866,554 +1791,139 @@ views:
   - title: Live-Strom
     path: live-strom
     icon: mdi:home-lightning-bolt-outline
-    subview: true
-    cards:
-      - type: vertical-stack
-        title: Live-Werte
+    subview: false
+    cards: []
+    type: sections
+    sections:
+      - type: grid
         cards:
-          - type: horizontal-stack
-            cards:
-              - type: gauge
-                entity: sensor.pv_leistung_in_watt
-                needle: true
-                severity:
-                  green: 1
-                  yellow: 0.5
-                  red: 0
-                name: Garagensolar
-                max: 4250
-                unit: W
-              - type: entities
-                entities:
-                  - entity: sensor.solarman_load_consumption_today
-                    name: Täglich
-                    icon: mdi:solar-power
-                  - entity: sensor.solarman_load_consumption_total
-                    name: Gesamt
-                  - entity: sensor.solarman_inverter_status
-                    name: Status
-                  - entity: sensor.solarman_total_active_power_output
-                state_color: false
-          - type: horizontal-stack
-            cards:
-              - type: gauge
-                needle: true
-                severity:
-                  green: -3600
-                  yellow: 0
-                  red: 500
-                name: Netz Bezug
-                max: 10000
-                unit: W
-                entity: sensor.tibber_pulse_xxx_energie
-                min: -3600
-              - type: entities
-                entities:
-                  - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
-                    icon: mdi:currency-eur
-                    name: Täglich
-                  - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
-                  - entity: sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
-                    name: Gesamt
-                  - entity: sensor.tibber_pulse_xxx_stromerzeugung
-                    name: Einspeisung
-          - type: horizontal-stack
-            cards:
-              - type: gauge
-                entity: sensor.solar_eigenverbrauch_watt_v2
-                name: Eigenverbrauch
-                needle: true
-                severity:
-                  green: 500
-                  yellow: 5
-                  red: 0
-                max: 4250
-              - type: entities
-                entities:
-                  - entity: sensor.xxx_strompreis
-                  - entity: sensor.garagensolar_vorteil
-                  - entity: sensor.garagensolar_vorteil_in_euro
-                    name: Vorteil in Euro
-                  - entity: sensor.solar_eigenverbrauch_watt_v2
-          - type: horizontal-stack
-            title: Solarman
-            cards:
-              - type: entities
-                entities:
-                  - entity: sensor.solarman_alert
-                    name: Alert
-                  - entity: sensor.solarman_ambient_temperature_1
-                    name: Ambient temperature 1
-                  - entity: sensor.solarman_fault_1
-                    name: Fault 1
-                  - entity: sensor.solarman_fault_2
-                    name: Fault 2
-                  - entity: sensor.solarman_frequency_grid
-                    name: Frequency Grid
-                  - entity: sensor.solarman_grid_current_l1
-                    name: Grid Current L1
-                  - entity: sensor.solarman_grid_current_l2
-                    name: Grid Current L2
-                  - entity: sensor.solarman_grid_current_l3
-                    name: Grid Current L3
-                  - entity: sensor.solarman_grid_voltage_l1
-                    name: Grid Voltage L1
-                  - entity: sensor.solarman_grid_voltage_l2
-                    name: Grid Voltage L2
-                  - entity: sensor.solarman_grid_voltage_l3
-                    name: Grid Voltage L3
-                  - entity: sensor.solarman_insulation_resistance
-                    name: Insulation Resistance
-                  - entity: sensor.solarman_inverter_status
-                    name: Inverter status
-                  - entity: sensor.solarman_load_consumption_today
-                    name: Load consumption today
-                  - entity: sensor.solarman_load_consumption_total
-                    name: Load consumption total
-                  - entity: sensor.solarman_module_temperature_1
-                    name: Module temperature 1
-                  - entity: sensor.solarman_pv_generation_today
-                    name: PV Generation today
-                  - entity: sensor.solarman_pv_generation_total
-                    name: PV Generation total
-                  - entity: sensor.solarman_pv1_current
-                    name: PV1 Current
-                  - entity: sensor.solarman_pv1_power
-                    name: PV1 Power
-                  - entity: sensor.solarman_pv1_voltage
-                    name: PV1 Voltage
-                  - entity: sensor.solarman_pv2_current
-                    name: PV2 Current
-                  - entity: sensor.solarman_pv2_power
-                    name: PV2 Power
-                  - entity: sensor.solarman_pv2_voltage
-                    name: PV2 Voltage
-                  - entity: sensor.solarman_radiator_temperature_1
-                    name: Radiator temperature 1
-                  - entity: sensor.solarman_status_connection
-                    name: Status_connection
-                  - entity: sensor.solarman_status_lastupdate
-                    name: Status_lastUpdate
-                  - entity: sensor.solarman_total_active_power_output
-                    name: Total Active Power Output
-    type: panel
-  - title: Garten-Pumpe
-    path: garten-pumpe
-    icon: mdi:pump
-    subview: true
-    badges:
-      - entity: switch.gartenpumpe
-      - entity: sensor.gartenpumpe_power
-      - entity: sensor.gartenpumpe_energy
-    cards:
-      - show_name: true
-        show_icon: true
-        type: button
-        tap_action:
-          action: toggle
-        entity: switch.gartenpumpe
-        name: Pumpe
-      - graph: line
-        type: sensor
-        entity: sensor.gartenpumpe_power
-        detail: 2
-        unit: Watt
-        hours_to_show: 48
-        name: Verbrauch
-  - title: Garten
-    path: garten
-    icon: mdi:leaf
-    subview: true
-    badges: []
-    cards:
-      - type: vertical-stack
-        title: Bewässerung
-        cards:
-          - type: horizontal-stack
-            cards:
-              - type: tile
-                entity: switch.remotebewcmp_garten_sprinkler
-                tap_action:
-                  action: navigate
-                  navigation_path: /dashboard-experiment/bewasserung
-                name: Bewässerungscomputer Hauptschalter
-                icon: mdi:light-switch
-          - type: horizontal-stack
-            cards:
-              - type: tile
-                entity: switch.remotebewcmp_rasen_oben
-                tap_action:
-                  action: navigate
-                  navigation_path: /dashboard-experiment/bewasserung
-                name: Rasen oben
-                icon: mdi:timer-play-outline
-              - type: tile
-                entity: number.remotebewcmp_rasen_oben_laufzeit
-                name: Laufzeit
-                tap_action:
-                  action: navigate
-                  navigation_path: /dashboard-experiment/bewasserung
-      - type: vertical-stack
-        title: Pumpe
-        cards:
-          - type: horizontal-stack
-            cards:
-              - type: tile
-                entity: switch.gartenpumpe
-                tap_action:
-                  action: navigate
-                  navigation_path: /dashboard-experiment/garten-pumpe
-                name: Bewässerungscomputer Hauptschalter
-                icon: ''
-      - type: conditional
-        conditions:
-          - condition: screen
-            media_query: '(min-width: 0px)'
-        card:
-          type: vertical-stack
-          title: Garage
-          cards:
-            - type: horizontal-stack
-              cards:
-                - type: tile
-                  entity: cover.garage_door
-                - type: tile
-                  entity: cover.garage_door_2
-            - type: tile
-              entity: switch.licht_garage_2_og
-      - type: thermostat
-        entity: climate.gastezimmer
-        features:
-          - type: climate-hvac-modes
-            hvac_modes:
-              - 'off'
-              - auto
-              - heat
-  - title: Bewässerung
-    path: bewasserung
-    icon: mdi:hydro-power
-    subview: true
-    badges: []
-    cards:
-      - type: horizontal-stack
-        title: Bewässerungs-System
-        cards:
-          - show_name: true
-            show_icon: true
-            type: button
-            tap_action:
-              action: toggle
-            entity: switch.remotebewcmp_garten_sprinkler
-            icon: mdi:hydro-power
-            name: Bewässerungscomputer
-          - type: vertical-stack
+          - type: heading
+            heading: Live-Werte
             cards:
               - type: horizontal-stack
                 cards:
                   - type: gauge
-                    entity: sensor.remotebewcmp_wifi_signal_percent
-                    name: WiFi
-                  - show_name: false
-                    show_icon: true
-                    type: button
-                    tap_action:
-                      action: toggle
-                    entity: button.remotebewcmp_garten_sprinkler_neu_starten
-              - type: horizontal-stack
-                cards:
-                  - type: gauge
-                    entity: number.remotebewcmp_garten_sprinkler_multiplier
-                    min: 0
-                    max: 5
-                    name: Multi
-                  - type: gauge
-                    entity: number.remotebewcmp_garten_sprinkler_repeat
-                    min: 0
-                    max: 5
-                    name: Rep.
-                  - show_name: false
-                    show_icon: true
-                    type: button
-                    tap_action:
-                      action: toggle
-                    entity: switch.remotebewcmp_garten_sprinkler_reverse
-                    icon: mdi:keyboard-tab-reverse
-      - type: horizontal-stack
-        title: Relay/Valve 1
-        cards:
-          - show_name: true
-            show_icon: true
-            type: button
-            tap_action:
-              action: toggle
-            icon: mdi:sprinkler
-            name: Blumenwiese
-            entity: switch.remotebewcmp_blumenwiese
-          - type: vertical-stack
-            cards:
-              - type: horizontal-stack
-                cards:
-                  - type: gauge
-                    entity: number.remotebewcmp_blumenwiese_laufzeit
-                    name: Laufzeit
-                    min: 30
-                    max: 600
-                    needle: false
-                  - show_name: false
-                    show_icon: true
-                    type: button
-                    tap_action:
-                      action: toggle
-                    entity: switch.remotebewcmp_aktiviere_blumenwiese
-                    icon: mdi:power
-              - type: horizontal-stack
-                cards:
-                  - type: history-graph
+                    entity: sensor.pv_leistung_in_watt
+                    needle: true
+                    severity:
+                      green: 1
+                      yellow: 0.5
+                      red: 0
+                    name: Garagensolar
+                    max: 4250
+                    unit: W
+                  - type: entities
                     entities:
-                      - entity: switch.remotebewcmp_blumenwiese
-                        name: Verl.
-                    hours_to_show: 22
-      - type: vertical-stack
-        cards:
-          - type: horizontal-stack
-            title: Relay/Valve 2
-            cards:
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                icon: mdi:sprinkler
-                name: Rasen Oben
-                entity: switch.remotebewcmp_rasen_oben
-              - type: vertical-stack
-                cards:
-                  - type: horizontal-stack
-                    cards:
-                      - type: gauge
-                        entity: number.remotebewcmp_rasen_oben_laufzeit
-                        name: Laufzeit
-                        min: 30
-                        max: 600
-                        needle: false
-                      - show_name: false
-                        show_icon: true
-                        type: button
-                        tap_action:
-                          action: toggle
-                        entity: switch.remotebewcmp_aktiviere_rasen_oben
-                        icon: mdi:power
-                  - type: horizontal-stack
-                    cards:
-                      - type: history-graph
-                        entities:
-                          - entity: switch.remotebewcmp_rasen_oben
-                            name: Verl.
-                        hours_to_show: 22
-          - graph: line
-            type: sensor
-            entity: sensor.rasen_oben_daily_adjusted_run_time
-            detail: 2
-      - type: horizontal-stack
-        title: Relay/Valve 3
-        cards:
-          - show_name: true
-            show_icon: true
-            type: button
-            tap_action:
-              action: toggle
-            icon: mdi:sprinkler
-            name: Gemüse
-            entity: switch.remotebewcmp_gemuse
-          - type: vertical-stack
-            cards:
+                      - entity: sensor.solarman_load_consumption_today
+                        name: Täglich
+                        icon: mdi:solar-power
+                      - entity: sensor.solarman_load_consumption_total
+                        name: Gesamt
+                      - entity: sensor.solarman_inverter_status
+                        name: Status
+                      - entity: sensor.solarman_total_active_power_output
+                    state_color: false
               - type: horizontal-stack
                 cards:
                   - type: gauge
-                    entity: number.remotebewcmp_gemuse_laufzeit
-                    name: Laufzeit
-                    min: 30
-                    max: 600
-                    needle: false
-                  - show_name: false
-                    show_icon: true
-                    type: button
-                    tap_action:
-                      action: toggle
-                    entity: switch.remotebewcmp_aktiviere_gemuse
-                    icon: mdi:power
+                    needle: true
+                    severity:
+                      green: -3600
+                      yellow: 0
+                      red: 500
+                    name: Netz Bezug
+                    max: 10000
+                    unit: W
+                    entity: sensor.tibber_pulse_xxx_energie
+                    min: -3600
+                  - type: entities
+                    entities:
+                      - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
+                        icon: mdi:currency-eur
+                        name: Täglich
+                      - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
+                      - entity: sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+                        name: Gesamt
+                      - entity: sensor.tibber_pulse_xxx_stromerzeugung
+                        name: Einspeisung
               - type: horizontal-stack
                 cards:
-                  - type: history-graph
+                  - type: gauge
+                    entity: sensor.solar_eigenverbrauch_watt_v2
+                    name: Eigenverbrauch
+                    needle: true
+                    severity:
+                      green: 500
+                      yellow: 5
+                      red: 0
+                    max: 4250
+                  - type: entities
                     entities:
-                      - entity: switch.remotebewcmp_gemuse
-                        name: Verl.
-                    hours_to_show: 22
-      - type: vertical-stack
-        cards:
-          - type: horizontal-stack
-            title: Relay/Valve 4
-            cards:
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: toggle
-                icon: mdi:sprinkler
-                name: Himbeeren
-                entity: switch.remotebewcmp_himbeeren
-              - type: vertical-stack
-                cards:
-                  - type: horizontal-stack
-                    cards:
-                      - type: gauge
-                        entity: number.remotebewcmp_himbeeren_laufzeit
-                        name: Laufzeit
-                        min: 30
-                        max: 600
-                        needle: false
-                      - show_name: false
-                        show_icon: true
-                        type: button
-                        tap_action:
-                          action: toggle
-                        entity: switch.remotebewcmp_aktiviere_himbeeren
-                        icon: mdi:power
-                  - type: horizontal-stack
-                    cards:
-                      - type: history-graph
-                        entities:
-                          - entity: switch.remotebewcmp_himbeeren
-                            name: Verl.
-                        hours_to_show: 22
-          - graph: line
-            type: sensor
-            entity: sensor.himbeeren_daily_adjusted_run_time
-            detail: 2
-  - title: Robi
-    path: robi
-    icon: mdi:robot-vacuum
-    subview: true
-    badges: []
-    cards:
-      - type: vertical-stack
-        cards:
-          - type: horizontal-stack
-            cards:
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: call-service
-                  service: automation.trigger
-                  target:
-                    entity_id: automation.vac_wohnung_saugen
-                  data:
-                    skip_condition: true
-                entity: vacuum.roomba
-                name: Wohnung saugen
-                hold_action:
-                  action: none
-                icon: mdi:floor-plan
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: call-service
-                  service: automation.trigger
-                  target: {}
-                  data:
-                    skip_condition: true
-                entity: vacuum.roomba
-                name: Wohnung saugen
-                hold_action:
-                  action: none
-                icon: mdi:floor-plan
-          - type: horizontal-stack
-            cards:
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: call-service
-                  service: automation.trigger
-                  target:
-                    entity_id: automation.vac_wohnbereich_saugen
-                  data:
-                    skip_condition: true
-                entity: vacuum.roomba
-                name: Wohnzimmer saugen
-                hold_action:
-                  action: none
-                icon: mdi:sofa-outline
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: call-service
-                  service: automation.trigger
-                  target:
-                    entity_id: automation.vac_wohnbereich_kombifahrt
-                  data:
-                    skip_condition: true
-                entity: vacuum.roomba
-                name: Wohnbereich Kombi
-                hold_action:
-                  action: none
-                icon: mdi:sofa-outline
-          - type: horizontal-stack
-            cards:
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: call-service
-                  service: automation.trigger
-                  target:
-                    entity_id: automation.vac_badezimmer_saugen
-                  data:
-                    skip_condition: true
-                entity: vacuum.roomba
-                name: Flur Saugen
-                hold_action:
-                  action: none
-                icon: mdi:floor-plan
-              - show_name: true
-                show_icon: true
-                type: button
-                tap_action:
-                  action: call-service
-                  service: automation.trigger
-                  target:
-                    entity_id: automation.vac_clean_bath
-                  data:
-                    skip_condition: true
-                entity: vacuum.roomba
-                name: Bad Tiefenreinigung
-                hold_action:
-                  action: none
-                icon: mdi:shower
-      - type: entities
-        entities:
-          - entity: sensor.roomba_abgebrochene_missionen
-            name: Abgebrochene Missionen
-          - entity: sensor.roomba_batterie
-            name: Batterie
-          - entity: sensor.roomba_batteriezyklen
-            name: Batteriezyklen
-          - entity: sensor.roomba_durchschnittliche_missionszeit
-            name: Durchschnittliche Missionszeit
-          - entity: sensor.roomba_erfolgreiche_missionen
-            name: Erfolgreiche Missionen
-          - entity: sensor.roomba_fehlgeschlagene_missionen
-            name: Fehlgeschlagene Missionen
-          - entity: sensor.roomba_gesamte_gereinigte_flache
-            name: Gesamte gereinigte Fläche
-          - entity: sensor.roomba_gesamtreinigungszeit
-            name: Gesamtreinigungszeit
-          - entity: sensor.roomba_missionen_insgesamt
-            name: Missionen insgesamt
-        title: Roomba
+                      - entity: sensor.xxx_strompreis
+                      - entity: sensor.garagensolar_vorteil
+                      - entity: sensor.garagensolar_vorteil_in_euro
+                        name: Vorteil in Euro
+                      - entity: sensor.solar_eigenverbrauch_watt_v2
+            grid_options:
+              columns: 24
+              rows: 1
+          - type: gauge
+            entity: sensor.pv_leistung_in_watt
+            needle: true
+            severity:
+              green: 1
+              yellow: 0.5
+              red: 0
+            name: Garagensolar
+          - type: entities
+            entities:
+              - entity: sensor.solarman_load_consumption_today
+                name: Täglich
+                icon: mdi:solar-power
+              - entity: sensor.solarman_load_consumption_total
+                name: Gesamt
+              - entity: sensor.solarman_inverter_status
+                name: Status
+              - entity: sensor.solarman_total_active_power_output
+            state_color: false
+          - type: gauge
+            needle: true
+            severity:
+              green: -3600
+              yellow: 0
+              red: 500
+            name: Netz Bezug
+            max: 10000
+            unit: W
+            entity: sensor.tibber_pulse_xxx_energie
+            min: -3600
+          - type: entities
+            entities:
+              - entity: sensor.tibber_pulse_xxx_kumulierte_kosten
+                icon: mdi:currency-eur
+                name: Täglich
+              - entity: sensor.tibber_pulse_xxx_kumulierter_verbrauch
+              - entity: sensor.tibber_pulse_xxx_verbrauch_auf_der_letzten_meile
+                name: Gesamt
+              - entity: sensor.tibber_pulse_xxx_stromerzeugung
+                name: Einspeisung
+          - type: gauge
+            entity: sensor.solar_eigenverbrauch_watt_v2
+            name: Eigenverbrauch
+            needle: true
+            severity:
+              green: 500
+              yellow: 5
+              red: 0
+            max: 4250
+          - type: entities
+            entities:
+              - entity: sensor.xxx_strompreis
+              - entity: sensor.garagensolar_vorteil
+              - entity: sensor.garagensolar_vorteil_in_euro
+                name: Vorteil in Euro
+              - entity: sensor.solar_eigenverbrauch_watt_v2
+        column_span: 2
   - title: Bad
     path: bad
     icon: mdi:shower
@@ -3279,9 +2789,9 @@ views:
               rows: 1
     max_columns: 4
     path: wohnzimmer
-  - title: Werkstatt
-    path: werkstatt
-    icon: mdi:toolbox
+  - title: Gästezimmer
+    path: gaestezimmer
+    icon: mdi:bed-double-outline
     subview: true
     cards: []
     type: sections
@@ -3290,23 +2800,73 @@ views:
         cards:
           - type: heading
             heading_style: title
+            icon: mdi:bed-double-outline
             heading: Klima
-            icon: mdi:toolbox
+          - type: vertical-stack
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.gastezimmer_temperatur
+                    name: Temperatur
+                  - entity: sensor.gastezimmer_luftfeuchtigkeit
+                    name: Luftfeuchte
+              - chart_type: line
+                period: 5minute
+                type: statistics-graph
+                entities:
+                  - entity: sensor.gastezimmer_luftfeuchtigkeit
+                    name: Luftfeuchtigkeit
+                  - entity: sensor.gastezimmer_temperatur
+                    name: Temperatur
+                days_to_show: 1
+                stat_types:
+                  - mean
+                hide_legend: false
+              - card: null
+                type: tile
+                entity: binary_sensor.gastezimmer_fenster_state
+                name: Fenster
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:bed-double-outline
+            heading: Heizung
+          - type: thermostat
+            entity: climate.gastezimmer_heizung
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:bed-double-outline
+            heading: Licht
           - type: entities
             entities:
-              - entity: sensor.werkstatt_klima_druck
-                name: Druck
-              - entity: sensor.werkstatt_klima_luftfeuchtigkeit
-                name: Luftfeuchtigkeit
-              - entity: sensor.werkstatt_klima_temperatur
-                name: Temperatur
-          - type: tile
-            entity: sensor.werkstatt_klima_batterie
-            vertical: false
-            features_position: bottom
-            grid_options:
-              columns: 12
-              rows: 1
+              - entity: light.gastezimmer_licht_licht
+                name: Licht
+          - type: entities
+            entities:
+              - entity: number.gastezimmer_licht_einschalthelligkeit
+                name: Einschalthelligkeit
+              - entity: number.gastezimmer_licht_einschaltstrompegel
+                name: Einschaltstrompegel
+              - entity: update.gastezimmer_licht_firmware
+                name: Firmware
+              - entity: number.gastezimmer_licht_start_farbtemperatur
+                name: Start-Farbtemperatur
+              - entity: select.gastezimmer_licht_startverhalten
+                name: Startverhalten
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:bed-double-outline
+            heading: Fenster
+          - type: entities
+            entities:
+              - entity: binary_sensor.gastezimmer_fenster_state
+                name: Öffnung
+              - entity: sensor.gastezimmer_fenster_batterie_3
     max_columns: 4
   - title: Garage
     path: garage
@@ -3613,4 +3173,332 @@ views:
               columns: 12
               rows: 1
     max_columns: 4
+  - title: Werkstatt
+    path: werkstatt
+    icon: mdi:toolbox
+    subview: true
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Klima
+            icon: mdi:toolbox
+          - type: entities
+            entities:
+              - entity: sensor.werkstatt_klima_druck
+                name: Druck
+              - entity: sensor.werkstatt_klima_luftfeuchtigkeit
+                name: Luftfeuchtigkeit
+              - entity: sensor.werkstatt_klima_temperatur
+                name: Temperatur
+          - type: tile
+            entity: sensor.werkstatt_klima_batterie
+            vertical: false
+            features_position: bottom
+            grid_options:
+              columns: 12
+              rows: 1
+    max_columns: 4
+  - title: Robi
+    path: robi
+    icon: mdi:robot-vacuum
+    subview: true
+    badges: []
+    cards: []
+  - title: Bewässerung
+    path: bewasserung
+    icon: mdi:hydro-power
+    subview: true
+    badges: []
+    cards:
+      - type: horizontal-stack
+        title: Bewässerungs-System
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            entity: switch.remotebewcmp_garten_sprinkler
+            icon: mdi:hydro-power
+            name: Bewässerungscomputer
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.remotebewcmp_wifi_signal_percent
+                    name: WiFi
+                  - show_name: false
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: button.remotebewcmp_garten_sprinkler_neu_starten
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: number.remotebewcmp_garten_sprinkler_multiplier
+                    min: 0
+                    max: 5
+                    name: Multi
+                  - type: gauge
+                    entity: number.remotebewcmp_garten_sprinkler_repeat
+                    min: 0
+                    max: 5
+                    name: Rep.
+                  - show_name: false
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: switch.remotebewcmp_garten_sprinkler_reverse
+                    icon: mdi:keyboard-tab-reverse
+      - type: horizontal-stack
+        title: Relay/Valve 1
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            icon: mdi:sprinkler
+            name: Blumenwiese
+            entity: switch.remotebewcmp_blumenwiese
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: number.remotebewcmp_blumenwiese_laufzeit
+                    name: Laufzeit
+                    min: 30
+                    max: 600
+                    needle: false
+                  - show_name: false
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: switch.remotebewcmp_aktiviere_blumenwiese
+                    icon: mdi:power
+              - type: horizontal-stack
+                cards:
+                  - type: history-graph
+                    entities:
+                      - entity: switch.remotebewcmp_blumenwiese
+                        name: Verl.
+                    hours_to_show: 22
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            title: Relay/Valve 2
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                icon: mdi:sprinkler
+                name: Rasen Oben
+                entity: switch.remotebewcmp_rasen_oben
+              - type: vertical-stack
+                cards:
+                  - type: horizontal-stack
+                    cards:
+                      - type: gauge
+                        entity: number.remotebewcmp_rasen_oben_laufzeit
+                        name: Laufzeit
+                        min: 30
+                        max: 600
+                        needle: false
+                      - show_name: false
+                        show_icon: true
+                        type: button
+                        tap_action:
+                          action: toggle
+                        entity: switch.remotebewcmp_aktiviere_rasen_oben
+                        icon: mdi:power
+                  - type: horizontal-stack
+                    cards:
+                      - type: history-graph
+                        entities:
+                          - entity: switch.remotebewcmp_rasen_oben
+                            name: Verl.
+                        hours_to_show: 22
+          - graph: line
+            type: sensor
+            entity: sensor.rasen_oben_daily_adjusted_run_time
+            detail: 2
+      - type: horizontal-stack
+        title: Relay/Valve 3
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: toggle
+            icon: mdi:sprinkler
+            name: Gemüse
+            entity: switch.remotebewcmp_gemuse
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: number.remotebewcmp_gemuse_laufzeit
+                    name: Laufzeit
+                    min: 30
+                    max: 600
+                    needle: false
+                  - show_name: false
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: switch.remotebewcmp_aktiviere_gemuse
+                    icon: mdi:power
+              - type: horizontal-stack
+                cards:
+                  - type: history-graph
+                    entities:
+                      - entity: switch.remotebewcmp_gemuse
+                        name: Verl.
+                    hours_to_show: 22
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            title: Relay/Valve 4
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                tap_action:
+                  action: toggle
+                icon: mdi:sprinkler
+                name: Himbeeren
+                entity: switch.remotebewcmp_himbeeren
+              - type: vertical-stack
+                cards:
+                  - type: horizontal-stack
+                    cards:
+                      - type: gauge
+                        entity: number.remotebewcmp_himbeeren_laufzeit
+                        name: Laufzeit
+                        min: 30
+                        max: 600
+                        needle: false
+                      - show_name: false
+                        show_icon: true
+                        type: button
+                        tap_action:
+                          action: toggle
+                        entity: switch.remotebewcmp_aktiviere_himbeeren
+                        icon: mdi:power
+                  - type: horizontal-stack
+                    cards:
+                      - type: history-graph
+                        entities:
+                          - entity: switch.remotebewcmp_himbeeren
+                            name: Verl.
+                        hours_to_show: 22
+          - graph: line
+            type: sensor
+            entity: sensor.himbeeren_daily_adjusted_run_time
+            detail: 2
+  - title: Garten
+    path: garten
+    icon: mdi:leaf
+    subview: true
+    badges: []
+    cards:
+      - type: vertical-stack
+        title: Bewässerung
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: tile
+                entity: switch.remotebewcmp_garten_sprinkler
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/bewasserung
+                name: Bewässerungscomputer Hauptschalter
+                icon: mdi:light-switch
+          - type: horizontal-stack
+            cards:
+              - type: tile
+                entity: switch.remotebewcmp_rasen_oben
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/bewasserung
+                name: Rasen oben
+                icon: mdi:timer-play-outline
+              - type: tile
+                entity: number.remotebewcmp_rasen_oben_laufzeit
+                name: Laufzeit
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/bewasserung
+      - type: vertical-stack
+        title: Pumpe
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: tile
+                entity: switch.gartenpumpe
+                tap_action:
+                  action: navigate
+                  navigation_path: /dashboard-experiment/garten-pumpe
+                name: Bewässerungscomputer Hauptschalter
+                icon: ''
+      - type: conditional
+        conditions:
+          - condition: screen
+            media_query: '(min-width: 0px)'
+        card:
+          type: vertical-stack
+          title: Garage
+          cards:
+            - type: horizontal-stack
+              cards:
+                - type: tile
+                  entity: cover.garage_door
+                - type: tile
+                  entity: cover.garage_door_2
+            - type: tile
+              entity: switch.licht_garage_2_og
+      - type: thermostat
+        entity: climate.gastezimmer
+        features:
+          - type: climate-hvac-modes
+            hvac_modes:
+              - 'off'
+              - auto
+              - heat
+  - title: Garten-Pumpe
+    path: garten-pumpe
+    icon: mdi:pump
+    subview: true
+    badges:
+      - entity: switch.gartenpumpe
+      - entity: sensor.gartenpumpe_power
+      - entity: sensor.gartenpumpe_energy
+    cards:
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: toggle
+        entity: switch.gartenpumpe
+        name: Pumpe
+      - graph: line
+        type: sensor
+        entity: sensor.gartenpumpe_power
+        detail: 2
+        unit: Watt
+        hours_to_show: 48
+        name: Verbrauch
 title: Raumansicht
