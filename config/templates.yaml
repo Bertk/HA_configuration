@@ -178,17 +178,17 @@
     # Tibber Strompreis
     - name: "Strompreis Max XXX"
       unique_id: sensor.xxx_strompreis_max
-      state: "{{ state_attr('sensor.xxx_strompreis','max_price') }}"
+      state: "{{(states('sensor.berthome_hochstpreis_heute')|float(0)/100)|round(3)}}"
       unit_of_measurement: EUR/kWh
       icon: mdi:currency-eur
     - name: "Strompreis Min XXX"
       unique_id: sensor.xxx_strompreis_min
-      state: "{{ state_attr('sensor.xxx_strompreis','min_price') }}"
+      state: "{{(states('sensor.berthome_mindestpreis_heute')|float(0)/100)|round(3)}}"
       unit_of_measurement: EUR/kWh
       icon: mdi:currency-eur
     - name: "Strompreis Avg XXX"
       unique_id: sensor.xxx_strompreis_avg
-      state: "{{ state_attr('sensor.xxx_strompreis','avg_price') }}"
+      state: "{{(states('sensor.berthome_preis_heute')|float(0)/100)|round(3)}}"
       unit_of_measurement: EUR/kWh
       icon: mdi:currency-eur
     # sax-power energy check with integral helper sensor.sax_battery_a_power

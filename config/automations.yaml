@@ -1077,13 +1077,13 @@
     alias: Leistungsgrenzwert (Select) geändert
   - trigger: numeric_state
     entity_id:
-    - sensor.xxx_strompreis
+    - sensor.berthome_aktueller_strompreis
     id: Strompreis-No-Export
     below: input_number.strompreis_speicher_export_stop
     alias: Strompreis billig
   - trigger: numeric_state
     entity_id:
-    - sensor.xxx_strompreis
+    - sensor.berthome_aktueller_strompreis
     id: Preis_Tibber_hoch
     for:
       hours: 0
@@ -1093,7 +1093,7 @@
     alias: Strompreis teuer
   - trigger: numeric_state
     entity_id:
-    - sensor.xxx_strompreis
+    - sensor.berthome_aktueller_strompreis
     below: input_number.strompreis_speicher_export
     id: Preis_Tibber_niedrig
     for:
@@ -1247,7 +1247,7 @@
           below: 75
           above: 60
         - condition: numeric_state
-          entity_id: sensor.xxx_strompreis
+          entity_id: sensor.berthome_aktueller_strompreis
           above: input_number.strompreis_speicher_export
       sequence:
       - action: input_select.select_option
