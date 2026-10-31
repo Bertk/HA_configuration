@@ -1312,10 +1312,7 @@ views:
         cards:
           - type: entities
             entities:
-              - entity: sensor.wh_heizkreis_anforderung_typ
-              - entity: sensor.wh_heizkreis_heizen_konstanttemperatur
               - entity: sensor.wh_heizkreis_hz_konfiguration
-              - entity: sensor.wh_heizkreis_kuhlen_konstanttemperatur
               - entity: sensor.wh_heizkreis_raumsolltemperatur
               - entity: sensor.wh_heizkreis_vorlaufsolltemperatur
               - entity: select.wh_heizkreis_betriebsart
@@ -1918,7 +1915,7 @@ views:
             max: 4250
           - type: entities
             entities:
-              - entity: sensor.xxx_strompreis
+              - entity: sensor.berthome_aktueller_strompreis
               - entity: sensor.garagensolar_vorteil
               - entity: sensor.garagensolar_vorteil_in_euro
                 name: Vorteil in Euro

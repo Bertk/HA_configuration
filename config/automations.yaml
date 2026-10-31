@@ -1066,6 +1066,17 @@
     enabled: true
     trigger: numeric_state
     alias: min. SOC unterschritten
+  - entity_id:
+    - sensor.sax_bms_combined_soc
+    id: SOC_above_max
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    enabled: true
+    trigger: numeric_state
+    alias: max. SOC überschritten
+    above: number.sax_bms_max_soc_for_charging
   - trigger: state
     entity_id:
     - input_select.sax_a_leistungsgrenzwert_entladen
@@ -1126,7 +1137,7 @@
       minutes: 0
       seconds: 10
     alias: Preisniveau günstig
-    id: generated-YLPL
+    id: Strompreis-günstig
   - trigger: state
     entity_id:
     - sensor.berthome_aktuelles_preisniveau
@@ -1148,26 +1159,12 @@
     options:
       behavior: any
       for: 00:00:00
+  - condition: state
+    entity_id: binary_sensor.sax_bms_power_control_configured
+    state:
+    - 'off'
   actions:
   - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - Strompreis-No-Export
-        - generated-YLPL
-      - condition: state
-        entity_id: sensor.berthome_aktuelles_preisniveau
-        state:
-        - very_cheap
-        - cheap
-      sequence:
-      - action: select.select_option
-        metadata: {}
-        data:
-          option: '0'
-        target:
-          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
-      alias: Strompreis billig => 0W
     - conditions:
       - condition: trigger
         id:
@@ -1183,6 +1180,54 @@
         data:
           option: '0'
       alias: Min SOC unterschritten => 0W
+    - conditions:
+      - condition: trigger
+        id:
+        - entladen_refresh
+        - SOC_above_max
+      - condition: numeric_state
+        entity_id: sensor.sax_bms_combined_soc
+        above: number.sax_bms_max_soc_for_charging
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+        data:
+          option: '0'
+      alias: Max SOC überschritten => 0W
+    - conditions:
+      - condition: trigger
+        id:
+        - entladen_refresh
+        - SOC_above_max
+      - condition: numeric_state
+        entity_id: switch.sax_bms_grid_charging_switch
+        above: number.sax_bms_max_soc_for_charging
+      sequence:
+      - action: switch.turn_off
+        metadata: {}
+        target:
+          entity_id: switch.sax_bms_grid_charging_switch
+        data: {}
+      alias: Max SOC überschritten => Grid Charging aus
+    - conditions:
+      - condition: trigger
+        id:
+        - Strompreis-No-Export
+        - Strompreis-günstig
+      - condition: state
+        entity_id: sensor.berthome_aktuelles_preisniveau
+        state:
+        - very_cheap
+        - cheap
+      sequence:
+      - action: select.select_option
+        metadata: {}
+        data:
+          option: '0'
+        target:
+          entity_id: input_select.sax_a_leistungsgrenzwert_entladen
+      alias: Strompreis billig => 0W
     - conditions:
       - condition: trigger
         id:
@@ -1335,6 +1380,14 @@
   - trigger: state
     entity_id:
     - sensor.wh_system_betriebsanzeige
+    to:
+    - system_operationmode_heating
+    from:
+    - system_operationmode_standby
+    id: wpp-standby
+  - trigger: state
+    entity_id:
+    - sensor.wh_system_betriebsanzeige
     from:
     to: system_operationmode_defrost
     id: wpp-abtauen
@@ -1342,8 +1395,16 @@
     entity_id:
     - sensor.wh_system_betriebsanzeige
     to: system_operationmode_hotwater
-    id: wpp-warmwasser
+    id: wpp-warmwasser-standzeit
     from: system_operationmode_standbytime
+  - trigger: state
+    entity_id:
+    - sensor.wh_system_betriebsanzeige
+    to:
+    - system_operationmode_hotwater
+    id: wpp-warmwasser-standby
+    from:
+    - system_operationmode_standby
   - trigger: state
     entity_id:
     - sensor.wh_system_betriebsanzeige
@@ -1357,6 +1418,7 @@
       - condition: trigger
         id:
         - wpp-standzeit
+        - wpp-standby
       sequence:
       - action: input_number.increment
         metadata: {}
@@ -1381,7 +1443,8 @@
     - conditions:
       - condition: trigger
         id:
-        - wpp-warmwasser
+        - wpp-warmwasser-standzeit
+        - wpp-warmwasser-standby
       sequence:
       - action: input_number.increment
         metadata: {}
@@ -1457,12 +1520,14 @@
             state:
             - very_cheap
             - cheap
-          - condition: numeric_state
-            entity_id: sensor.berthome_aktueller_strompreis
-            below: input_number.strompreis_heizung_aus
-          - condition: numeric_state
-            entity_id: sensor.berthome_aktueller_strompreis
-            below: sensor.berthome_preis_heute
+          - condition: and
+            conditions:
+            - condition: numeric_state
+              entity_id: sensor.berthome_aktueller_strompreis
+              below: sensor.berthome_preis_heute
+            - condition: numeric_state
+              entity_id: sensor.berthome_aktueller_strompreis
+              below: input_number.strompreis_heizung_aus
           enabled: true
         enabled: true
       sequence:
@@ -1488,12 +1553,14 @@
           state:
           - cheap
           - very_cheap
-        - condition: numeric_state
-          entity_id: sensor.berthome_aktueller_strompreis
-          below: input_number.strompreis_heizung_aus
-        - condition: numeric_state
-          entity_id: sensor.berthome_aktueller_strompreis
-          below: sensor.berthome_preis_heute
+        - condition: and
+          conditions:
+          - condition: numeric_state
+            entity_id: sensor.berthome_aktueller_strompreis
+            below: sensor.berthome_preis_heute
+          - condition: numeric_state
+            entity_id: sensor.berthome_aktueller_strompreis
+            below: input_number.strompreis_heizung_aus
       sequence:
       - action: select.select_option
         metadata: {}
