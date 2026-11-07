@@ -7,50 +7,34 @@ views:
     sections:
       - type: grid
         cards:
+          - type: custom:weather-forecast-card
+            show_current: true
+            show_forecast: true
+            default_forecast: daily
+            forecast_types: both
+            tap_action:
+              action: more-info
+            entity: weather.fuerth_bayern
+            forecast:
+              mode: chart
+              show_sun_times: true
+              use_color_thresholds: true
+              scroll_to_selected: true
+              show_attribute_selector: true
+              hourly_group_size: 2
+            forecast_action:
+              tap_action:
+                action: toggle-forecast
+              hold_action:
+                action: select-forecast-attribute
+            current:
+              show_attributes:
+                - wind_speed
+              secondary_info_attribute: dew_point
           - type: heading
             heading_style: title
             heading: Wetter Fürth
             icon: mdi:weather-cloudy
-          - type: custom:weather-chart-card
-            entity: weather.fuerth_bayern
-            show_main: true
-            show_temperature: true
-            show_current_condition: true
-            show_attributes: true
-            show_time: true
-            show_time_seconds: false
-            show_day: false
-            show_date: true
-            show_humidity: true
-            show_pressure: true
-            show_wind_direction: true
-            show_wind_speed: true
-            show_sun: true
-            show_feels_like: false
-            show_dew_point: false
-            show_wind_gust_speed: false
-            show_visibility: false
-            show_last_changed: false
-            use_12hour_format: false
-            icons_size: 25
-            animated_icons: false
-            icon_style: style1
-            autoscroll: false
-            forecast:
-              precipitation_type: rainfall
-              show_probability: false
-              labels_font_size: '11'
-              precip_bar_size: '100'
-              style: style2
-              show_wind_forecast: true
-              condition_icons: true
-              round_temp: false
-              type: hourly
-              number_of_forecasts: '0'
-              disable_animation: false
-            units:
-              speed: ''
-            title: ''
           - type: custom:horizon-card
         column_span: 1
       - type: grid
@@ -325,7 +309,15 @@ views:
               columns: 12
               rows: 1
             entity: sensor.berthome_preis_heute
-            name: Strompreis Durchschnitt
+            name: Strompreis Ø heute
+            vertical: false
+            features_position: bottom
+          - type: tile
+            grid_options:
+              columns: 12
+              rows: 1
+            entity: sensor.berthome_stunden_preis_aktuell
+            name: Strompreis Ø nächste Stunde
             vertical: false
             features_position: bottom
           - type: tile
@@ -3480,9 +3472,12 @@ views:
     icon: mdi:pump
     subview: true
     badges:
-      - entity: switch.gartenpumpe
-      - entity: sensor.gartenpumpe_power
-      - entity: sensor.gartenpumpe_energy
+      - type: entity
+        entity: switch.gartenpumpe
+      - type: entity
+        entity: sensor.gartenpumpe_power
+      - type: entity
+        entity: sensor.gartenpumpe_energy
     cards:
       - show_name: true
         show_icon: true

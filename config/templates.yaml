@@ -21,8 +21,8 @@
       unit_of_measurement: W
       device_class: power
       state: >
-        {% if is_number(states('sensor.tibber_pulse_xxx_energie')) and states('sensor.tibber_pulse_xxx_energie') | float(0) < 0 %}
-            {{ ((float(states('sensor.solarman_total_active_power_output')))*1000) + ((states('sensor.tibber_pulse_xxx_energie') | float(0))) | round (0) }}
+        {% if is_number(states('sensor.tibber_pulse_xxx_net_power')) and states('sensor.tibber_pulse_xxx_net_power') | float(0) < 0 %}
+            {{ ((float(states('sensor.solarman_total_active_power_output')))*1000) + ((states('sensor.tibber_pulse_xxx_net_power') | float(0))) | round (0) }}
         {% else %}
             {{ ((float(states('sensor.solarman_total_active_power_output')))*1000) |float(0)| round (0) }}
         {% endif %}
@@ -32,7 +32,7 @@
       unique_id: "sensor.garagensolar_vorteil_in_euro"
       unit_of_measurement: EUR/h
       state: >
-        {{ states('sensor.solar_eigenverbrauch_watt_v2')|float(0) * states('sensor.berthome_aktueller_strompreis')|float(0)/100000 }}
+        {{ (states('sensor.tibber_pulse_xxx_kumulierte_produktion')|float(0) * states('sensor.berthome_aktueller_strompreis')|float(0)/100) | round(2) }}
     # Berechnet anhand des Stromzählers und der Solarerzeugung in Watt den Einspeisung
     - name: Solar Einspeisung (Watt)
       unique_id: "sensor.solar_einspeisung_watt"
@@ -41,11 +41,7 @@
       unit_of_measurement: W
       device_class: power
       state: >
-        {% if is_number(states('sensor.tibber_pulse_xxx_energie')) and states('sensor.tibber_pulse_xxx_energie') | float(0) < 0 %}
-            {{ (states('sensor.tibber_pulse_xxx_energie') | float(0)) *-1 | round (0) }}
-        {% else %}
-            {{ float(0) }}
-        {% endif %}
+        {{ (states('sensor.tibber_pulse_xxx_stromerzeugung') | float(0)) | round (0) }}
       availability: "{{ has_value('sensor.tibber_pulse_xxx_energie') }}"
     # PV in Watt
     - name: PV Leistung in Watt
@@ -84,60 +80,80 @@
       state_class: "measurement"
       state: >
         {{(float(states('sensor.lumi_bad_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.lumi_bad_temperatur'))*17.67)/(float(states('sensor.lumi_bad_temperatur'))+243.5))/(float(states('sensor.lumi_bad_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.lumi_bad_luftfeuchtigkeit')) and is_number(states('sensor.lumi_bad_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Hobbyraum"
       unique_id: "AbsoluteHumidityHR"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.lumi_hobbyraum_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.lumi_hobbyraum_temperatur'))*17.67)/(float(states('sensor.lumi_hobbyraum_temperatur'))+243.5))/(float(states('sensor.lumi_hobbyraum_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.lumi_hobbyraum_luftfeuchtigkeit')) and is_number(states('sensor.lumi_hobbyraum_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Schlafzimmer"
       unique_id: "AbsoluteHumiditySZ"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.schlafzimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.schlafzimmer_temperatur'))*17.67)/(float(states('sensor.schlafzimmer_temperatur'))+243.5))/(float(states('sensor.schlafzimmer_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.schlafzimmer_luftfeuchtigkeit')) and is_number(states('sensor.schlafzimmer_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Wohnzimmer"
       unique_id: "AbsoluteHumidityWZ"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.lumi_wohnzimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.lumi_wohnzimmer_temperatur'))*17.67)/(float(states('sensor.lumi_wohnzimmer_temperatur'))+243.5))/(float(states('sensor.lumi_wohnzimmer_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.lumi_wohnzimmer_luftfeuchtigkeit')) and is_number(states('sensor.lumi_wohnzimmer_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Flur"
       unique_id: "AbsoluteHumidityFlur"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.flur_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.flur_temperatur'))*17.67)/(float(states('sensor.flur_temperatur'))+243.5))/(float(states('sensor.flur_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.flur_luftfeuchtigkeit')) and is_number(states('sensor.flur_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Gästezimmer"
       unique_id: "AbsoluteHumidityGZ"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.gastezimmer_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.gastezimmer_temperatur'))*17.67)/(float(states('sensor.gastezimmer_temperatur'))+243.5))/(float(states('sensor.gastezimmer_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.gastezimmer_luftfeuchtigkeit')) and is_number(states('sensor.gastezimmer_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Büro"
       unique_id: "AbsoluteHumidityBuro"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.buro_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.buro_temperatur'))*17.67)/(float(states('sensor.buro_temperatur'))+243.5))/(float(states('sensor.buro_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.buro_luftfeuchtigkeit')) and is_number(states('sensor.buro_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Toilette"
       unique_id: "AbsoluteHumidityToilette"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.lumi_toilette_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.lumi_toilette_temperatur'))*17.67)/(float(states('sensor.lumi_toilette_temperatur'))+243.5))/(float(states('sensor.lumi_toilette_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.lumi_toilette_luftfeuchtigkeit')) and is_number(states('sensor.lumi_toilette_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Werkstatt"
       unique_id: "AbsoluteHumidityWerkstatt"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.werkstatt_klima_luftfeuchtigkeit'))*6.112*2.1674*e**((float(states('sensor.werkstatt_klima_temperatur'))*17.67)/(float(states('sensor.werkstatt_klima_temperatur'))+243.5))/(float(states('sensor.werkstatt_klima_temperatur'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.werkstatt_klima_luftfeuchtigkeit')) and is_number(states('sensor.werkstatt_klima_temperatur')) }}
     - name: "Absolute Luftfeuchtigkeit Technikraum"
       unique_id: "AbsoluteHumidityTechnik"
       unit_of_measurement: "g/m³"
       state_class: "measurement"
       state: >
         {{(float(states('sensor.technikraum_klima_luftfeuchtigkeit_2'))*6.112*2.1674*e**((float(states('sensor.technikraum_klima_temperatur_2'))*17.67)/(float(states('sensor.technikraum_klima_temperatur_2'))+243.5))/(float(states('sensor.technikraum_klima_temperatur_2'))+273.15))|round(2)}}
+      availability: >
+        {{ is_number(states('sensor.technikraum_klima_luftfeuchtigkeit_2')) and is_number(states('sensor.technikraum_klima_temperatur_2')) }}
     # Errechnet aus der relativen Luftfeuchtigkeit und Temperatur außen die absolute Luftfeuchtigkeit in Gramm pro Kubikmeter
     # - name: "Absolute Luftfeuchtigkeit außen"
     #   unique_id: "AbsoluteHumidityOutside"

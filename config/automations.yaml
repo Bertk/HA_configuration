@@ -1144,8 +1144,9 @@
     to:
     - expensive
     - very_expensive
+    - normal
     alias: Preisniveau teuer
-    id: generated-jdLv
+    id: Strompreis-teuer
   conditions:
   - condition: switch.is_off
     target:
@@ -1159,10 +1160,12 @@
     options:
       behavior: any
       for: 00:00:00
+    enabled: false
   - condition: state
     entity_id: binary_sensor.sax_bms_power_control_configured
     state:
     - 'off'
+    enabled: false
   actions:
   - choose:
     - conditions:
@@ -1194,14 +1197,14 @@
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '0'
-      alias: Max SOC überschritten => 0W
+      alias: Max. SOC überschritten => 0W
     - conditions:
       - condition: trigger
         id:
         - entladen_refresh
         - SOC_above_max
       - condition: numeric_state
-        entity_id: switch.sax_bms_grid_charging_switch
+        entity_id: sensor.sax_bms_combined_soc
         above: number.sax_bms_max_soc_for_charging
       sequence:
       - action: switch.turn_off
@@ -1209,7 +1212,7 @@
         target:
           entity_id: switch.sax_bms_grid_charging_switch
         data: {}
-      alias: Max SOC überschritten => Grid Charging aus
+      alias: Max. SOC überschritten => Grid Charging aus
     - conditions:
       - condition: trigger
         id:
@@ -1232,7 +1235,7 @@
       - condition: trigger
         id:
         - SOC_below_40
-        - generated-jdLv
+        - Strompreis-teuer
         - entladen_refresh
       - condition: and
         conditions:
@@ -1258,6 +1261,7 @@
         id:
         - SOC_above_40
         - entladen_refresh
+        - Strompreis-teuer
       - condition: and
         conditions:
         - condition: numeric_state
@@ -1285,6 +1289,7 @@
         id:
         - SOC_above_60
         - entladen_refresh
+        - Strompreis-teuer
       - condition: and
         conditions:
         - condition: numeric_state
@@ -1306,6 +1311,7 @@
         id:
         - entladen_refresh
         - SOC_above_75
+        - Strompreis-teuer
       - condition: and
         conditions:
         - condition: numeric_state
@@ -1327,7 +1333,7 @@
         - New-discharge-limit
         - entladen_refresh
       - condition: template
-        value_template: '{{ states(''number.sax_bms_max_charge'') != states(''input_select.sax_a_leistungsgrenzwert_entladen'')
+        value_template: '{{ states(''number.sax_bms_max_discharge'') != states(''input_select.sax_a_leistungsgrenzwert_entladen'')
           }}'
       sequence:
       - action: number.set_value
@@ -1351,6 +1357,7 @@
     - conditions:
       - condition: trigger
         id: SAX-discharge-updated
+        enabled: true
       - condition: template
         value_template: "{% set value = states('number.sax_bms_max_discharge') | float(none)
           %} {% set option = value | int | string\n  if value is not none and value
@@ -1363,6 +1370,7 @@
           entity_id: input_select.sax_a_leistungsgrenzwert_entladen
         data:
           option: '{{ states(''number.sax_bms_max_discharge'') | int | string }}'
+        enabled: false
       alias: sync input_select mit SAX discharge
   trace:
     stored_traces: 100
@@ -1528,6 +1536,10 @@
             - condition: numeric_state
               entity_id: sensor.berthome_aktueller_strompreis
               below: input_number.strompreis_heizung_aus
+              enabled: false
+            - condition: numeric_state
+              entity_id: sensor.berthome_stunden_preis_aktuell
+              below: input_number.strompreis_heizung_aus
           enabled: true
         enabled: true
       sequence:
@@ -1560,6 +1572,10 @@
             below: sensor.berthome_preis_heute
           - condition: numeric_state
             entity_id: sensor.berthome_aktueller_strompreis
+            below: input_number.strompreis_heizung_aus
+            enabled: false
+          - condition: numeric_state
+            entity_id: sensor.berthome_stunden_preis_aktuell
             below: input_number.strompreis_heizung_aus
       sequence:
       - action: select.select_option
